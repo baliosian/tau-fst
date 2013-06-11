@@ -9,8 +9,6 @@ package uy.edu.fing.mina.fsa.tf;
 
 import orbital.logic.imp.Formula;
 
-import uy.edu.fing.mina.fsa.logics.TfSymbol;
-
 
 /**
  * Tautnes Function.
@@ -22,16 +20,22 @@ import uy.edu.fing.mina.fsa.logics.TfSymbol;
 public interface TfI extends java.io.Serializable {
   public static final float MAX_TF = 1;
 
-  public static final float MIN_TF = -1;
+  public static final float MIN_TF = 0;
 
   public boolean acceptsAll();
 
   public boolean acceptsNone();
 
+  public TfI not();
+
+  public TfI or(TfI tf);
+
   public TfI and(TfI tf);
 
   public TfI asTautas(TfI tf);
 
+  public TfI tauterThan(TfI tf);
+  
   public Object clone() throws CloneNotSupportedException;
 
   public int compareTo(Object arg0);
@@ -50,10 +54,6 @@ public interface TfI extends java.io.Serializable {
 
   public boolean isNot();
 
-  public TfI not();
-
-  public TfI or(TfI tf);
-
   public void setIdentity(int identity);
 
   public void setIdentityTf(TfI labelIn);
@@ -61,9 +61,7 @@ public interface TfI extends java.io.Serializable {
   public void setNot(boolean b);
 
   public int size();
-
-  public TfI tauterThan(TfI tf);
-
+  
   public String toString();
 
   public int getId();  

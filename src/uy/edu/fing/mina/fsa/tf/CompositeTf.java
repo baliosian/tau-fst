@@ -11,8 +11,6 @@ import java.util.ArrayList;
 
 import orbital.logic.imp.Formula;
 import uy.edu.fing.mina.fsa.logics.Utils;
-import uy.edu.fing.mina.fsa.utils.Messages;
-
 
 public class CompositeTf extends Tf {
 
@@ -93,8 +91,6 @@ public class CompositeTf extends Tf {
         CompositeTf ctf = (CompositeTf) tf;
         listOfTfs.addAll(ctfToArrayList(ctf.leftTf));
         listOfTfs.addAll(ctfToArrayList(ctf.rightTf));
-      } else {
-        System.err.println(Messages.getString("CompositeTf.0")); //$NON-NLS-1$
       }
     }
     return listOfTfs;
@@ -120,16 +116,16 @@ public class CompositeTf extends Tf {
   }
 
   public boolean equals(Object o) {
-		if (o instanceof CompositeTf) {
-			CompositeTf ctf = (CompositeTf) o;
+        if (o instanceof CompositeTf) {
+            CompositeTf ctf = (CompositeTf) o;
             if (ctf.operator == operator
-					&& ctf.isEpsilon() == isEpsilon()
-					&& ctf.isNot() == isNot()
-					&& ctf.leftTf.equals(leftTf) && ctf.rightTf.equals(rightTf))
-				return true;
-		}
-		return false;
-	}
+                    && ctf.isEpsilon() == isEpsilon()
+                    && ctf.isNot() == isNot()
+                    && ctf.leftTf.equals(leftTf) && ctf.rightTf.equals(rightTf))
+                return true;
+        }
+        return false;
+    }
 
 //  public float evaluate(MessageI e) {
 //
@@ -320,18 +316,18 @@ public class CompositeTf extends Tf {
 
 public boolean in(TfI tf) {
 
-	tf = Utils.simplify(tf);
-	TfI simplythis = Utils.simplify(this);
-	if (simplythis.equals(tf)) return true;
-	else if (tf.acceptsAll()) return true;
-	else if (simplythis.and(tf).equals(tf)) return true;
-	
-	return false;
+    tf = Utils.simplify(tf);
+    TfI simplythis = Utils.simplify(this);
+    if (simplythis.equals(tf)) return true;
+    else if (tf.acceptsAll()) return true;
+    else if (simplythis.and(tf).equals(tf)) return true;
+    
+    return false;
 }
 
 @Override
 public int hashCode() {
-	return (leftTf.hashCode() + rightTf.hashCode() + operator.hashCode())%Integer.MAX_VALUE;
+    return (leftTf.hashCode() + rightTf.hashCode() + operator.hashCode())%Integer.MAX_VALUE;
 }
 
 

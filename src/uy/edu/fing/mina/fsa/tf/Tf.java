@@ -24,8 +24,6 @@ import uy.edu.fing.mina.fsa.logics.Utils;
 
 public abstract class Tf implements TfI, Cloneable, Comparable {
 
-//  private boolean atomic = true;
-
   protected boolean not = false;
 
   private int identity = 0;
@@ -46,11 +44,10 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
   protected Formula formula;
 
   public Tf() {
-    this(false, false, "", Float.NaN);
+    this(false, "", Float.NaN);
   }
 
   /**
-   * @param atomic
    * @param event
    * @param eventName
    * @param isEpsilon
@@ -58,7 +55,7 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
    * @param label
    * @param value
    */
-  public Tf(boolean atomic, boolean not, String label, float value) {
+  public Tf(boolean not, String label, float value) {
     super();
     this.not = not;
     this.value = value;
@@ -67,7 +64,7 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
   }
 
   public Tf(float value) {
-    this(false, false, "", value);
+    this(false, "", value);
   }
 
   /**
@@ -91,32 +88,32 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
   abstract public boolean acceptsNone();
 
   public TfI or(TfI tf) {
-	    TfI outTf;
+        TfI outTf;
 
-	    // --
-	    if (this.acceptsAll() || tf.acceptsAll()) {
-	        SimpleTf stf = new SimpleTf();
-	        stf.setAcceptAll();
-	        outTf = stf;
-	      } else if (this.acceptsNone()) {
-	        outTf = tf;
-	      } else if (tf.acceptsNone()) {
-	        outTf = this;
-	      } else if (this.equals(tf)) {
-	        outTf = this;
-	      } else if (this.equals(tf.not())) {
-	        SimpleTf stf = new SimpleTf();
-	        stf.setAcceptAll();
-	        outTf = stf;
-	      }else if (this instanceof SimpleTf && tf instanceof SimpleTf ) {
-	        outTf = new CompositeTf(Operator.OR, this, tf);
-	      } else {
-	        outTf = new CompositeTf(Operator.OR, this, tf);
-	        outTf = Utils.simplify(outTf);
-	      }
-	    // --
-	    return outTf;
-	  }
+        // --
+        if (this.acceptsAll() || tf.acceptsAll()) {
+            SimpleTf stf = new SimpleTf();
+            stf.setAcceptAll();
+            outTf = stf;
+          } else if (this.acceptsNone()) {
+            outTf = tf;
+          } else if (tf.acceptsNone()) {
+            outTf = this;
+          } else if (this.equals(tf)) {
+            outTf = this;
+          } else if (this.equals(tf.not())) {
+            SimpleTf stf = new SimpleTf();
+            stf.setAcceptAll();
+            outTf = stf;
+          }else if (this instanceof SimpleTf && tf instanceof SimpleTf ) {
+            outTf = new CompositeTf(Operator.OR, this, tf);
+          } else {
+            outTf = new CompositeTf(Operator.OR, this, tf);
+            outTf = Utils.simplify(outTf);
+          }
+        // --
+        return outTf;
+      }
 
   
   public TfI and(TfI tf) {
@@ -290,15 +287,15 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
   }
 
 public int getId() {
-	return id;
+    return id;
 }
 
 public TfI getRefersTo() {
-	return refersTo;
+    return refersTo;
 }
 
 public void setRefersTo(TfI refersTo) {
-	this.refersTo = refersTo;
+    this.refersTo = refersTo;
 }
 
 /**
@@ -310,8 +307,8 @@ public void setFormula(Formula formula) {
 }
 
 public void setNot(boolean not) {
-	this.not = not;
-	this.formula = getFormula().not();
+    this.not = not;
+    this.formula = getFormula().not();
 }
 
 //  abstract public void setCondition(ConditionI condition);

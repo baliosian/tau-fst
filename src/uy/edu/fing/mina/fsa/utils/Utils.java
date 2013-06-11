@@ -9,19 +9,16 @@ package uy.edu.fing.mina.fsa.utils;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Random;
 import java.util.Set;
 
 import uy.edu.fing.mina.fsa.tf.CompositeTf;
 import uy.edu.fing.mina.fsa.tf.Operator;
 import uy.edu.fing.mina.fsa.tf.Partition;
-import uy.edu.fing.mina.fsa.tf.SimpleTf;
 import uy.edu.fing.mina.fsa.tf.TfI;
 import uy.edu.fing.mina.fsa.tf.TfPair;
 
@@ -32,17 +29,17 @@ import uy.edu.fing.mina.fsa.tf.TfPair;
  */
 public class Utils {
 
-	/**
-	 * @param pairsP
-	 * @return
-	 */
-//	public static Set toSet(LinkedList pairsP) {
-//	   Set set = new HashSet();
-//	   for (Iterator iter = pairsP.iterator(); iter.hasNext();) {
+    /**
+     * @param pairsP
+     * @return
+     */
+//  public static Set toSet(LinkedList pairsP) {
+//     Set set = new HashSet();
+//     for (Iterator iter = pairsP.iterator(); iter.hasNext();) {
 //         set.add(iter.next());
 //      }
-//		return set;
-//	}
+//      return set;
+//  }
 
 //   /**
 //    * Returns each split of tfs into two subsets
@@ -104,7 +101,7 @@ public class Utils {
     */
    public static Set<Partition> getPartitions3(Set<TfI> tfs) {
       
-	  CombinationGenerator cg;
+      CombinationGenerator cg;
 
       Set<Partition> partitions = new HashSet<Partition>();
       
@@ -123,15 +120,15 @@ public class Utils {
             }
             
             for (int j = rightArray.size()-1; j >= 0 ; j--) {
-            	if (rightArray.get(j) == null)
-            		rightArray.remove(j);
-			}
+                if (rightArray.get(j) == null)
+                    rightArray.remove(j);
+            }
             
             if (!rightArray.isEmpty()) {
-            	if (rightArray.get(0) == null) 
+                if (rightArray.get(0) == null) 
                     partitions.add(new Partition(leftArray, null));
-            	else 
-            		partitions.add(new Partition(leftArray, rightArray));
+                else 
+                    partitions.add(new Partition(leftArray, rightArray));
             } else {
                partitions.add(new Partition(leftArray, null));
             }
@@ -235,31 +232,31 @@ public class Utils {
       return partitions;
    }
 
-	/**
-	 * @param relation
-	 * @return
-	 */
-	public static TfI toTfrelation3(Partition relation) {
+    /**
+     * @param relation
+     * @return
+     */
+    public static TfI toTfrelation3(Partition relation) {
 
-		TfI tfrelation = null;
+        TfI tfrelation = null;
 
-		if (relation.left != null) {
-			for (Iterator<TfI> iter = relation.left.iterator(); iter.hasNext();) {
-				TfI element = iter.next();
-				if (tfrelation == null)
-					tfrelation = element;
-				else
-					tfrelation = tfrelation.and(element);
-			}
-		}
-		if (relation.right != null) {
-			for (Iterator<TfI> iter2 = relation.right.iterator(); iter2.hasNext();) {
-				TfI element = iter2.next();
-				tfrelation = tfrelation.and(element.not());
-			}
-		}
-		return tfrelation;
-	}
+        if (relation.left != null) {
+            for (Iterator<TfI> iter = relation.left.iterator(); iter.hasNext();) {
+                TfI element = iter.next();
+                if (tfrelation == null)
+                    tfrelation = element;
+                else
+                    tfrelation = tfrelation.and(element);
+            }
+        }
+        if (relation.right != null) {
+            for (Iterator<TfI> iter2 = relation.right.iterator(); iter2.hasNext();) {
+                TfI element = iter2.next();
+                tfrelation = tfrelation.and(element.not());
+            }
+        }
+        return tfrelation;
+    }
 
    
  
@@ -273,7 +270,7 @@ public class Utils {
       ArrayList<TfI> auxArrayList = new ArrayList<TfI>();
       
       for (Iterator<TfI> iter = rightArray.iterator(); iter.hasNext();) {
-    	 TfI o = iter.next();
+         TfI o = iter.next();
          if (o != null)
             auxArrayList.add(o);
       }
@@ -330,28 +327,6 @@ public class Utils {
       }
    }
    
-
-   /**
-    * @param relation
-    * @return
-    */
-   public static LinkedList<TfI> getAtoms(TfI partition) {
-      LinkedList<TfI> positiveAtoms = new LinkedList<TfI>();
-      if (partition != null )
-         if ( partition instanceof SimpleTf ) {
-            positiveAtoms.add(partition);
-         } else {
-            if (partition instanceof CompositeTf) {
-               CompositeTf p = (CompositeTf) partition;
-               positiveAtoms.addAll(getAtoms(p.leftTf));
-               //positiveAtoms.add(new Operator(p.getOperator()));
-               positiveAtoms.addAll(getAtoms(p.rightTf));
-            } else {
-               System.err.println(Messages.getString("Tffsr.8")); //$NON-NLS-1$
-            }
-         }
-      return positiveAtoms;
-   }
 
    /**
     * Returns clusters of TfPairs by the event name in the input part
@@ -412,18 +387,22 @@ public class Utils {
       } catch (IOException e) {}
       
       try {
-         //System.out.println("Calling Dotty...");
-//       String[] cmd = {"scripts/launchDotty.sh", filename};
-//         String[] cmd = {"dotty", filename};
-//         Process p = Runtime.getRuntime().exec(cmd);
-         //xop
-         String cmd="/usr/bin/dot -Tpng -o " + filename + ".png " + filename;
-         String[] cmds= {"/bin/sh", "-c",cmd};
-         System.out.println("Calling Dot: "+ cmd);
-         Process p = Runtime.getRuntime().exec(cmds);
-         //p.waitFor();
-         //System.out.println("return: "+ p.exitValue());
-      } catch (IOException e) {
+
+        //System.out.println("Calling Dotty...");
+        //String[] cmd = { "scripts/launchDotty.sh", filename };
+        //String[] cmd = { "dotty", filename };
+        //Process p = Runtime.getRuntime().exec(cmd);
+
+        String cmd = "/usr/bin/dot -Tpng -o " + filename + ".png " + filename;
+        System.out.println("Calling Dot: " + cmd);
+        Process p = Runtime.getRuntime().exec(cmd);
+        p.waitFor();
+        System.out.println("return: "+ p.exitValue());
+        p = Runtime.getRuntime().exec("eog " + filename + ".png ");
+        //p.waitFor();
+        //System.out.println("return: "+ p.exitValue());
+        
+      } catch (IOException | InterruptedException e) {
          System.out.println("exception happened - here's what I know: ");
          e.printStackTrace();
          System.exit(-1);
