@@ -1,7 +1,4 @@
 package uy.edu.fing.mina.fsa.test;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-
 import uy.edu.fing.mina.fsa.tffst.State;
 import uy.edu.fing.mina.fsa.tffst.Tffst;
 import uy.edu.fing.mina.fsa.tffst.Transition;
