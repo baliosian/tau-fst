@@ -71,33 +71,33 @@ public class TestQuineMcCluskey {
 		TfTerm tftermna = new TfTerm((SimpleTf) tfa.not(), (byte) 0);
 		TfTerm tftermnb = new TfTerm((SimpleTf) tfb.not(), (byte) 0);
 
-		System.out.println((
-		        tfa.not()	.and(tfb.not()	.and(tfc.not()	.and(tfd.not())))
-			.or(tfa.not()	.and(tfb.not()	.and(tfc.not()	.and(tfd))))
-			.or(tfa.not()	.and(tfb.not()	.and(tfc		.and(tfd.not()))))
-			.or(tfa.not()	.and(tfb.not()	.and(tfc		.and(tfd))))
-			.or(tfa.not()	.and(tfb		.and(tfc.not()	.and(tfd))))
-			.or(tfa.not()	.and(tfb		.and(tfc		.and(tfd))))
-			.or(tfa			.and(tfb.not()	.and(tfc.not()	.and(tfd.not()))))
-			.or(tfa			.and(tfb.not()	.and(tfc		.and(tfd.not()))))
-			.or(tfa			.and(tfb		.and(tfc.not()	.and(tfd.not()))))
-			.or(tfa			.and(tfb		.and(tfc.not()	.and(tfd))))
-			.or(tfa			.and(tfb		.and(tfc		.and(tfd))))
-		));		
-	
-		System.out.println(Utils.simplify(
-		        tfa.not()	.and(tfb.not()	.and(tfc.not()	.and(tfd.not())))
-			.or(tfa.not()	.and(tfb.not()	.and(tfc.not()	.and(tfd))))
-			.or(tfa.not()	.and(tfb.not()	.and(tfc		.and(tfd.not()))))
-			.or(tfa.not()	.and(tfb.not()	.and(tfc		.and(tfd))))
-			.or(tfa.not()	.and(tfb		.and(tfc.not()	.and(tfd))))
-			.or(tfa.not()	.and(tfb		.and(tfc		.and(tfd))))
-			.or(tfa			.and(tfb.not()	.and(tfc.not()	.and(tfd.not()))))
-			.or(tfa			.and(tfb.not()	.and(tfc		.and(tfd.not()))))
-			.or(tfa			.and(tfb		.and(tfc.not()	.and(tfd.not()))))
-			.or(tfa			.and(tfb		.and(tfc.not()	.and(tfd))))
-			.or(tfa			.and(tfb		.and(tfc		.and(tfd))))
-		));		
+//		System.out.println((
+//		        tfa.not()	.and(tfb.not()	.and(tfc.not()	.and(tfd.not())))
+//			.or(tfa.not()	.and(tfb.not()	.and(tfc.not()	.and(tfd))))
+//			.or(tfa.not()	.and(tfb.not()	.and(tfc		.and(tfd.not()))))
+//			.or(tfa.not()	.and(tfb.not()	.and(tfc		.and(tfd))))
+//			.or(tfa.not()	.and(tfb		.and(tfc.not()	.and(tfd))))
+//			.or(tfa.not()	.and(tfb		.and(tfc		.and(tfd))))
+//			.or(tfa			.and(tfb.not()	.and(tfc.not()	.and(tfd.not()))))
+//			.or(tfa			.and(tfb.not()	.and(tfc		.and(tfd.not()))))
+//			.or(tfa			.and(tfb		.and(tfc.not()	.and(tfd.not()))))
+//			.or(tfa			.and(tfb		.and(tfc.not()	.and(tfd))))
+//			.or(tfa			.and(tfb		.and(tfc		.and(tfd))))
+//		));		
+//	
+//		System.out.println(Utils.simplify(
+//		        tfa.not()	.and(tfb.not()	.and(tfc.not()	.and(tfd.not())))
+//			.or(tfa.not()	.and(tfb.not()	.and(tfc.not()	.and(tfd))))
+//			.or(tfa.not()	.and(tfb.not()	.and(tfc		.and(tfd.not()))))
+//			.or(tfa.not()	.and(tfb.not()	.and(tfc		.and(tfd))))
+//			.or(tfa.not()	.and(tfb		.and(tfc.not()	.and(tfd))))
+//			.or(tfa.not()	.and(tfb		.and(tfc		.and(tfd))))
+//			.or(tfa			.and(tfb.not()	.and(tfc.not()	.and(tfd.not()))))
+//			.or(tfa			.and(tfb.not()	.and(tfc		.and(tfd.not()))))
+//			.or(tfa			.and(tfb		.and(tfc.not()	.and(tfd.not()))))
+//			.or(tfa			.and(tfb		.and(tfc.not()	.and(tfd))))
+//			.or(tfa			.and(tfb		.and(tfc		.and(tfd))))
+//		));		
 	
 /*
  * 
@@ -110,6 +110,7 @@ public class TestQuineMcCluskey {
  * 
  */
 		
+		// this tests are not showing minimization anymore,  Utils.simplify() is already into .and() and .or() methods. 
 		
 		System.out.println(
 		        tfa.not()			.and(tfb.not()	.and(tfc.not()))
