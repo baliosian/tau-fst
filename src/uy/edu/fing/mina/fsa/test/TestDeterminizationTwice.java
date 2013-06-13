@@ -83,17 +83,17 @@ public class TestDeterminizationTwice {
       s3.addTransition(trans5);
       s4.addTransition(trans5);
 
-      Utils.showDot(tffst1.toDot(""));
+      Utils.showDot(tffst1.toDot("1"));
 
       tffst1.setDeterministic(false);
       tffst1.determinize(); 
 
-      Utils.showDot(tffst1.toDot(""));
+      Utils.showDot(tffst1.toDot("2"));
       
       tffst1.setDeterministic(false);
       tffst1.determinize(); 
 
-      Utils.showDot(tffst1.toDot(""));
+      Utils.showDot(tffst1.toDot("3"));
       
    }
    
