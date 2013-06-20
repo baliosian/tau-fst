@@ -37,13 +37,13 @@ public class Partition {
         TfI element = iter.next();
         if (tfrelation == null) tfrelation = element;
         else
-          tfrelation = tfrelation.and(element);
+          tfrelation = tfrelation.andSimple(element);
       }
     }
     if (relation.right != null) {
       for (Iterator<TfI> iter2 = relation.right.iterator(); iter2.hasNext();) {
         TfI element = iter2.next();
-        tfrelation = tfrelation.and(element.not());
+        tfrelation = tfrelation.andSimple(element.not());
       }
     }
     return tfrelation;

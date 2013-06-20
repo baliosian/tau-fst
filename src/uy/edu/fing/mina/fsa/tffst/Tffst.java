@@ -977,11 +977,11 @@ public class Tffst implements Serializable {
     Map<P, State> visitedStates = new HashMap<P, State>();
 
     // creates the first newstate
-    P initialListOfP = new P();
+    P initialP = new P();
     for (State initialState : initialSetOfStates)
-      initialListOfP.add(new ElementOfP(initialState, new TfString()));
+      initialP.add(new ElementOfP(initialState, new TfString()));
     initial = new State();
-    newStates.put(initialListOfP, initial);
+    newStates.put(initialP, initial);
 
     while (newStates.keySet().iterator().hasNext()) {
 
