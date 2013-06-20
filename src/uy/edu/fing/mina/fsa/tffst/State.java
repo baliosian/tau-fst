@@ -37,6 +37,7 @@ boolean accept;
  */
    int id;
 
+   //TODO why there is a number AND an id? 
    private int number;
 
    /**
@@ -140,74 +141,16 @@ boolean accept;
       this.transitions = transitions;
    }
 
-//   /**
-//    * Performs a state lookup in transitions.
-//    * 
-//    * @param c
-//    *           character to look up
-//    * @return destination state, null if no matching outgoing transition
-//    */
-//   public SeStatePair stepOut(MessageI e) {
-//      Iterator<Transition> i = transitions.iterator();
-//      while (i.hasNext()) {
-//         Transition t = (Transition) i.next();
-//         if (t.labelIn.evaluate(e) >= 0) {
-//            return new SeStatePair(t.to, t.labelOut);
-//         }
-//      }
-//      return null;
-//   }
-
-//   /**
-//    * Performs a state lookup in transitions.
-//    * 
-//    * @param c
-//    *           character to look up
-//    * @return destination state, null if no matching outgoing transition
-//    */
-//   public State stepTo(MessageI e) {
-//      Iterator<Transition> i = transitions.iterator();
-//      while (i.hasNext()) {
-//         Transition t = (Transition) i.next();
-//         if (t.labelIn.evaluate(e) >= 0) return t.to;
-//      }
-//      return null;
-//   }
-
    /**
     * Returns string describing this state. Normally invoked via
-    * {@link Automaton#toString()}.
+    * 
     */
    public String toString() {
-      StringBuffer b = new StringBuffer();
-      b.append("state ").append(number).append("/").append(id);
-      if (accept) b.append(" [final]");
-      b.append(": ");
-      Iterator<Transition> i = transitions.iterator();
-      while (i.hasNext()) {
-         Transition t = (Transition) i.next();
-         b.append("  ").append(t.toString()).append(",");
-      }
-      //b.append("\n");
-      return b.toString();
+      if (accept) 
+        return "((" + number + "/" + id + "))";
+      else
+        return "(" + number + "/" + id + ")";
    }
-//   /**
-//    * Returns string describing this state. Normally invoked via
-//    * {@link Automaton#toString()}.
-//    */
-//   public String toString() {
-//      StringBuffer b = new StringBuffer();
-//      b.append("state ").append(number).append("/").append(id);
-//      if (accept) b.append(" [final]");
-//      b.append(": ");
-//      Iterator<Transition> i = transitions.iterator();
-//      while (i.hasNext()) {
-//         Transition t = (Transition) i.next();
-//         b.append("  ").append(t.toString()).append(",");
-//      }
-//      b.append("\n");
-//      return b.toString();
-//   }
 
    /*
     * (non-Javadoc)

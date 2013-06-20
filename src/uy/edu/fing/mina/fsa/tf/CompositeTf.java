@@ -8,6 +8,7 @@
 package uy.edu.fing.mina.fsa.tf;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import orbital.logic.imp.Formula;
 import uy.edu.fing.mina.fsa.logics.Utils;
@@ -329,6 +330,73 @@ public boolean in(TfI tf) {
 public int hashCode() {
     return (leftTf.hashCode() + rightTf.hashCode() + operator.hashCode())%Integer.MAX_VALUE;
 }
+
+/**
+  * @param b
+  * @param operator
+  * @return
+  */
+ public static TfI listToCTF(String operator, ArrayList<TfI> rightArray) {
+    
+    ArrayList<TfI> auxArrayList = new ArrayList<TfI>();
+    
+    for (Iterator<TfI> iter = rightArray.iterator(); iter.hasNext();) {
+       TfI o = iter.next();
+       if (o != null)
+          auxArrayList.add(o);
+    }
+    
+    rightArray = auxArrayList;
+    
+    Iterator<TfI> raIter = rightArray.iterator();
+    TfI partitionR1 = null;
+    
+    Object o1 = null;
+    Object o2 = null;
+
+    if (raIter.hasNext()) {
+       o1 = raIter.next();
+    }
+    if (raIter.hasNext()) {
+       o2 = raIter.next();
+    }
+    if (o1 == null)
+       return null;
+    else if (o2 == null)
+       return (TfI) o1;
+    else {
+       if (operator.equals(Operator.AND))
+          partitionR1 = ((TfI)o1).and((TfI) o2);
+       else if (operator.equals(Operator.OR))
+          partitionR1 = ((TfI)o1).or((TfI) o2);
+       else if (operator.equals(Operator.AS_TAUT_AS))
+          partitionR1 = ((TfI)o1).asTautas((TfI) o2); 
+       else if (operator.equals(Operator.TAUTER_THAN))
+          partitionR1 = ((TfI)o1).tauterThan((TfI) o2);
+       
+       while (raIter.hasNext()) {
+          Object o = raIter.next();
+          if (o != null) {
+             TfI partitionR2 = null;
+             if (operator.equals(Operator.AND))
+                partitionR1 = partitionR1.and((TfI) o);
+             else if (operator.equals(Operator.OR))
+                partitionR2 = partitionR1.or((TfI) o);
+             else if (operator.equals(Operator.AS_TAUT_AS))
+                partitionR2 = partitionR1.asTautas((TfI) o); 
+             else if (operator.equals(Operator.TAUTER_THAN))
+                partitionR2 = partitionR1.tauterThan((TfI) o);
+
+             if (partitionR2 instanceof CompositeTf) {
+                CompositeTf ctfPartitionR2 = (CompositeTf) partitionR2;
+                partitionR1 = ctfPartitionR2;
+             }
+          }
+       }
+       
+       return partitionR1;
+    }
+ }
 
 
 

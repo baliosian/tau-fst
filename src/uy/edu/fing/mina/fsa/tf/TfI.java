@@ -32,6 +32,10 @@ public interface TfI extends java.io.Serializable {
 
   public TfI and(TfI tf);
 
+  public TfI orSimple(TfI tf);
+
+  public TfI andSimple(TfI tf);
+
   public TfI asTautas(TfI tf);
 
   public TfI tauterThan(TfI tf);

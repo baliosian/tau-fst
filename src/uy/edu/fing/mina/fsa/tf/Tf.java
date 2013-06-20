@@ -48,6 +48,8 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
   }
 
   /**
+   * 
+   * 
    * @param event
    * @param eventName
    * @param isEpsilon
@@ -87,10 +89,16 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
 
   abstract public boolean acceptsNone();
 
-  public TfI or(TfI tf) {
+  /**
+   * The OR operator with no simplification, Except for the basic ones such as A OR {} -> A
+   * 
+   * @param tf
+   * @return
+   *  
+   */
+    public TfI or(TfI tf) {
         TfI outTf;
 
-        // --
         if (this.acceptsAll() || tf.acceptsAll()) {
             SimpleTf stf = new SimpleTf();
             stf.setAcceptAll();
@@ -105,20 +113,90 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
             SimpleTf stf = new SimpleTf();
             stf.setAcceptAll();
             outTf = stf;
-          }else if (this instanceof SimpleTf && tf instanceof SimpleTf ) {
-            outTf = new CompositeTf(Operator.OR, this, tf);
           } else {
             outTf = new CompositeTf(Operator.OR, this, tf);
-            outTf = Utils.simplify(outTf);
           }
-        // --
+
         return outTf;
       }
 
   
+  /**
+   * The OR operator with an automatic Quinn-McCluskey simplification. 
+   *  
+   * @param tf
+   * @return a simplified version of the formula. 
+   */
+
+  public TfI orSimple(TfI tf) {
+    TfI outTf;
+
+    // --
+    if (this.acceptsAll() || tf.acceptsAll()) {
+        SimpleTf stf = new SimpleTf();
+        stf.setAcceptAll();
+        outTf = stf;
+      } else if (this.acceptsNone()) {
+        outTf = tf;
+      } else if (tf.acceptsNone()) {
+        outTf = this;
+      } else if (this.equals(tf)) {
+        outTf = this;
+      } else if (this.equals(tf.not())) {
+        SimpleTf stf = new SimpleTf();
+        stf.setAcceptAll();
+        outTf = stf;
+      }else if (this instanceof SimpleTf && tf instanceof SimpleTf ) {
+        outTf = new CompositeTf(Operator.OR, this, tf);
+      } else {
+        outTf = new CompositeTf(Operator.OR, this, tf);
+        outTf = Utils.simplify(outTf);
+      }
+    // --
+    return outTf;
+  }
+  
+  /**
+   * The AND operator with no simplification, Except for the basic ones such as A AND {} -> {}
+   * 
+   *  
+   */
+  
   public TfI and(TfI tf) {
     TfI outTf;
-    // --
+
+    if (this.acceptsNone() || tf.acceptsNone()) {
+      SimpleTf stf = new SimpleTf();
+      stf.setAcceptNone();
+      outTf = stf;
+    } else if (this.acceptsAll()) {
+      outTf = tf;
+    } else if (tf.acceptsAll()) {
+      outTf = this;
+    } else if (this.equals(tf)) {
+      outTf = this;
+    } else if (this.equals(tf.not())) {
+      SimpleTf stf = new SimpleTf();
+      stf.setAcceptNone();
+      outTf = stf;
+    } else {
+      outTf = new CompositeTf(Operator.AND, this, tf);
+    }
+    
+    return outTf;
+    
+  }
+
+  /**
+   * The AND operator with an automatic Quinn-McCluskey simplification. 
+   *  
+   * @param tf
+   * @return a simplified version of the formula. 
+   */
+  
+  public TfI andSimple(TfI tf) {
+    TfI outTf;
+
     if (this.acceptsNone() || tf.acceptsNone()) {
       SimpleTf stf = new SimpleTf();
       stf.setAcceptNone();
@@ -139,14 +217,13 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
       outTf = new CompositeTf(Operator.AND, this, tf);
       outTf = Utils.simplify(outTf);
     }
-    // --
+
     return outTf;
   }
 
   public TfI asTautas(TfI tf) {
     TfI outTf;
 
-    // --
     if (this.acceptsNone() || tf.acceptsNone()) {
       SimpleTf stf = new SimpleTf();
       stf.setAcceptNone();
@@ -160,7 +237,6 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
     } else {
       outTf = new CompositeTf(Operator.AS_TAUT_AS, this, tf);
     }
-    // --
 
     outTf = new CompositeTf(Operator.AS_TAUT_AS, this, tf);
     return outTf;

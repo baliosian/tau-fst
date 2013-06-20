@@ -32,7 +32,6 @@ import uy.edu.fing.mina.fsa.tf.Partition;
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
 import uy.edu.fing.mina.fsa.tf.TfI;
 import uy.edu.fing.mina.fsa.tffst.Tffst;
-import uy.edu.fing.mina.fsa.utils.Utils;
 
 /*
  * Class invariants: - An Tffsr is either represented explicitly (with State and
@@ -1096,10 +1095,10 @@ public class Tffsr implements Serializable {
                 }
             
             // obtener el conjunto de tfs asociadas a los estados de p
-            Set<Partition> partitions = Utils.getPartitions3(getRelevant(d));
+            Set<Partition> partitions = Partition.getPartitions3(getRelevant(d));
             Set<TfI> tfpartitions = new HashSet<TfI>();
             for (Partition partition : partitions){
-                tfpartitions.add(Utils.toTfrelation3(partition));
+                tfpartitions.add(Partition.toTfrelation3(partition));
             }
             
             for (TfI tfpartition : tfpartitions){
