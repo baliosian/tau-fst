@@ -85,13 +85,22 @@ public class TestDeterminizationLoop {
       
       tffst1 = tffst1.union(tffst2);
 
-    //  tffst1 = tffst1.kleene();
+      tffst1 = tffst1.kleene();
 
-      Utils.showDot(tffst1.toDot(""));
+      Utils.showDot(tffst1.toDot("kleene tffst1"));
 
       tffst1.determinize(); 
       
-      Utils.showDot(tffst1.toDot(""));
+      Utils.showDot(tffst1.toDot("determinized kleene tffst1"));
+      
+//      Tffst tffstkleene = tffst1.kleene();
+//
+//      Utils.showDot(tffstkleene.toDot("kleene tffst2"));
+//
+//      tffstkleene.setDeterministic(false);
+//      tffstkleene.determinize();
+//      Utils.showDot(tffstkleene.toDot("determinized kleene tffst2"));
+      
     
    }
   

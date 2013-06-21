@@ -172,18 +172,20 @@ public class TestNOMS10 {
 			rulesunion = rulesunion.union(tffst);
 		}
 
-        Utils.showDot(rulesunion.toDot(""));
+        Utils.showDot(rulesunion.toDot("union"));
 
-        Tffsr rulesunionR = rulesunion.toTffsr();
+//        Tffsr rulesunionR = rulesunion.toTffsr();
+//
+//        rulesunionR.reverse();
+//        rulesunionR.reverse();
+//        rulesunion = rulesunionR.toTffst();
 
-        rulesunionR.reverse();
-        rulesunionR.reverse();
-        
-        rulesunion = rulesunionR.toTffst();
+        rulesunion = rulesunion.kleene();
+
+        Utils.showDot(rulesunion.toDot("determinized"));
         
         rulesunion.setDeterministic(false); //
         rulesunion.determinize(); //
-        rulesunion = rulesunion.kleene();
 
         Utils.showDot(rulesunion.toDot("determinized"));
 

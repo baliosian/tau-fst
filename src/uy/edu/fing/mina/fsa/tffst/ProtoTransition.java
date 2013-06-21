@@ -41,7 +41,7 @@ public class ProtoTransition {
   /**
    * The union of pairs produced by TransP
    */
-  P transPpairs;
+  P unionOfTransP;
 
   /**
    * @param np
@@ -51,24 +51,23 @@ public class ProtoTransition {
   public ProtoTransition(State np, TfI relation, P union) {
     s = np;
     exclTFs = relation;
-    transPpairs = union;
-
+    unionOfTransP = union;
   }
 
   /**
-   * simplifies the pairsP list
+   * simplifies the union of transP sets
    * 
    */
-  public void simplifyTargetByState_noOps() {
+  public void simplifyTargetByState() {
 
     Set<ElementOfP> toRemove = new HashSet<ElementOfP>();
     int toRemoveSize;
 
     do {
       toRemoveSize = toRemove.size();
-      for (ElementOfP workingPair : transPpairs)
+      for (ElementOfP workingPair : unionOfTransP)
         if (!toRemove.contains(workingPair))
-          for (ElementOfP currentPair : transPpairs)
+          for (ElementOfP currentPair : unionOfTransP)
             if (!toRemove.contains(currentPair))
               if ((currentPair.state == workingPair.state || workingPair.state.isAccept())
                   && workingPair != currentPair) {
@@ -85,8 +84,7 @@ public class ProtoTransition {
                   if (currentSEiter.hasNext()) currentOinSE = currentSEiter.next();
                   if (workingSEiter.hasNext()) workingOinSE = workingSEiter.next();
 
-                  if (currentOinSE != null && workingOinSE != null) newSE.add(workingOinSE
-                      .or(currentOinSE));
+                  if (currentOinSE != null && workingOinSE != null) newSE.add(workingOinSE.or(currentOinSE));
                   else if (currentOinSE != null) newSE.add(currentOinSE);
                   else if (workingOinSE != null) newSE.add(workingOinSE);
                 }
@@ -94,21 +92,8 @@ public class ProtoTransition {
                 workingPair.arrivingTFs = newSE;
               }
     } while (toRemoveSize != toRemove.size());
-    transPpairs.removeAll(toRemove);
+    unionOfTransP.removeAll(toRemove);
 
-  }
-
-  /**
-   * @param workingOPinSE
-   * @param currentOPinSE
-   * @return
-   */
-  private Operator stronger(Operator op1, Operator op2) {
-    if (op2.op.equals(Operator.CONCAT)
-        || (op2.op.equals(Operator.AS_TAUT_AS) && !op1.op.equals(Operator.CONCAT))
-        || op1.op.equals(Operator.TAUTER_THAN)) return op1;
-    else
-      return op2;
   }
 
   /**
@@ -123,9 +108,9 @@ public class ProtoTransition {
 
     boolean match = true;
 
-    if (transPpairs.size() != 0) {
+    if (unionOfTransP.size() != 0) {
       while (match) {
-        Iterator<ElementOfP> iter = transPpairs.iterator();
+        Iterator<ElementOfP> iter = unionOfTransP.iterator();
         ElementOfP firstPair = iter.next();
         if (firstPair.arrivingTFs.isEpsilon()) match = false;
         while (iter.hasNext() && match) {
@@ -135,7 +120,7 @@ public class ProtoTransition {
         }
         if (match) {
           outSE.add(firstPair.arrivingTFs.get(0));
-          Iterator<ElementOfP> iter2 = transPpairs.iterator();
+          Iterator<ElementOfP> iter2 = unionOfTransP.iterator();
           while (iter2.hasNext()) {
             ElementOfP pair2 = iter2.next();
             // TODO re-apuntar todos los refersTo apuntando a
@@ -150,7 +135,7 @@ public class ProtoTransition {
 
   @Override
   public String toString() {
-    return "(" + s + "," + exclTFs + "," + transPpairs + ")";
+    return "(" + s + "," + exclTFs + "," + unionOfTransP + ")";
   }
 
 }

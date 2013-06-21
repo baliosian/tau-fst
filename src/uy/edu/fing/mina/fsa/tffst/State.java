@@ -24,7 +24,7 @@ import java.util.Set;
  */
 public class State implements Serializable, Comparable<State> {
 
-   static int next_id;
+   static int next_number;
    static final long serialVersionUID = 30001;
 
    /**
@@ -32,12 +32,11 @@ public class State implements Serializable, Comparable<State> {
  */
 boolean accept;
 
-   /**
- * @uml.property  name="id"
- */
-   int id;
+//   /**
+// * @uml.property  name="id"
+// */
+//   int id;
 
-   //TODO why there is a number AND an id? 
    private int number;
 
    /**
@@ -48,7 +47,7 @@ boolean accept;
    /** Constructs new state. Initially, the new state is a reject state. */
    public State() {
       resetTransitions();
-      id = next_id++;
+      number = next_number++;
    }
 
    /**
@@ -66,17 +65,17 @@ boolean accept;
     * ordered by the time of construction.
     */
    public int compareTo(State o) {
-      return o.id - id;
+      return o.number - number;
    }
 
-   /**
-    * @return Returns the id.
-    * 
-    * @uml.property name="id"
-    */
-   public int getId() {
-      return id;
-   }
+//   /**
+//    * @return Returns the id.
+//    * 
+//    * @uml.property name="id"
+//    */
+//   public int getId() {
+//      return id;
+//   }
 
    /**
     * Returns set of outgoing transitions. Subsequent changes are reflected in
@@ -121,15 +120,15 @@ boolean accept;
       this.accept = accept;
    }
 
-   /**
-    * @param id
-    *           The id to set.
-    * 
-    * @uml.property name="id"
-    */
-   public void setId(int id) {
-      this.id = id;
-   }
+//   /**
+//    * @param id
+//    *           The id to set.
+//    * 
+//    * @uml.property name="id"
+//    */
+//   public void setId(int id) {
+//      this.id = id;
+//   }
 
    /**
     * @param transitions
@@ -147,9 +146,9 @@ boolean accept;
     */
    public String toString() {
       if (accept) 
-        return "((" + number + "/" + id + "))";
+        return "((" + number + "))";
       else
-        return "(" + number + "/" + id + ")";
+        return "(" + number + ")";
    }
 
    /*

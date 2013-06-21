@@ -387,6 +387,21 @@ public void setNot(boolean not) {
     this.formula = getFormula().not();
 }
 
-//  abstract public void setCondition(ConditionI condition);
+@Override
+public boolean equals(Object obj) {
+  
+  if (obj instanceof TfI) {
+    TfI tfin = (TfI) obj;
+    return tfin.getSLabel().equals(this.getSLabel());
+  }
+  return false;
+}
+
+@Override
+public int hashCode() {
+  return getSLabel().hashCode();
+}
+
+
 
 }

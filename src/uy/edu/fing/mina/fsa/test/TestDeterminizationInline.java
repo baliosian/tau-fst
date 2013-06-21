@@ -18,7 +18,7 @@ import uy.edu.fing.mina.fsa.utils.Utils;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class TestDeterminization2 {
+public class TestDeterminizationInline {
 
    /**
     * uy.edu.fing.mina.omega.tffst.test 8. it shows determinization of a union 
@@ -27,7 +27,7 @@ public class TestDeterminization2 {
     */
    public static void main(String[] args) {
       
-      TestDeterminization2 test = new TestDeterminization2();
+      TestDeterminizationInline test = new TestDeterminizationInline();
       Tffst.setMinimizeAlways(false);
 
       SimpleTf tfc = new SimpleTf();
@@ -48,16 +48,6 @@ public class TestDeterminization2 {
       
       Transition trans22 = new Transition(tfc, SimpleTf.Epsilon(), s22, 1);
       s12.addTransition(trans22);
-
-      //primer lazo 
-      Transition trans42 = new Transition(SimpleTf.AcceptsAll(),SimpleTf.AcceptsAll(), s02, 1);
-      s02.addTransition(trans42);
-      //segundo lazo 
-      Transition trans52 = new Transition(SimpleTf.AcceptsAll(),SimpleTf.AcceptsAll(), s12, 1);
-      s12.addTransition(trans52);
-      //tercer lazo
-      Transition trans62 = new Transition(SimpleTf.AcceptsAll(),SimpleTf.AcceptsAll(), s22, 1);
-      s22.addTransition(trans62);
 
     Utils.showDot(tffst2.toDot("tffst2"));
       

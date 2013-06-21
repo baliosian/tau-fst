@@ -15,7 +15,7 @@ public class Estados {
 		super();
 		numerador = 0;
 		estadoInicial = new State();
-		estadoInicial.setId(numerador);
+		estadoInicial.setNumber(numerador);
 		conjuntoEstados.add(estadoInicial);
 		numerador++;
 	}
@@ -33,7 +33,7 @@ public class Estados {
 	
 	public State nuevoEstado(){
 		State nuevo = new State();
-		nuevo.setId(numerador);
+		nuevo.setNumber(numerador);
 		conjuntoEstados.add(nuevo);
 		numerador++;
 		return nuevo;

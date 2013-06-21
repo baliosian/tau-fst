@@ -966,6 +966,8 @@ public class Tffst implements Serializable {
    */
   private void determinize(Set<State> initialSetOfStates) {
 
+    int i = 0;
+    
     // removes all epsilon labels in the domain part
     domainEpsilonsRemoval();
     toSimpleInLabels();
@@ -973,8 +975,8 @@ public class Tffst implements Serializable {
     // stores new states
     Map<P, State> newStates = new HashMap<P, State>();
 
-    // stores visited states
-    Map<P, State> visitedStates = new HashMap<P, State>();
+    // stores visited new states
+    Map<P, State> visitedNewStates = new HashMap<P, State>();
 
     // creates the first newstate
     P initialP = new P();
@@ -982,6 +984,7 @@ public class Tffst implements Serializable {
       initialP.add(new ElementOfP(initialState, new TfString()));
     initial = new State();
     newStates.put(initialP, initial);
+    visitedNewStates.put(initialP, initial);
 
     while (newStates.keySet().iterator().hasNext()) {
 
@@ -995,22 +998,23 @@ public class Tffst implements Serializable {
 
       // for each possible partitions of the relevant tfs in two subsets
       for (Partition partition : Partition.getPartitions3(getRelevantTFs(p))) {
-        // for each partition computes an excusive TF
+        // for each partition computes an exclusive TF
         TfI tfrelation = Partition.toTfrelation3(partition);
         if (!tfrelation.equals(SimpleTf.AcceptsNone())) {
           P transPset = unionOfTransP(p, partition.left);
           ProtoTransition protoTransition = new ProtoTransition(pNewState, tfrelation, transPset);
-          protoTransition.simplifyTargetByState_noOps();
+          protoTransition.simplifyTargetByState();
           TfString prefix = protoTransition.longestPrefix();
-          if (!protoTransition.transPpairs.isEmpty()) {
-            if (!visitedStates.keySet().contains(protoTransition.transPpairs)) {
-              newStates.put(protoTransition.transPpairs, new State());
-              visitedStates.put(protoTransition.transPpairs, newStates.get(protoTransition.transPpairs));
+          if (!protoTransition.unionOfTransP.isEmpty()) {
+            if (!visitedNewStates.keySet().contains(protoTransition.unionOfTransP)) {
+              newStates.put(protoTransition.unionOfTransP, new State());
+              visitedNewStates.put(protoTransition.unionOfTransP, newStates.get(protoTransition.unionOfTransP));
             }
-            pNewState.transitions.add(new Transition(new TfString(tfrelation), prefix, visitedStates.get(protoTransition.transPpairs)));
+            pNewState.transitions.add(new Transition(new TfString(tfrelation), prefix, visitedNewStates.get(protoTransition.unionOfTransP)));
           }
         }
       }
+      //Utils.showDot(this.toDot(Integer.toString(i++)));
     }
     epsilonRemoval();
     deterministic = true;
@@ -1204,7 +1208,7 @@ public class Tffst implements Serializable {
    *          A set of states (State)
    * @return
    */
-  private Set<TfI> getRelevantTFs(Set<ElementOfP> p) {
+  private Set<TfI> getRelevantTFs(P p) {
     Set<TfI> relevantTFs = new HashSet<TfI>();
     for (ElementOfP pp : p)
       for (Transition t : pp.state.transitions)
@@ -1228,7 +1232,7 @@ public class Tffst implements Serializable {
    * 
    * @return a set of PairP
    */
-  private P unionOfTransP(Set<ElementOfP> setOfelementsOfP, List<TfI> left) {
+  private P unionOfTransP(P setOfelementsOfP, List<TfI> left) {
 
     P unionOfTransPelements = new P();
     ElementOfP retPair;
@@ -1237,7 +1241,7 @@ public class Tffst implements Serializable {
       TfI tf = (TfI) iterator.next();
       if (!tf.isEpsilon()) for (ElementOfP pairP : setOfelementsOfP)
         for (Transition t : pairP.state.transitions)
-          if (tf.andSimple(t.labelIn.get(0)).equals(tf)) {
+          if (tf.equals(t.labelIn.get(0))) { //FIXME this needs the tfs to be simplified to  have a chance of matching 
             TfString newSE = new TfString();
             newSE.addAll(pairP.arrivingTFs);
             newSE.addAll(t.labelOut);
@@ -1342,7 +1346,76 @@ public class Tffst implements Serializable {
       s.setNumber(number++);
     }
   }
+  
+  
+  /**
+   * returns a Tffsr representing this tffst. it expands subEpochs in simpe
+   * pairts of TFs adding epsilons
+   * 
+   * @return
+   */
+  public Tffsr firstProjection() {
+    Tffsr a = new Tffsr();
+    HashMap m = new HashMap();
+    Set<State> states = getStates();
+    Iterator tIniter;
 
+    Iterator<State> i = states.iterator();
+    while (i.hasNext())
+      m.put(i.next(), new uy.edu.fing.mina.fsa.tffsr.State());
+
+    i = states.iterator();
+
+    while (i.hasNext()) {
+      State s = i.next();
+      uy.edu.fing.mina.fsa.tffsr.State p = (uy.edu.fing.mina.fsa.tffsr.State) m.get(s);
+      p.accept = s.accept;
+
+      if (s == initial) a.initial = p;
+      p.transitions = new HashSet<uy.edu.fing.mina.fsa.tffsr.Transition>();
+      Iterator<Transition> j = s.transitions.iterator();
+      while (j.hasNext()) {
+        Transition t = j.next();
+        tIniter = t.labelIn.iterator();
+        int maxTrans = t.labelIn.size();
+        uy.edu.fing.mina.fsa.tffsr.State last = p;
+
+        for (int k = 1; k < maxTrans; k++) {
+          // creates a new state
+          uy.edu.fing.mina.fsa.tffsr.State ns = new uy.edu.fing.mina.fsa.tffsr.State();
+          m.put(ns, ns);
+          uy.edu.fing.mina.fsa.tffsr.Transition newTr = new uy.edu.fing.mina.fsa.tffsr.Transition();
+
+          // creates an epsilon/epsilon transition
+          TfI tfptfIn;
+
+          if (tIniter.hasNext()) tfptfIn = (TfI) tIniter.next();
+          else
+            tfptfIn = SimpleTf.Epsilon();
+
+          newTr.setLabel(tfptfIn);
+          newTr.setTo(ns);
+          newTr.setSLabel();
+          last.transitions.add(newTr);
+          last = ns;
+        }
+
+        uy.edu.fing.mina.fsa.tffsr.Transition newTr = new uy.edu.fing.mina.fsa.tffsr.Transition();
+        // creates an epsilon/epsilon transition
+        TfI tfptfIn;
+        if (tIniter.hasNext()) tfptfIn = (TfI) tIniter.next();
+        else
+          tfptfIn = SimpleTf.Epsilon();
+        newTr.setLabel(tfptfIn);
+        newTr.setTo((uy.edu.fing.mina.fsa.tffsr.State) m.get(t.to));
+        newTr.setSLabel();
+        last.transitions.add(newTr);
+      }
+    }
+    a.deterministic = deterministic;
+    a.info = info;
+    return a;
+  }
 }
 
 class IntPair {

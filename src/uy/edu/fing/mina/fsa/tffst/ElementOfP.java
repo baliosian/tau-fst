@@ -95,6 +95,6 @@ public class ElementOfP implements Comparable<ElementOfP> {
 
   @Override
   public int hashCode() {
-    return state.id + arrivingTFs.hashCode();
+    return state.getNumber() + arrivingTFs.hashCode();
   }
 }
