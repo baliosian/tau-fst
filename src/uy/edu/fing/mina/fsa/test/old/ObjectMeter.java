@@ -4,7 +4,7 @@
  * Copyright (C) 2004 Javier Baliosian
  * All rights reserved.
  * */
-package uy.edu.fing.mina.fsa.test;
+package uy.edu.fing.mina.fsa.test.old;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;

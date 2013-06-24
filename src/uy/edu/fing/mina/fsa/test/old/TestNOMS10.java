@@ -1,4 +1,4 @@
-package uy.edu.fing.mina.fsa.test;
+package uy.edu.fing.mina.fsa.test.old;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -180,15 +180,15 @@ public class TestNOMS10 {
 //        rulesunionR.reverse();
 //        rulesunion = rulesunionR.toTffst();
 
-        rulesunion = rulesunion.kleene();
-
-        Utils.showDot(rulesunion.toDot("determinized"));
-        
         rulesunion.setDeterministic(false); //
         rulesunion.determinize(); //
-
         Utils.showDot(rulesunion.toDot("determinized"));
 
+        rulesunion = rulesunion.kleene();
+        Utils.showDot(rulesunion.toDot("kleene"));
+
+        
+        
 //		String lupa = LupaExporter.toLupa(rulesunion, "src/fsm_template.lua"); //
 ////		// System.out.println(lupa);
 ////

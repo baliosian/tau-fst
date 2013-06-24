@@ -4,7 +4,7 @@
  * Copyright (C) 2004 Javier Baliosian
  * All rights reserved.
  * */
-package uy.edu.fing.mina.fsa.test;
+package uy.edu.fing.mina.fsa.test.old;
 
 //import uy.edu.fing.mina.fsa.tf.SimpleTf;
 //import uy.edu.fing.mina.fsa.tffst.State;

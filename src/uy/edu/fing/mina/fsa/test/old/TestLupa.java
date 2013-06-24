@@ -1,4 +1,4 @@
-package uy.edu.fing.mina.fsa.test;
+package uy.edu.fing.mina.fsa.test.old;
 import uy.edu.fing.mina.fsa.tffst.State;
 import uy.edu.fing.mina.fsa.tffst.Tffst;
 import uy.edu.fing.mina.fsa.tffst.Transition;

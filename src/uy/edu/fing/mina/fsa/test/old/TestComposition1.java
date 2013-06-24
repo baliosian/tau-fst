@@ -4,10 +4,9 @@
  * Copyright (C) 2004 Javier Baliosian
  * All rights reserved.
  * */
-package uy.edu.fing.mina.fsa.test;
+package uy.edu.fing.mina.fsa.test.old;
 
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
-import uy.edu.fing.mina.fsa.tf.Tf;
 import uy.edu.fing.mina.fsa.tf.TfI;
 import uy.edu.fing.mina.fsa.tf.TfString;
 import uy.edu.fing.mina.fsa.tffsr.Tffsr;
@@ -93,7 +92,9 @@ public class TestComposition1 {
       Tffsr tffsr2total = (Tffsr) tffsr2.clone();
       tffsr2total.totalize();
       Tffsr tffsr2comp = tffsr2.complement();
+      
       Tffst tffst2comp = tffsr2comp.identity();
+      
       Tffst tffstunion = tffst2.union(tffst2comp);
       
       Utils.showDot(tffst1.toDot("tffst1"));

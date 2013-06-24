@@ -11,12 +11,10 @@ public class EventTf extends SimpleTf {
 	private static final long serialVersionUID = 1L;
 
 	public EventTf() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public EventTf(float value) {
 		super(value);
-		// TODO Auto-generated constructor stub
 	}
 
 	private Filter filter=new Filter();

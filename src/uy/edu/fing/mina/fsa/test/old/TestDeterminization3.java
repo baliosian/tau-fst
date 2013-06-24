@@ -4,7 +4,7 @@
  * Copyright (C) 2004 Javier Baliosian
  * All rights reserved.
  * */
-package uy.edu.fing.mina.fsa.test;
+package uy.edu.fing.mina.fsa.test.old;
 
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
 import uy.edu.fing.mina.fsa.utils.Utils;
@@ -13,7 +13,7 @@ import uy.edu.fing.mina.fsa.tffst.*;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class TestDeterminizationIJ {
+public class TestDeterminization3 {
 
    /**
     * uy.edu.fing.mina.omega.tffst.test 5, is the very example of the policy's paper. 
@@ -33,6 +33,8 @@ public class TestDeterminizationIJ {
 
       State s4 = new State();
       s4.setAccept(true);
+      State s5 = new State();
+      s5.setAccept(true);
 
       SimpleTf tf1 = new SimpleTf();
       tf1.setSLabel("A");
@@ -40,27 +42,28 @@ public class TestDeterminizationIJ {
       SimpleTf tf2 = new SimpleTf();
       tf2.setSLabel("C");
 
-      SimpleTf tf7 = new SimpleTf();
-      tf7.setSLabel("I");
+      SimpleTf tf3 = new SimpleTf();
+      tf3.setSLabel("D");
 
-      SimpleTf tf8 = new SimpleTf();
-      tf8.setSLabel("J");
+      SimpleTf tf4 = new SimpleTf();
+      tf4.setSLabel("E");
 
       Transition trans1 = new Transition(tf1, tf2, s4);
-      Transition trans5 = new Transition(tf7, tf8, s4);
-      
+      Transition trans2 = new Transition(tf3, tf4, s4);
+     
       s0.addTransition(trans1);
-      s4.addTransition(trans5);
+      s0.addTransition(trans2);
 
       Utils.showDot(tffst1.toDot(""));
 
       tffst1.setDeterministic(false);
       tffst1.determinize(); 
-
       Utils.showDot(tffst1.toDot(""));
-      
-      Utils.showDot(tffst1.toSimpleTransitions().toDot(""));
-            
+
+      tffst1.setDeterministic(false);
+      tffst1.determinize(); 
+      Utils.showDot(tffst1.toDot(""));
+
       
    }
    

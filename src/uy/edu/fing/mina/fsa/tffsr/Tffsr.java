@@ -1148,39 +1148,10 @@ public class Tffsr implements Serializable {
         Set<State> targets = new HashSet<State>();
         for (State s : states)
             for (Transition t: s.transitions)
-                if (tf.and(t.label).equals(tf))
+                if (t.label.equals(tf))
                     targets.add(t.to);
         return targets;
     }
-
-
-//  /**
-//   * 
-//   * @param p
-//   * @param partition
-//   * @param allTransitions
-//   * @return
-//   */
-//  private LinkedList transDUnion2(List p, TfPair partition,
-//          Transition[][] allTransitions) {
-//
-//      LinkedList listOfAtoms = Utils.getAtoms(partition.getTfIn());
-//
-//      LinkedList unionOfStates = new LinkedList();
-//      for (Iterator iter = listOfAtoms.iterator(); iter.hasNext();) {
-//          Object o = iter.next();
-//          if (o instanceof Operator) {
-//              unionOfStates.add(o);
-//          } else if (o instanceof TfI) {
-//              TfI tf = (TfI) o;
-//              unionOfStates.addAll(transD(p, tf, allTransitions));
-//          } else {
-//              System.err.println(Messages.getString("Tffsr.7")); //$NON-NLS-1$
-//              return null;
-//          }
-//      }
-//      return unionOfStates;
-//  }
 
     /**
      * 

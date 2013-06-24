@@ -1,4 +1,4 @@
-package uy.edu.fing.mina.fsa.test;
+package uy.edu.fing.mina.fsa.test.old;
 import uy.edu.fing.mina.fsa.logics.Utils;
 import uy.edu.fing.mina.fsa.tf.CompositeTf;
 import uy.edu.fing.mina.fsa.tf.Operator;

@@ -63,8 +63,7 @@ public class TfString implements List<TfI> {// extends Tf implements List {
 	}
 
 	public void add(int index, TfI element) {
-		// TODO Auto-generated method stub
-		
+	  listOfTfs.add(index,element);
 	}
 
 	/**
@@ -330,8 +329,7 @@ public class TfString implements List<TfI> {// extends Tf implements List {
 	}
 
 	public TfI set(int index, TfI element) {
-		// TODO Auto-generated method stub
-		return null;
+		return listOfTfs.set(index, element);
 	}
 
 
@@ -363,8 +361,7 @@ public class TfString implements List<TfI> {// extends Tf implements List {
 	}
 
 	public List<TfI> subList(int fromIndex, int toIndex) {
-		// TODO Auto-generated method stub
-		return null;
+		return listOfTfs.subList(fromIndex, toIndex);
 	}
 
 	/**
@@ -375,8 +372,7 @@ public class TfString implements List<TfI> {// extends Tf implements List {
 	}
 
 	public <T> T[] toArray(T[] a) {
-		// TODO Auto-generated method stub
-		return null;
+		return listOfTfs.toArray(a);
 	}
 
 	/**

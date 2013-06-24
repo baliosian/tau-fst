@@ -4,7 +4,7 @@
  * Copyright (C) 2004 Javier Baliosian
  * All rights reserved.
  * */
-package uy.edu.fing.mina.fsa.test;
+package uy.edu.fing.mina.fsa.test.old;
 
 //import uy.edu.fing.mina.fsa.tf.SimpleTf;
 //import uy.edu.fing.mina.fsa.tffst.State;
@@ -13,13 +13,17 @@ package uy.edu.fing.mina.fsa.test;
 //import uy.edu.fing.mina.fsa.utils.Utils;
 
 
-
 /**
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class Test3 {
+public class Test7 {
 
+   /**
+    * uy.edu.fing.mina.omega.tffst.test 7 determinization of an union
+    * 
+    * @param args
+    */
 //   public static void main(String[] args) {
 //      
 //      Tffst.setMinimizeAlways(false);
@@ -83,9 +87,9 @@ public class Test3 {
 //      tffst1 = tffst1.union(tffst2);
 //
 //      Utils.showDot(tffst1.toDot(""));
-//      
-//      tffst1.minimize(); 
-//      
+//
+//      tffst1.determinize();
+//
 //      Utils.showDot(tffst1.toDot(""));
 //      
 //   }

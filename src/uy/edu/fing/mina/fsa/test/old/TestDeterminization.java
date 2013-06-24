@@ -4,7 +4,7 @@
  * Copyright (C) 2004 Javier Baliosian
  * All rights reserved.
  * */
-package uy.edu.fing.mina.fsa.test;
+package uy.edu.fing.mina.fsa.test.old;
 
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
 import uy.edu.fing.mina.fsa.utils.Utils;
@@ -13,7 +13,7 @@ import uy.edu.fing.mina.fsa.tffst.*;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class TestDeterminization3 {
+public class TestDeterminization {
 
    /**
     * uy.edu.fing.mina.omega.tffst.test 5, is the very example of the policy's paper. 
@@ -31,10 +31,14 @@ public class TestDeterminization3 {
       State s0 = new State();
       tffst1.setInitialState(s0);
 
+      State s1 = new State();
+
+      State s2 = new State();
+
+      State s3 = new State();
+
       State s4 = new State();
       s4.setAccept(true);
-      State s5 = new State();
-      s5.setAccept(true);
 
       SimpleTf tf1 = new SimpleTf();
       tf1.setSLabel("A");
@@ -48,22 +52,51 @@ public class TestDeterminization3 {
       SimpleTf tf4 = new SimpleTf();
       tf4.setSLabel("E");
 
-      Transition trans1 = new Transition(tf1, tf2, s4);
-      Transition trans2 = new Transition(tf3, tf4, s4);
-     
+      SimpleTf tf5 = new SimpleTf();
+      tf5.setSLabel("F");
+
+      SimpleTf tf6 = new SimpleTf();
+      tf6.setSLabel("G");
+
+      SimpleTf tf7 = new SimpleTf();
+      tf7.setSLabel("I");
+
+      SimpleTf tf8 = new SimpleTf();
+      tf8.setSLabel("J");
+
+      Transition trans1 = new Transition(tf1, tf2, s1);
+      Transition trans2 = new Transition(tf1, tf3, s2);
+      Transition trans3 = new Transition(tf4, tf5, s3);
+      Transition trans4 = new Transition(tf6, tf5, s3);
+      Transition trans5 = new Transition(tf7, tf8, s4);
+
+//      Transition trans6 = new Transition(null, null, s4);
+//
+//      int size = ObjectMeter.getObjectSize(trans6);
+//      
+//      System.out.println("transition size: " + size);
+      
       s0.addTransition(trans1);
       s0.addTransition(trans2);
+      s1.addTransition(trans3);
+      s2.addTransition(trans4);
+      s3.addTransition(trans5);
+      s4.addTransition(trans5);
 
       Utils.showDot(tffst1.toDot(""));
 
       tffst1.setDeterministic(false);
       tffst1.determinize(); 
+
       Utils.showDot(tffst1.toDot(""));
 
-      tffst1.setDeterministic(false);
-      tffst1.determinize(); 
-      Utils.showDot(tffst1.toDot(""));
-
+//      tffst1.setDeterministic(false);
+//      tffst1.determinize(); 
+//
+//      Utils.showDot(tffst1.toDot(""));
+//      
+//      Utils.showDot(tffst1.toSimpleTransitions().toDot(""));
+//            
       
    }
    

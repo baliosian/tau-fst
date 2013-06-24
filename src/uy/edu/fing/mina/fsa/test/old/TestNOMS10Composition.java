@@ -1,4 +1,4 @@
-package uy.edu.fing.mina.fsa.test;
+package uy.edu.fing.mina.fsa.test.old;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
