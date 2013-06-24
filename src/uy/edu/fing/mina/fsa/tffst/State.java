@@ -32,10 +32,6 @@ public class State implements Serializable, Comparable<State> {
  */
 boolean accept;
 
-//   /**
-// * @uml.property  name="id"
-// */
-//   int id;
 
    private int number;
 

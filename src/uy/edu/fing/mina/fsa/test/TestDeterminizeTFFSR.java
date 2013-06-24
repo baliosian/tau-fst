@@ -17,7 +17,7 @@ import uy.edu.fing.mina.fsa.utils.Utils;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class TestMnimize {
+public class TestDeterminizeTFFSR {
 
   public static void main(String[] args) {
 
@@ -84,18 +84,10 @@ public class TestMnimize {
     Tffsr tffsr = tffst1.toTffsr();
 
     Utils.showDot(tffsr.toDot("totffsr"));
+    
+    tffsr.determinize(); //FIXME falla el determinize de FSRs 
 
-    tffsr.minimize(); //FIXME falla el minimize
-
-    Utils.showDot(tffsr.toDot("minimize 1"));
-
-    tffsr = tffsr.kleene();
-
-    Utils.showDot(tffsr.toDot("kleene"));
-
-    tffsr.minimize();  
-
-    Utils.showDot(tffsr.toDot("minimize 2"));
+    Utils.showDot(tffsr.toDot("determinized totffsr"));
 
   }
 

@@ -4,7 +4,7 @@
  * Copyright (C) 2004 Javier Baliosian
  * All rights reserved.
  * */
-package uy.edu.fing.mina.fsa.test.old;
+package uy.edu.fing.mina.fsa.test;
 
 import uy.edu.fing.mina.fsa.tf.CompositeTf;
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
@@ -19,7 +19,7 @@ import uy.edu.fing.mina.fsa.utils.Utils;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class TestDeterminizationBucleFirst {
+public class TestDeterminizationBucleBeforeAndAfter {
 
   /**
    * uy.edu.fing.mina.omega.tffst.test 8. it shows determinization of a union
@@ -28,7 +28,7 @@ public class TestDeterminizationBucleFirst {
    */
   public static void main(String[] args) {
 
-    TestDeterminizationBucleFirst test = new TestDeterminizationBucleFirst();
+    TestDeterminizationBucleBeforeAndAfter test = new TestDeterminizationBucleBeforeAndAfter();
     Tffst.setMinimizeAlways(false);
 
     SimpleTf tfc = new SimpleTf();

@@ -123,7 +123,7 @@ public class Transition implements Serializable {
 	}
 
 	void appendDot(StringBuffer b) {
-		b.append(" -> ").append(to.number).append(" [label=\"");
+		b.append(" -> ").append(to.getNumber()).append(" [label=\"");
 		b.append(toString());
 		b.append("\"]\n");
 	}

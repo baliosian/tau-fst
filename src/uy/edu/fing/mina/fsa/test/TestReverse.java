@@ -4,7 +4,7 @@
  * Copyright (C) 2004 Javier Baliosian
  * All rights reserved.
  * */
-package uy.edu.fing.mina.fsa.test.old;
+package uy.edu.fing.mina.fsa.test;
 
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
 import uy.edu.fing.mina.fsa.tffsr.Tffsr;
@@ -17,7 +17,7 @@ import uy.edu.fing.mina.fsa.utils.Utils;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class Test {
+public class TestReverse {
 
   public static void main(String[] args) {
 
@@ -84,15 +84,15 @@ public class Test {
     Tffsr tffsr = tffst1.toTffsr();
 
     Utils.showDot(tffsr.toDot("proyeccion"));
+
+    tffsr.reverse();
+
+    Utils.showDot(tffsr.toDot("reverse"));
     
     tffsr = tffsr.kleene();
 
     Utils.showDot(tffsr.toDot("kleene"));
 
-    //FIXME falla el minimize 
-    tffsr.minimize();
-
-    Utils.showDot(tffsr.toDot("minimize"));
 
   }
 

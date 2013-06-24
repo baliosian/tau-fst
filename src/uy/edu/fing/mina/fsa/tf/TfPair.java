@@ -33,10 +33,6 @@ public class TfPair extends SimpleTf {
 
   public TfI tfOut;
   
-//  private TfSymbol tfSymbol =  null;
-//	
-//  private ClassicalLogic cl = new ClassicalLogic();
-
 
   /* Constructors *********************************************************** */
 
@@ -118,12 +114,10 @@ public class TfPair extends SimpleTf {
   }
 
   public String toString() {
-//    setSLabel();
-
-    if (isNot())
-      return "!" + getSLabel();
+    if (isNot()) //TODO check this.
+      return "'!" + getSLabel() + "'";
     else
-      return getSLabel();
+      return "'" + getSLabel() +"'";
   }
 
   /*
