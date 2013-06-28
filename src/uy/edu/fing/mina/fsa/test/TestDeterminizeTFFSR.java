@@ -85,8 +85,9 @@ public class TestDeterminizeTFFSR {
 
     Utils.showDot(tffsr.toDot("totffsr"));
     
-    tffsr.determinize(); //FIXME falla el determinize de FSRs 
-
+    tffsr.setDeterministic(false);
+    tffsr.determinize(); 
+    
     Utils.showDot(tffsr.toDot("determinized totffsr"));
 
   }

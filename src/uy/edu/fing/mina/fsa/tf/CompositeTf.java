@@ -275,17 +275,6 @@ public class CompositeTf extends Tf {
     return 1;
   }
 
-  /**
-   * @see uy.edu.fing.mina.omega.tffst.utils.tf.TfI#evaluate(java.lang.Object)
-   */
-  public float evaluate(Object e) {
-    // TODO evaluate method stub
-    System.out.print(".");
-
-    return -1;
-  }
-
-
   @Override
   public boolean acceptsAll() {
     return false;
@@ -297,8 +286,8 @@ public class CompositeTf extends Tf {
   }
 
   @Override
-  public String getSLabel() {
-    return isNot() ? "!" : "" + "(" + leftTf.getSLabel() + " " + operator + " " +  rightTf.getSLabel() + ")";
+  public String getName() {
+    return isNot() ? "!" : "" + "(" + leftTf.getName() + " " + operator + " " +  rightTf.getName() + ")";
   }
 
   @Override

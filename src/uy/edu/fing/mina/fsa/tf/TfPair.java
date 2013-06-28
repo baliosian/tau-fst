@@ -44,17 +44,15 @@ public class TfPair extends SimpleTf {
     this.tfIn = tfIn;
     this.tfOut = tfOut;
     this.setTfSymbol(new TfSymbol(this));
-	this.getTfSymbol().setSignifier(this.getSLabel());
+	this.getTfSymbol().setSignifier(this.getName());
     this.setFormula(this.cl.createSymbol(this.getTfSymbol()));
   }
 
   /* Methods ****************************************************************** */
 
-  
   public void assign(TfPair tf) {
     this.tfIn = tf.tfIn;
     this.tfOut = tf.tfOut;
-    setValue(tf.getValue());
     setNot(tf.isNot());
   }
 
@@ -115,9 +113,9 @@ public class TfPair extends SimpleTf {
 
   public String toString() {
     if (isNot()) //TODO check this.
-      return "'!" + getSLabel() + "'";
+      return "'!" + getName() + "'";
     else
-      return "'" + getSLabel() +"'";
+      return "'" + getName() +"'";
   }
 
   /*
@@ -204,13 +202,13 @@ public class TfPair extends SimpleTf {
   }
 
   @Override
-  public String getSLabel() {
+  public String getName() {
 	  if (getTfIn() != null && getTfOut() != null)
-		  return getTfIn().getSLabel() + "/" + getTfOut().getSLabel();
+		  return getTfIn().getName() + "/" + getTfOut().getName();
 	  else if (getTfIn() != null)
-		  return getTfIn().getSLabel() + "/-" ;
+		  return getTfIn().getName() + "/-" ;
 	  else if (getTfOut() != null)
-		  return "-/" + getTfOut().getSLabel();
+		  return "-/" + getTfOut().getName();
 	  return "";
   }
 

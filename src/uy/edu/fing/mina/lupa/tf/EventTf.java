@@ -13,10 +13,6 @@ public class EventTf extends SimpleTf {
 	public EventTf() {
 	}
 
-	public EventTf(float value) {
-		super(value);
-	}
-
 	private Filter filter=new Filter();
 	
 	private LuaPredicate luaPredicate=new LuaPredicate();

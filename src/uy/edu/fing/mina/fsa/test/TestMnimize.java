@@ -85,7 +85,7 @@ public class TestMnimize {
 
     Utils.showDot(tffsr.toDot("totffsr"));
 
-    tffsr.minimize(); //FIXME falla el minimize
+    tffsr.minimize(); 
 
     Utils.showDot(tffsr.toDot("minimize 1"));
 

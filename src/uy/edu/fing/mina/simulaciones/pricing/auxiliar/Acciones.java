@@ -26,7 +26,7 @@ public class Acciones {
 	private void  popular(){
 		ActionTf nuevo = new ActionTf();
 		nuevo.setSLabel("generateCompetitorPriceEvents");
-		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
+		conjuntoAcciones.put(nuevo.getName(), nuevo);
 		nuevo = new ActionTf();
 //		nuevo.setSLabel("generateCompetitorPriceLower");
 //		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);

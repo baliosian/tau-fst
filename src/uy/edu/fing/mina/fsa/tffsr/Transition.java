@@ -138,7 +138,6 @@ public class Transition implements Serializable {
       for (Iterator<TfPair> iter = tfpairs.iterator(); iter.hasNext();) {
          TfPair tfp = (TfPair) iter.next();
          uy.edu.fing.mina.fsa.tffst.Transition t = new uy.edu.fing.mina.fsa.tffst.Transition(tfp.tfIn, tfp.tfOut, to);
-         t.setSLabel();
          out.add(t);
       }
       return out;

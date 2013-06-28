@@ -59,17 +59,12 @@ public class SimpleTf extends Tf {
         sequence++;
     }
 
-    public SimpleTf(float value) {
-        this();
-        this.setValue(value);
-    }
-
     public boolean acceptsAll() {
-        return getSLabel().equals("All");
+        return getName().equals("All");
     }
 
     public boolean acceptsNone() {
-        return getSLabel().equals("None");
+        return getName().equals("None");
     }
 
     public Object clone() throws CloneNotSupportedException {
@@ -99,7 +94,7 @@ public class SimpleTf extends Tf {
     /**
      * @see uy.edu.fing.mina.omega.tffst.utils.tf.TfI#getSlabel()
      */
-    public String getSLabel() {
+    public String getName() {
         if (this.isNot()) {
             return "!"+this.sLabel;
         } else {
@@ -120,7 +115,7 @@ public class SimpleTf extends Tf {
 
     public void setAcceptAll() {
         setSLabel("All");
-        this.tfSymbol.setSignifier(this.getSLabel());
+        this.tfSymbol.setSignifier(this.getName());
     }
 
     /**
@@ -128,7 +123,7 @@ public class SimpleTf extends Tf {
      */
     public void setAcceptNone() {
         setSLabel("None");
-        this.tfSymbol.setSignifier(this.getSLabel());
+        this.tfSymbol.setSignifier(this.getName());
     }
 
     public void setEpsilon() {
@@ -138,7 +133,7 @@ public class SimpleTf extends Tf {
 
     public void setSLabel(String label) {
         sLabel = label;
-        this.tfSymbol.setSignifier(this.getSLabel());
+        this.tfSymbol.setSignifier(this.getName());
         this.setFormula(cl.createSymbol(this.getTfSymbol()));
     }
 
@@ -160,7 +155,7 @@ public class SimpleTf extends Tf {
     }
 
     public String toString() {
-        String out = getSLabel();
+        String out = getName();
         if (getIdentity() == 1)
             out = "<" + out + ">";
         return out;

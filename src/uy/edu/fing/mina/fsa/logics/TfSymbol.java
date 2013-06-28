@@ -36,7 +36,7 @@ public class TfSymbol extends SymbolBase {
    public static String orbitNOT = "~";
    
    public TfSymbol(TfI tf) {
-     super(tf.getSLabel(), Types.TRUTH, null, true );
+     super(tf.getName(), Types.TRUTH, null, true );
      this.tf = tf;
   }
 

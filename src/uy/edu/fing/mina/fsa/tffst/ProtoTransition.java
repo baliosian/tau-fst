@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import uy.edu.fing.mina.fsa.tf.Operator;
 import uy.edu.fing.mina.fsa.tf.TfI;
 import uy.edu.fing.mina.fsa.tf.TfString;
 
@@ -123,8 +122,6 @@ public class ProtoTransition {
           Iterator<ElementOfP> iter2 = unionOfTransP.iterator();
           while (iter2.hasNext()) {
             ElementOfP pair2 = iter2.next();
-            // TODO re-apuntar todos los refersTo apuntando a
-            // pair2.arriving.get(0) a firstPair.arriving.get(0)
             pair2.arrivingTFs.remove(0);
           }
         }

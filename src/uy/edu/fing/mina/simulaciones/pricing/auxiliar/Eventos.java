@@ -55,7 +55,7 @@ public class Eventos {
 //		nuevo.addInitString("{target_service=\"COMP1/lupa/rmoon\", target_host=\"127.0.0.1\", command=\"watch_mib\", mib=\"price\", op=\"<\", delta_e=\"-1\", notification_id=\"COMP1-PriceIS\", watcher_id=\"stateLocalCOMP1DF\"}");
 //		nuevo.addInitString("{target_service=\"COMP1/lupa/rmoon\", target_host=\"127.0.0.1\", command=\"watch_mib\", mib=\"price\", op=\"=\", delta_e=\"0\", notification_id=\"COMP1-PriceDS\", watcher_id=\"stateLocalCOMP1ST\"}");
 		
-		conjuntoEventos.put(nuevo.getSLabel(), nuevo);
+		conjuntoEventos.put(nuevo.getName(), nuevo);
 		
 		
 		

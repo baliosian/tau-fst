@@ -31,8 +31,6 @@ public class Transition implements Serializable {
 
   private Double weight;
   
-  private String sLabel;
-
   public boolean visited = false;
 
   /**
@@ -102,12 +100,9 @@ public class Transition implements Serializable {
     this.to = to;
     this.labelIn = labelIn;
     this.labelOut = labelOut;
-    this.setSLabel();
   }
 
   void appendDot(StringBuffer b) {
-    this.setSLabel();
-
     b.append(" -> ").append(to.getNumber()).append(" [label=\"");
     b.append(this.toString());
     b.append("\"]\n");
@@ -119,7 +114,7 @@ public class Transition implements Serializable {
    * @return clone with same character interval and destination state
    */
   public Transition clone() {
-    return new Transition(this.labelIn, this.labelOut, to);
+    return new Transition(this.labelIn.clone(), this.labelOut.clone(), to);
   }
 
   /** Returns destination of this transition. */
@@ -165,41 +160,13 @@ public class Transition implements Serializable {
     this.labelOut = labelOut;
   }
 
-  /**
-   * @return Returns the sLabel.
-   * 
-   * @uml.property name="sLabel"
-   */
-  public String getSLabel() {
-    return sLabel;
-  }
-
-  /**
-   * @param label
-   *          The sLabel to set.
-   * 
-   * @uml.property name="sLabel"
-   */
-  public void setSLabel(String label) {
-    sLabel = label;
-  }
-
-  /**
-   * @param label
-   *          The sLabel to set.
-   */
-  public void setSLabel() {
-    this.sLabel = labelIn.toString() + "/" + labelOut.toString();
-  }
-
   /*
    * (non-Javadoc)
    * 
    * @see java.lang.Object#toString()
    */
   public String toString() {
-    if (sLabel == null) setSLabel();
-    return getSLabel();
+    return labelIn.toString() + "/" + labelOut.toString();
   }
 
   public Double getWeight() {

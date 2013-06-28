@@ -25,28 +25,28 @@ public class Eventos {
 	private void popular(){
 		EventTf nuevo = new EventTf();
 		nuevo.setSLabel("fewUsers");
-		conjuntoEventos.put(nuevo.getSLabel(), nuevo);
+		conjuntoEventos.put(nuevo.getName(), nuevo);
 		nuevo = new EventTf();
 		nuevo.setSLabel("midUsers");
-		conjuntoEventos.put(nuevo.getSLabel(), nuevo);
+		conjuntoEventos.put(nuevo.getName(), nuevo);
 		nuevo = new EventTf();
 		nuevo.setSLabel("lotsUsers");
-		conjuntoEventos.put(nuevo.getSLabel(), nuevo);
+		conjuntoEventos.put(nuevo.getName(), nuevo);
 		nuevo = new EventTf();
 		nuevo.setSLabel("usersIncreasingFast");
-		conjuntoEventos.put(nuevo.getSLabel(), nuevo);
+		conjuntoEventos.put(nuevo.getName(), nuevo);
 		nuevo = new EventTf();
 		nuevo.setSLabel("usersIncreasingSlow");
-		conjuntoEventos.put(nuevo.getSLabel(), nuevo);
+		conjuntoEventos.put(nuevo.getName(), nuevo);
 		nuevo = new EventTf();
 		nuevo.setSLabel("usersSteady");
-		conjuntoEventos.put(nuevo.getSLabel(), nuevo);
+		conjuntoEventos.put(nuevo.getName(), nuevo);
 		nuevo = new EventTf();
 		nuevo.setSLabel("usersDecreasingSlow");
-		conjuntoEventos.put(nuevo.getSLabel(), nuevo);
+		conjuntoEventos.put(nuevo.getName(), nuevo);
 		nuevo = new EventTf();
 		nuevo.setSLabel("usersDecreasingFast");
-		conjuntoEventos.put(nuevo.getSLabel(), nuevo);
+		conjuntoEventos.put(nuevo.getName(), nuevo);
 	}
 	
 	public EventTf getEvento(String name){

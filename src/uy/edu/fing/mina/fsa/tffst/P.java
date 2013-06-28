@@ -3,7 +3,6 @@ package uy.edu.fing.mina.fsa.tffst;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 public class P implements Set<ElementOfP> {
@@ -51,35 +50,6 @@ public class P implements Set<ElementOfP> {
 
     return false;
   }
-  
-  
-  /**
-   * 
-   * @param pairsPSet
-   * @param set
-   * @return
-   */
-  private Set<ElementOfP> isIn(Map<Set<ElementOfP>, Set<ElementOfP>> pairsPSet, Set<ElementOfP> newstate) {
-
-    boolean out = true;
-    boolean in = true;
-
-    // for each state s in newstate (here state is a set of pairs)
-    for (Set<ElementOfP> pairsPSetKey : pairsPSet.keySet())
-      if (pairsPSetKey.size() == newstate.size()) {
-        out = true;
-        for (ElementOfP pairInKeySet : pairsPSetKey) {
-          in = false;
-          for (ElementOfP pairInNS : newstate)
-            in = in || pairInNS.equals(pairInKeySet);
-          out = out && in;
-        }
-        if (out) return pairsPSetKey;
-      }
-    return null;
-  }
-
-  
 
   public int hashCode() {
     int hashcode = 0;

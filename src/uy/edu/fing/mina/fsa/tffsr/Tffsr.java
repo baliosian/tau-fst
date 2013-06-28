@@ -31,6 +31,9 @@ import java.util.Set;
 import uy.edu.fing.mina.fsa.tf.Partition;
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
 import uy.edu.fing.mina.fsa.tf.TfI;
+import uy.edu.fing.mina.fsa.tf.TfString;
+import uy.edu.fing.mina.fsa.tffst.ElementOfP;
+import uy.edu.fing.mina.fsa.tffst.P;
 import uy.edu.fing.mina.fsa.tffst.Tffst;
 
 /*
@@ -177,7 +180,7 @@ public class Tffsr implements Serializable {
     a.initial = s0;
     State s1 = new State();
     s1.setAccept(true);
-    Transition t = new Transition(new SimpleTf(TfI.MIN_TF), s1);
+    Transition t = new Transition(new SimpleTf(), s1);
     s0.addTransition(t);
     a.deterministic = true;
     return a;
@@ -560,6 +563,7 @@ public class Tffsr implements Serializable {
    * @see #setMinimization(int)
    */
   public void minimize() {
+    this.setDeterministic(false);
     this.minimizeBrzozowski();
     // recompute hash code
     hash_code = getNumberOfStates() * 3 + getNumberOfTransitions() * 2;
@@ -1038,15 +1042,11 @@ public class Tffsr implements Serializable {
 
       // obtener el conjunto de tfs asociadas a los estados de p
       Set<Partition> partitions = Partition.getPartitions3(getRelevant(d));
-      Set<TfI> tfpartitions = new HashSet<TfI>();
       for (Partition partition : partitions) {
-        tfpartitions.add(Partition.toTfrelation3(partition));
-      }
-
-      for (TfI tfpartition : tfpartitions) {
+        TfI tfpartition = Partition.toTfrelation3(partition);
         // transD union of each positive TF
         if (!tfpartition.equals(SimpleTf.AcceptsNone())) {
-          Set<State> tDUnion = transD(d, tfpartition);
+          Set<State> tDUnion = unionOfTransD(d, partition.left);
           if (!sets.containsKey(tDUnion)) {
             sets.put(tDUnion, tDUnion);
             worklist.add(tDUnion);
@@ -1073,7 +1073,7 @@ public class Tffsr implements Serializable {
    * Minimize using Brzozowski's algorithm. aca asi se puede ahorrar la
    * computacion de las tf exclusivas
    */
-  private void minimizeBrzozowski() { // FIXME problema testtranslation
+  private void minimizeBrzozowski() {
     reverse();
     determinize();
     reverse();
@@ -1086,14 +1086,24 @@ public class Tffsr implements Serializable {
    * must be getSortedTransitions' output
    * 
    */
-  private Set<State> transD(Set<State> states, TfI tf) {
+  
+  private Set<State> unionOfTransD(Set<State> states, List<TfI> left) {
+
     Set<State> targets = new HashSet<State>();
-    for (State s : states)
-      for (Transition t : s.getTransitions())
-        if (t.label.equals(tf)) targets.add(t.to);
+
+    for (TfI tf : left) {
+      if (!tf.isEpsilon()) 
+        for (State s : states)
+        for (Transition t : s.getTransitions())
+          if (tf.equals(t.label)) { //FIXME this needs the tfs to be simplified to  have a chance of matching 
+            targets.add(t.to);
+          }
+    }
     return targets;
   }
 
+  
+  
   /**
      * 
      * 

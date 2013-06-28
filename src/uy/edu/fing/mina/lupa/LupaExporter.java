@@ -128,7 +128,7 @@ public class LupaExporter {
 		}
 		else{
 			String newName;
-			String label = function.getSLabel();
+			String label = function.getName();
 			label = label.replace(" ", "_");
 			label = label.replace("!", "not_");
 			if( function.isNot() || function instanceof CompositeTf){
@@ -136,10 +136,10 @@ public class LupaExporter {
 				functionsCounter++;
 			}
 			else if(function instanceof ActionTf){			
-				newName = "action_" + function.getSLabel();
+				newName = "action_" + function.getName();
 			}
 			else if(function instanceof EventTf){
-				newName = "event_" + function.getSLabel();
+				newName = "event_" + function.getName();
 			}
 			else{
 				newName = "There is an error!! A TF function was detected that is not an Action, an Event nor a Composite function.";
@@ -213,7 +213,7 @@ public class LupaExporter {
 				loadEvents(t.getLabelIn().get(0));
 			}
 			else{
-				throw new UnsupportedTFFSTException("A problematic Transition (" + t.getSLabel() +") was detected. Not an eveny or composite TF when uploading events.");
+				throw new UnsupportedTFFSTException("A problematic Transition (" + t.toString() +") was detected. Not an eveny or composite TF when uploading events.");
 			}
 			
 			if(!t.getLabelOut().isEpsilon()){
@@ -399,7 +399,7 @@ public class LupaExporter {
 				comp = (CompositeTf) function;
 				leftTf = comp.leftTf;
 				rightTf = comp.rightTf;
-				out = out.concat("-- " + function.getSLabel() + "\n");
+				out = out.concat("-- " + function.getName() + "\n");
 				out = out.concat("events." + functionName + " = function(e) \n");
 //				out = out.concat(functionHeader(functionName) + "\n");
 				out = out.concat("\tlocal left= events." + functionName(leftTf) + "(e)\n");
@@ -416,7 +416,7 @@ public class LupaExporter {
 				out = out.concat("end\n");
 			}
 			else if (function.isNot()) {
-				out = out.concat("-- " + function.getSLabel() + "\n");
+				out = out.concat("-- " + function.getName() + "\n");
 				out = out.concat("events." + functionName + " = function(e) \n");
 				TfI nonneg = function.not();
 				out = out.concat("\tlocal nonneg = events." + functionName(nonneg) + "(e)\n");
@@ -424,7 +424,7 @@ public class LupaExporter {
 				out = out.concat("end\n");
 			}
 			else{
-				throw new UnsupportedTFFSTException("A problematic function (" + function.getSLabel() +") was detected. A generated EVENT function should always be composite or not.");
+				throw new UnsupportedTFFSTException("A problematic function (" + function.getName() +") was detected. A generated EVENT function should always be composite or not.");
 			}
 		}
 		
@@ -458,7 +458,7 @@ public class LupaExporter {
 				comp = (CompositeTf) function;
 				leftTf = comp.leftTf;
 				rightTf = comp.rightTf;
-				out = out.concat("-- " + function.getSLabel() + "\n");
+				out = out.concat("-- " + function.getName() + "\n");
 //				out = out.concat(functionHeader(functionName) + "\n");
 				out = out.concat("actions." + functionName + " = function(e)\n");
 				out = out.concat("\tlocal left= actions." + functionName(leftTf) + "(e)\n");
@@ -475,7 +475,7 @@ public class LupaExporter {
 				out = out.concat("end\n");
 			}
 			else if (function.isNot()) {
-				out = out.concat("-- " + function.getSLabel() + "\n");
+				out = out.concat("-- " + function.getName() + "\n");
 				out = out.concat("actions." + functionName + " = function(e)\n");
 				TfI nonneg = function.not();
 				out = out.concat("\tlocal nonneg = actions." + functionName(nonneg) + "(e)\n");
@@ -483,7 +483,7 @@ public class LupaExporter {
 				out = out.concat("end\n");
 			}
 			else{
-				throw new UnsupportedTFFSTException("A problematic function (" + function.getSLabel() +") was detected. A generated ACTION function should always be composite or not.");
+				throw new UnsupportedTFFSTException("A problematic function (" + function.getName() +") was detected. A generated ACTION function should always be composite or not.");
 			}
 		}
 		

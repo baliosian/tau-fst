@@ -27,19 +27,19 @@ public class Acciones {
 		ActionTf nuevo = new ActionTf();
 		nuevo.setSLabel("increasePriceFast");
 		
-		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
+		conjuntoAcciones.put(nuevo.getName(), nuevo);
 		nuevo = new ActionTf();
 		nuevo.setSLabel("increasePriceSlow");
-		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
+		conjuntoAcciones.put(nuevo.getName(), nuevo);
 		nuevo = new ActionTf();
 		nuevo.setSLabel("decreasePriceSlow");
-		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
+		conjuntoAcciones.put(nuevo.getName(), nuevo);
 		nuevo = new ActionTf();
 		nuevo.setSLabel("decreasePriceFast");
-		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
+		conjuntoAcciones.put(nuevo.getName(), nuevo);
 		nuevo = new ActionTf();
 		nuevo.setSLabel("keepPrice");
-		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
+		conjuntoAcciones.put(nuevo.getName(), nuevo);
 	}
 	
 	public ActionTf getAccion(String nombre){

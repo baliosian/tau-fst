@@ -36,15 +36,10 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
   
   private TfI refersTo = null;
   
-  /**
-   * if is not null, this set a fixed value for the TF
-   */
-  private float value = Float.NaN;
-  
   protected Formula formula;
 
   public Tf() {
-    this(false, "", Float.NaN);
+    this(false, "");
   }
 
   /**
@@ -57,16 +52,10 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
    * @param label
    * @param value
    */
-  public Tf(boolean not, String label, float value) {
+  public Tf(boolean not, String label) {
     super();
     this.not = not;
-    this.value = value;
-    
     this.id=sequence++;
-  }
-
-  public Tf(float value) {
-    this(false, "", value);
   }
 
   /**
@@ -249,27 +238,10 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
     return super.clone();
   }
 
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see uy.edu.fing.mina.omega.tffst.utils.tf.TfI#getFixedValue()
-   */
-  public float getFixedValue() {
-    return value;
-  }
-
   /**
    * @return Returns the slabel.
    */
-  abstract public String getSLabel();
-
-  /**
-   * @return Returns the value.
-   */
-  public float getValue() {
-    return value;
-  }
+  abstract public String getName();
 
   /**
    * @return Returns the isEpsilon.
@@ -303,16 +275,6 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
       e.printStackTrace();
     }
     return null;
-  }
-
-
-
-  /**
-   * @param value
-   *          The value to set.
-   */
-  public void setValue(float value) {
-    this.value = value;
   }
 
 
@@ -392,14 +354,14 @@ public boolean equals(Object obj) {
   
   if (obj instanceof TfI) {
     TfI tfin = (TfI) obj;
-    return tfin.getSLabel().equals(this.getSLabel());
+    return tfin.getName().equals(this.getName());
   }
   return false;
 }
 
 @Override
 public int hashCode() {
-  return getSLabel().hashCode();
+  return getName().hashCode();
 }
 
 

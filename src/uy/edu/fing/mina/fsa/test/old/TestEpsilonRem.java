@@ -66,8 +66,8 @@ public class TestEpsilonRem {
       tffst1.epsilonRemoval();
       Utils.showDot(tffst1.toDot("tffst1 without epsilons"));
 
-      tffst1.removeDeadTransitions();
-      Utils.showDot(tffst1.toDot("tffst1 without dead transitions"));
+//      tffst1.removeDeadTransitions();
+//      Utils.showDot(tffst1.toDot("tffst1 without dead transitions"));
    }
   
 }

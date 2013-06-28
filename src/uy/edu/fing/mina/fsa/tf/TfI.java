@@ -50,7 +50,7 @@ public interface TfI extends java.io.Serializable {
   
   public TfI getIdentityTf();
 
-  public String getSLabel();
+  public String getName();
 
   public boolean in(TfI tf);
 
