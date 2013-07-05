@@ -297,7 +297,7 @@ public class Tffst implements Serializable {
 
   /**
    * COMPOSITION
-   * 
+   * theOther o this (i.e. theOther(this) )   
    * 
    * 
    * ct((p1,π1,π1,q1,1),(p2,π2,π2,q2,1))=((p1,p2),π1∧π2,π1∧π2,(q1,q2),1)
@@ -312,69 +312,93 @@ public class Tffst implements Serializable {
    * 
    * 
    */
-  public Tffst composition(Tffst another) {
+  public Tffst composition(Tffst theOther) { //FIXME see TestComposition1
 
-    this.toSimpleTransitions();
-    another.toSimpleTransitions();
-
-    Set<State> thisStates = this.getLiveStates();
-    Set<State> aStates = another.getLiveStates();
-
+    Tffst thisSimple = this.toSimpleTransitions();
+    Tffst theOtherSimple = theOther.toSimpleTransitions();
     Tffst out = new Tffst();
+
+    Set<State> thisStates = thisSimple.getLiveStates();
+    Set<State> theOtherStates = theOtherSimple.getLiveStates();
 
     HashMap<StatePair, State> newstates = new HashMap<StatePair, State>();
 
-    for (State thisState : thisStates)
-      for (State aState : aStates)
-        newstates.put(new StatePair(thisState, aState), new State());
-
-    for (StatePair statePair : newstates.keySet()) {
-
-      if (statePair.s1.equals(this.initial) && statePair.s2.equals(another.initial))
-        out.initial = newstates.get(statePair);
-
-      if (statePair.s1.isAccept() && statePair.s2.isAccept())
-        newstates.get(statePair).setAccept(true);
-
-      for (Transition t1 : statePair.s1.getTransitions()) {
-        for (Transition t2 : statePair.s2.getTransitions()) {
-
-          TfI t1li = t1.labelIn.isEmpty() ? SimpleTf.Epsilon() : t1.labelIn.get(0);
-          TfI t1lo = t1.labelOut.isEmpty() ? SimpleTf.Epsilon() : t1.labelOut.get(0);
-          TfI t2li = t2.labelIn.isEmpty() ? SimpleTf.Epsilon() : t2.labelIn.get(0);
-          TfI t2lo = t2.labelOut.isEmpty() ? SimpleTf.Epsilon() : t2.labelOut.get(0);
-
-          if (!t1lo.isEpsilon() && !t2li.isEpsilon()) {
-            if (t1lo.getIdentity() == 1 && t2lo.getIdentity() == 1 && t1li.equals(t1lo)
-                && t2lo.equals(t2lo)) {
-              if (!t1li.and(t2li).equals(SimpleTf.AcceptsNone())) {
-                State to = newstates.get(new StatePair(t1.to, t2.to));
-                newstates.get(statePair).transitions.add(new Transition(t1li.and(t2li), t1lo
-                    .and(t2lo), to, 1));
-              }
-            } else if (t2lo.getIdentity() == 1 && t2lo.equals(t2lo)) {
-              State to = newstates.get(new StatePair(t1.to, t2.to));
-              newstates.get(statePair).transitions.add(new Transition(t1li, t1lo.and(t2lo), to, 0));
-            } else if (t1lo.getIdentity() == 1 && t1li.equals(t1lo)) {
-              if (!t1li.and(t2li).equals(SimpleTf.AcceptsNone())) {
-                State to = newstates.get(new StatePair(t1.to, t2.to));
-                newstates.get(statePair).transitions
-                    .add(new Transition(t1li.and(t2li), t2lo, to, 0));
-              }
-            } else if (!t1.labelOut.get(0).and(t2.labelIn.get(0)).equals(SimpleTf.AcceptsNone())) {
-              State to = newstates.get(new StatePair(t1.to, t2.to));
-              newstates.get(statePair).transitions.add(new Transition(t1li, t2lo, to, 0));
-            }
-          } else if (t2li.isEpsilon()) {
-            State to = newstates.get(new StatePair(statePair.s1, t2.to));
-            newstates.get(statePair).transitions.add(new Transition(t2li, t2lo, to, 0));
-          } else if (t1lo.isEpsilon()) {
-            State to = newstates.get(new StatePair(t1.to, statePair.s2));
-            newstates.get(statePair).transitions.add(new Transition(t2li, t2lo, to, 0));
-          }
+    for (State thisState : thisStates){
+      for (State theOtherState : theOtherStates){
+        
+        // get the new state that is equivalent to this pair, create it. 
+        State outStartState = newstates.get(new StatePair(thisState, theOtherState));
+        if (outStartState == null) {
+          outStartState = new State();
+          newstates.put(new StatePair(thisState, theOtherState), outStartState);
+          if (thisState.equals(this.initial) && theOtherState.equals(theOther.initial))
+            out.initial = outStartState;
+          outStartState.setAccept(thisState.isAccept() && theOtherState.isAccept());
         }
+
+        for (Transition t1 : thisState.getTransitions()) {
+          for (Transition t2 : theOtherState.getTransitions()) {
+            if (!t1.labelOut.isEpsilon() && !t2.labelIn.isEpsilon()) {
+              if (t1.labelOut.get(0).and(t2.labelIn.get(0)).satisfiable()){
+
+                // get the new state that is equivalent to this pair, create it. 
+                State outToState = newstates.get(new StatePair(t1.to, t2.to));
+                if (outToState == null){
+                  outToState = new State();
+                  newstates.put(new StatePair(t1.to, t2.to), outToState );
+                  if (t1.to.equals(this.initial) && t2.to.equals(theOther.initial))
+                    out.initial = outStartState;
+                  outToState.setAccept(t1.to.isAccept() && t2.to.isAccept());
+                }
+                
+                outStartState.transitions.add(new Transition(t1.labelIn,t2.labelOut,outToState));
+                
+                
+                
+                
+                
+              }
+                  
+            }
+
+              if (t1.labelOut.get(0).getIdentityTf() != null && t2.labelOut.get(0).getIdentityTf() != null)
+                  && t1.labelIn.get(0).equals(t1lo) && t2lo.equals(t2lo)) {
+                  if (!t1li.and(t2li).satisfiable()) { 
+                    newstates.get(statePair).transitions.add(new Transition(t1li.and(t2li), t1lo.and(t2lo), to, 1));
+                  }
+                } else if (t2lo.getIdentity() == 1 && t2lo.equals(t2lo)) {
+                  State to = newstates.get(new StatePair(t1.to, t2.to));
+                  newstates.get(statePair).transitions.add(new Transition(t1li, t1lo.and(t2lo), to, 0));
+                } else if (t1lo.getIdentity() == 1 && t1li.equals(t1lo)) {
+                  if (!t1li.and(t2li).satisfiable()) {   
+                    State to = newstates.get(new StatePair(t1.to, t2.to));
+                    newstates.get(statePair).transitions.add(new Transition(t1li.and(t2li), t2lo, to, 0));
+                  }
+                } else if (!t1.labelOut.get(0).and(t2.labelIn.get(0)).satisfiable()) {
+                  State to = newstates.get(new StatePair(t1.to, t2.to));
+                  newstates.get(statePair).transitions.add(new Transition(t1li, t2lo, to, 0));
+                }
+              } else if (t2li.isEpsilon()) {
+                State to = newstates.get(new StatePair(statePair.s1, t2.to));
+                newstates.get(statePair).transitions.add(new Transition(t2li, t2lo, to, 0));
+              } else if (t1lo.isEpsilon()) {
+                State to = newstates.get(new StatePair(t1.to, statePair.s2));
+                newstates.get(statePair).transitions.add(new Transition(t2li, t2lo, to, 0));
+              }
+      
+      
+      
+      
+      
+      
+      
+      
+      
       }
     }
+
+  
+          
     out.epsilonRemoval();
     out.removeDeadTransitions();
     out.checkMinimizeAlways();
@@ -749,8 +773,6 @@ public class Tffst implements Serializable {
    * states and transitions in the minimized Tffst.
    */
   public int hashCode() {
-    // if (hash_code == 0)
-    // minimize();
     return hash_code;
   }
 
@@ -904,7 +926,7 @@ public class Tffst implements Serializable {
   }
 
   /**
-   * Assigns consecutive numbers to the given states. FIXED
+   * Assigns consecutive numbers to this tffst states. FIXED
    */
   public void setStateNumbers() {
     Iterator<State> i = getStates().iterator();
@@ -989,24 +1011,21 @@ public class Tffst implements Serializable {
    * 
    * @return
    */
-  public Tffst toSimpleTransitions() {
-    Tffst a = new Tffst();
+  public Tffst toSimpleTransitions() { 
+    Tffst simpleTffst = new Tffst();
     HashMap<State, State> m = new HashMap<State, State>();
-    Set<State> states = getStates();
 
     Iterator<TfI> tIniter;
     Iterator<TfI> tOutiter;
 
-    for ( State s : states) {
-      State p = m.get(s);
-      if (p == null) {
-        p = new State();
-        m.put(s, p );
-      }
+    for (State s : getStates()) {
+      State p = new State();
+      m.put(s, p);
       p.accept = s.accept;
-      if (s == initial) a.initial = p;
+      if (s == initial) simpleTffst.initial = p;
       p.transitions = new HashSet<Transition>();
-      for ( Transition t : s.transitions) {
+
+      for (Transition t : s.transitions) {
         tIniter = t.labelIn.iterator();
         tOutiter = t.labelOut.iterator();
         int maxTrans = Math.max(t.labelIn.size(), t.labelOut.size());
@@ -1021,13 +1040,11 @@ public class Tffst implements Serializable {
           TfI oIn;
           TfI oOut;
 
-          if (tIniter.hasNext()) 
-            oIn = tIniter.next();
+          if (tIniter.hasNext()) oIn = tIniter.next();
           else
             oIn = SimpleTf.Epsilon();
 
-          if (tOutiter.hasNext()) 
-            oOut = tOutiter.next();
+          if (tOutiter.hasNext()) oOut = tOutiter.next();
           else
             oOut = SimpleTf.Epsilon();
 
@@ -1054,14 +1071,20 @@ public class Tffst implements Serializable {
         newTr.setLabelIn(new TfString(tfptfIn));
         newTr.setLabelOut(new TfString(tfptfOut));
 
-        newTr.to = (State) m.get(t.to);
+        if (m.get(t.to) != null) {
+          newTr.to = m.get(t.to);
+        } else {
+          m.put(t.to, new State());
+          newTr.to = m.get(t.to);
+        }
+        
         last.transitions.add(newTr);
       }
     }
-    a.deterministic = deterministic;
-    a.info = info;
-    a.setStateNumbers();// xop
-    return a;
+    simpleTffst.deterministic = deterministic;
+    simpleTffst.info = info;
+    simpleTffst.setStateNumbers();// xop
+    return simpleTffst;
   }
 
   /**
@@ -1150,17 +1173,22 @@ public class Tffst implements Serializable {
     P unionOfTransPelements = new P();
     ElementOfP retPair;
 
-    for (Iterator<TfI> iterator = left.iterator(); iterator.hasNext();) {
-      TfI tf = (TfI) iterator.next();
-      if (!tf.isEpsilon()) for (ElementOfP pairP : setOfelementsOfP)
-        for (Transition t : pairP.state.transitions)
-          if (tf.equals(t.labelIn.get(0))) { //FIXME this needs the tfs to be simplified to  have a chance of matching 
-            TfString newSE = new TfString();
-            newSE.addAll(pairP.arrivingTFs);
-            newSE.addAll(t.labelOut);
-            retPair = new ElementOfP(t.to, newSE);
-            unionOfTransPelements.add(retPair);
-          }
+    for (TfI tf : left) {
+      if (!tf.isEpsilon()) {
+        for (ElementOfP pairP : setOfelementsOfP) {
+          for (Transition t : pairP.state.transitions)
+            if (tf.equals(t.labelIn.get(0))) { // FIXME this needs the tfs to be
+                                               // simplified to have a chance of
+                                               // matching
+              TfString newSE = new TfString();
+              for (TfI tfpairp : pairP.arrivingTFs)
+                newSE.add(tfpairp.and(t.labelIn.get(0)));
+              newSE.add(t.labelOut.get(0).and(t.labelIn.get(0))); //TODO fix this to be more general
+              retPair = new ElementOfP(t.to, newSE);
+              unionOfTransPelements.add(retPair);
+            }
+        }
+      }
     }
     return unionOfTransPelements;
   }
@@ -1258,44 +1286,44 @@ public class Tffst implements Serializable {
     deterministic = true;
   }
 
-  /**
-   * Recursive method to compute all posible relations of tauterthan and
-   * astautas of a given permutation
-   * 
-   * @param permutation
-   *          each permutation is given by a ComposiiteTF tree
-   * @return a set of TfIs
-   */
-  private Set<TfI> getAllOrderedRelations(TfI permutation) {
-    Set<TfI> returnSet = new HashSet<TfI>();
-
-    if (permutation instanceof TfPair) {
-      TfPair tfpPermutation = (TfPair) permutation;
-      Set<TfI> tfpreturnSet = new HashSet<TfI>();
-      tfpreturnSet.addAll(getAllOrderedRelations(tfpPermutation.getTfIn()));
-      for (Iterator<TfI> iter = tfpreturnSet.iterator(); iter.hasNext();) {
-        TfI relation = iter.next();
-        returnSet.add(new TfPair(relation, tfpPermutation.getTfOut()));
-      }
-    } else if (permutation instanceof SimpleTf) {
-      returnSet.add(permutation);
-    } else if (permutation instanceof CompositeTf) {
-      CompositeTf cpermutation = (CompositeTf) permutation;
-      Set<TfI> left = getAllOrderedRelations(cpermutation.leftTf);
-      Set<TfI> right = getAllOrderedRelations(cpermutation.rightTf);
-      for (Iterator<TfI> iter = left.iterator(); iter.hasNext();) {
-        TfI lRelation = (TfI) iter.next();
-        for (Iterator<TfI> iterator = right.iterator(); iterator.hasNext();) {
-          TfI rRelation = (TfI) iterator.next();
-          returnSet.add(lRelation.tauterThan(rRelation));
-          returnSet.add(lRelation.asTautas(rRelation));
-        }
-      }
-    } else {
-      System.err.println("ERROR: bad permutation structure.");
-    }
-    return returnSet;
-  }
+//  /**
+//   * Recursive method to compute all posible relations of tauterthan and
+//   * astautas of a given permutation
+//   * 
+//   * @param permutation
+//   *          each permutation is given by a ComposiiteTF tree
+//   * @return a set of TfIs
+//   */
+//  private Set<TfI> getAllOrderedRelations(TfI permutation) {
+//    Set<TfI> returnSet = new HashSet<TfI>();
+//
+//    if (permutation instanceof TfPair) {
+//      TfPair tfpPermutation = (TfPair) permutation;
+//      Set<TfI> tfpreturnSet = new HashSet<TfI>();
+//      tfpreturnSet.addAll(getAllOrderedRelations(tfpPermutation.getTfIn()));
+//      for (Iterator<TfI> iter = tfpreturnSet.iterator(); iter.hasNext();) {
+//        TfI relation = iter.next();
+//        returnSet.add(new TfPair(relation, tfpPermutation.getTfOut()));
+//      }
+//    } else if (permutation instanceof SimpleTf) {
+//      returnSet.add(permutation);
+//    } else if (permutation instanceof CompositeTf) {
+//      CompositeTf cpermutation = (CompositeTf) permutation;
+//      Set<TfI> left = getAllOrderedRelations(cpermutation.leftTf);
+//      Set<TfI> right = getAllOrderedRelations(cpermutation.rightTf);
+//      for (Iterator<TfI> iter = left.iterator(); iter.hasNext();) {
+//        TfI lRelation = (TfI) iter.next();
+//        for (Iterator<TfI> iterator = right.iterator(); iterator.hasNext();) {
+//          TfI rRelation = (TfI) iterator.next();
+//          returnSet.add(lRelation.tauterThan(rRelation));
+//          returnSet.add(lRelation.asTautas(rRelation));
+//        }
+//      }
+//    } else {
+//      System.err.println("ERROR: bad permutation structure.");
+//    }
+//    return returnSet;
+//  }
 
   /**
    * Removes transitions to dead states and calls {@link #reduce()}(a state is

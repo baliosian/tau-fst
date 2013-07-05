@@ -68,7 +68,7 @@ public class ProtoTransition {
         if (!toRemove.contains(workingPair))
           for (ElementOfP currentPair : unionOfTransP)
             if (!toRemove.contains(currentPair))
-              if ((currentPair.state == workingPair.state || workingPair.state.isAccept())
+              if ((currentPair.state.equals(workingPair.state) || workingPair.state.isAccept())
                   && workingPair != currentPair) {
                 TfString currentSE = currentPair.arrivingTFs;
                 TfString workingSE = workingPair.arrivingTFs;

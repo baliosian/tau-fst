@@ -156,7 +156,7 @@ public class SimpleTf extends Tf {
 
     public String toString() {
         String out = getName();
-        if (getIdentity() == 1)
+        if (getIdentityTf() != null)
             out = "<" + out + ">";
         return out;
     }

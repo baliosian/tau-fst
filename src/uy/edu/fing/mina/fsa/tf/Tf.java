@@ -24,9 +24,12 @@ import uy.edu.fing.mina.fsa.logics.Utils;
 
 public abstract class Tf implements TfI, Cloneable, Comparable {
 
-  protected boolean not = false;
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 4216877592050045279L;
 
-  private int identity = 0;
+  protected boolean not = false;
 
   private TfI identityTf = null;
   
@@ -210,27 +213,6 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
     return outTf;
   }
 
-  public TfI asTautas(TfI tf) {
-    TfI outTf;
-
-    if (this.acceptsNone() || tf.acceptsNone()) {
-      SimpleTf stf = new SimpleTf();
-      stf.setAcceptNone();
-      outTf = stf;
-    } else if (this.equals(tf)) {
-      outTf = this;
-    } else if (this.equals(tf.not())) {
-      SimpleTf stf = new SimpleTf();
-      stf.setAcceptNone();
-      outTf = stf;
-    } else {
-      outTf = new CompositeTf(Operator.AS_TAUT_AS, this, tf);
-    }
-
-    outTf = new CompositeTf(Operator.AS_TAUT_AS, this, tf);
-    return outTf;
-  }
-
   /*
    * @see java.lang.Object#clone()
    */
@@ -277,44 +259,7 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
     return null;
   }
 
-
-  public TfI tauterThan(TfI tf) {
-    TfI outTf;
-    // --
-    if (this.acceptsNone()) {
-      SimpleTf stf = new SimpleTf();
-      stf.setAcceptNone();
-      outTf = stf;
-    } else if (this.acceptsAll()) {
-      SimpleTf stf = new SimpleTf();
-      stf.setAcceptNone();
-      outTf = stf;
-    } else if (tf.acceptsAll()) {
-      outTf = this;
-    } else if (this.equals(tf)) {
-      SimpleTf stf = new SimpleTf();
-      stf.setAcceptNone();
-      outTf = stf;
-    } else if (this.equals(tf.not())) {
-      outTf = this; // TODO check this
-    } else {
-      outTf = new CompositeTf(Operator.TAUTER_THAN, this, tf);
-    }
-    // --
-    return outTf;
-  }
-
   public abstract String toString();
-
-
-
-  public int getIdentity() {
-    return this.identity;
-  }
-
-  public void setIdentity(int identity) {
-    this.identity = identity;
-  }
 
   public void setIdentityTf(TfI labelIn) {
     this.identityTf = labelIn;
@@ -328,7 +273,7 @@ public int getId() {
     return id;
 }
 
-public TfI getRefersTo() {
+public TfI refersTo() {
     return refersTo;
 }
 
@@ -362,6 +307,17 @@ public boolean equals(Object obj) {
 @Override
 public int hashCode() {
   return getName().hashCode();
+}
+
+/**
+ * Returns true if the tf is satisfiable. It must be overwritten by CompositeTf to make the composition work.  
+ * 
+ */
+
+public boolean satisfiable(){
+
+  return !this.equals(SimpleTf.AcceptsNone()); //TODO this MUST be overwritten properly in CompositeTf
+  
 }
 
 

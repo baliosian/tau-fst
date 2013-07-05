@@ -358,10 +358,6 @@ public int hashCode() {
           partitionR1 = ((TfI)o1).and((TfI) o2);
        else if (operator.equals(Operator.OR))
           partitionR1 = ((TfI)o1).or((TfI) o2);
-       else if (operator.equals(Operator.AS_TAUT_AS))
-          partitionR1 = ((TfI)o1).asTautas((TfI) o2); 
-       else if (operator.equals(Operator.TAUTER_THAN))
-          partitionR1 = ((TfI)o1).tauterThan((TfI) o2);
        
        while (raIter.hasNext()) {
           Object o = raIter.next();
@@ -372,9 +368,6 @@ public int hashCode() {
              else if (operator.equals(Operator.OR))
                 partitionR2 = partitionR1.or((TfI) o);
              else if (operator.equals(Operator.AS_TAUT_AS))
-                partitionR2 = partitionR1.asTautas((TfI) o); 
-             else if (operator.equals(Operator.TAUTER_THAN))
-                partitionR2 = partitionR1.tauterThan((TfI) o);
 
              if (partitionR2 instanceof CompositeTf) {
                 CompositeTf ctfPartitionR2 = (CompositeTf) partitionR2;

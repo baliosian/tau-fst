@@ -15,6 +15,7 @@ package uy.edu.fing.mina.fsa.tffst;
 
 import java.io.Serializable;
 
+import uy.edu.fing.mina.fsa.tf.SimpleTf;
 import uy.edu.fing.mina.fsa.tf.TfI;
 import uy.edu.fing.mina.fsa.tf.TfString;
 
@@ -42,6 +43,8 @@ public class Transition implements Serializable {
    *          destination state
    */
   public Transition() {
+    labelIn = new TfString(SimpleTf.Epsilon()); 
+    labelOut = new TfString(SimpleTf.Epsilon());
   }
 
   /**
@@ -79,10 +82,9 @@ public class Transition implements Serializable {
    *          destination state
    * @param identity
    */
-  public Transition(TfI labelIn, TfI labelOut, State to, int identity) {
+  public Transition(TfI labelIn, TfI labelOut, State to, int identity) { //FIXME the identity int MUST exits
     this(new TfString(labelIn), new TfString(labelOut), to);
     if (identity == 1 || identity == 0 || identity == -1) {
-      labelOut.setIdentity(identity);
       labelOut.setIdentityTf(labelIn);
     } else
       System.err.println("ERROR: bad identity value");

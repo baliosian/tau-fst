@@ -36,18 +36,12 @@ public interface TfI extends java.io.Serializable {
 
   public TfI andSimple(TfI tf);
 
-  public TfI asTautas(TfI tf);
-
-  public TfI tauterThan(TfI tf);
-  
   public Object clone() throws CloneNotSupportedException;
 
   public int compareTo(Object arg0);
 
   public boolean equals(Object o);
 
-  public int getIdentity();
-  
   public TfI getIdentityTf();
 
   public String getName();
@@ -57,8 +51,6 @@ public interface TfI extends java.io.Serializable {
   public boolean isEpsilon();
 
   public boolean isNot();
-
-  public void setIdentity(int identity);
 
   public void setIdentityTf(TfI labelIn);
 
@@ -74,6 +66,10 @@ public interface TfI extends java.io.Serializable {
   
   public void setFormula(Formula formula);
   
+  public TfI refersTo(); 
   
+  public void setRefersTo(TfI refersTo);
+  
+  public boolean satisfiable();
 
 }

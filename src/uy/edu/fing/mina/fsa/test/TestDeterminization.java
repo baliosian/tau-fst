@@ -16,7 +16,7 @@ import uy.edu.fing.mina.fsa.tffst.*;
 public class TestDeterminization {
 
    /**
-    * uy.edu.fing.mina.omega.tffst.test 5, is the very example of the policy's paper. 
+    * uy.edu.fing.mina.omega.tffst.test 5, is the very example of the Policy 2004's paper. 
     * 
     * 
     * @param args
