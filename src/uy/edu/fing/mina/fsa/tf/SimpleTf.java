@@ -58,7 +58,12 @@ public class SimpleTf extends Tf {
         setSLabel("All");
         sequence++;
     }
-
+    
+    public SimpleTf(String sLabel) {
+      this();
+      setSLabel(sLabel);
+    }
+    
     public boolean acceptsAll() {
         return getName().equals("All");
     }

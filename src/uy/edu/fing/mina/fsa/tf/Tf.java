@@ -40,6 +40,8 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
   private TfI refersTo = null;
   
   protected Formula formula;
+  
+  private int identityType = 0;
 
   public Tf() {
     this(false, "");
@@ -318,6 +320,14 @@ public boolean satisfiable(){
 
   return !this.equals(SimpleTf.AcceptsNone()); //TODO this MUST be overwritten properly in CompositeTf
   
+}
+
+public int getIdentityType() {
+  return identityType;
+}
+
+public void setIdentityType(int identityType) {
+  this.identityType = identityType;
 }
 
 

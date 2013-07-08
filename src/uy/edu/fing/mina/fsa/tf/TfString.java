@@ -27,6 +27,7 @@ public class TfString implements List<TfI> {// extends Tf implements List {
 	}
 
 	public TfString(TfI tf) {
+	  this();
 		this.add(tf);
 	}
 
@@ -181,7 +182,7 @@ public class TfString implements List<TfI> {// extends Tf implements List {
 	/**
 	 * @see uy.edu.fing.mina.omega.tffst.utils.tf.TfI#getSlabel()
 	 */
-	public String getLabel() {
+	public String toString() {
 		String seString = "";
 		for (TfI tf : listOfTfs) {
 			seString += tf.toString();
@@ -360,12 +361,4 @@ public class TfString implements List<TfI> {// extends Tf implements List {
 		return listOfTfs.toArray(a);
 	}
 
-	/**
-	 * toString
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	public String toString() {
-		return getLabel() == null ? "" : getLabel();
-	}
 }

@@ -47,28 +47,14 @@ public class TestComposition1 {
       State s2 = new State();
       s2.setAccept(true);
 
-      SimpleTf tfd = new SimpleTf();
-      tfd.setSLabel("D");
-      Transition trans1 = new Transition(tfd, tfd, s1, 1);
-      s0.addTransition(trans1);
-      
-      SimpleTf tfall = new SimpleTf();
-      tfall.setAcceptAll();
-      SimpleTf tfc = new SimpleTf();
-      tfc.setSLabel("C");
-      TfI tfall_c = tfall.and(tfc.not());
-      
-      Transition trans2 = new Transition(tfall_c, tfall_c, s1, 1);
-      s1.addTransition(trans2);
-      
-      SimpleTf tfk = new SimpleTf();
-      tfk.setSLabel("K");
-      TfString sec = new TfString(tfc);
-      TfString seck = new TfString(tfc);
-      seck.add(tfk);
-      Transition trans3 = new Transition(sec, seck, s2);
-      s1.addTransition(trans3);
-      
+//      s0.addTransition(new Transition(new SimpleTf("D"), new SimpleTf("D"), s1, 1));
+//      s0.addTransition(new Transition((new SimpleTf("D")).not(), (new SimpleTf("D")).not(), s0, 1));
+//
+//      s1.addTransition(new Transition(new TfString(SimpleTf("C")), new TfString(new SimpleTf("C")).add(new SimpleTf("K")), s2, 1));
+//      s1.addTransition(new Transition((new SimpleTf("C")).not(), (new SimpleTf("C")).not(), s1, 1));
+//
+//      s1.addTransition(trans3);
+//      
 
       
       Utils.showDot(tffst1.toDot("tffst1 before toSimpleTransitions"));
@@ -106,13 +92,13 @@ public class TestComposition1 {
       tfe.setSLabel("E");
       Transition trans12 = new Transition(tfe, tfe, s12, 1);
       s02.addTransition(trans12);
-      
-      Transition trans22 = new Transition(tfall_c, tfall_c, s12, 1);
-      s12.addTransition(trans22);
-      
-      TfI tfepsilon = SimpleTf.Epsilon();
-      Transition trans32 = new Transition(tfc, tfepsilon, s22, 0);
-      s12.addTransition(trans32);
+//      
+//      Transition trans22 = new Transition(tfall_c, tfall_c, s12, 1);
+//      s12.addTransition(trans22);
+//      
+//      TfI tfepsilon = SimpleTf.Epsilon();
+//      Transition trans32 = new Transition(tfc, tfepsilon, s22, 0);
+//      s12.addTransition(trans32);
 
       Transition trans42 = new Transition(SimpleTf.AcceptsAll().and(tfe.not()) ,SimpleTf.AcceptsAll().and(tfe.not()), s02, 1);
       s02.addTransition(trans42);

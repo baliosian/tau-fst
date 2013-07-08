@@ -44,6 +44,12 @@ public interface TfI extends java.io.Serializable {
 
   public TfI getIdentityTf();
 
+  public void setIdentityTf(TfI labelIn);
+
+  public int getIdentityType();
+
+  public void setIdentityType(int i);
+
   public String getName();
 
   public boolean in(TfI tf);
@@ -51,8 +57,6 @@ public interface TfI extends java.io.Serializable {
   public boolean isEpsilon();
 
   public boolean isNot();
-
-  public void setIdentityTf(TfI labelIn);
 
   public void setNot(boolean b);
 
