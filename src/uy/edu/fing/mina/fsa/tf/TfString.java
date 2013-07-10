@@ -54,22 +54,31 @@ public class TfString implements List<TfI> {// extends Tf implements List {
 	  listOfTfs.add(index,element);
 	}
 
-	/**
-	 * @see java.util.Collection#add(java.lang.Object)
-	 */
-	public boolean add(TfI tf) {
-	  if (tf != null ) {
-		if (!tf.isEpsilon()) {
-			if (listOfTfs.get(0).isEpsilon()){
-			  listOfTfs.remove(0);
-			  return listOfTfs.add(tf);
-			} else {
+    /**
+     * @see java.util.Collection#add(java.lang.Object)
+     */
+    public boolean add(TfI tf) {
+      if (tf != null ) {
+        if (!tf.isEpsilon()) {
+            if (listOfTfs.get(0).isEpsilon()){
+              listOfTfs.remove(0);
               return listOfTfs.add(tf);
-			}
-		}
-	  }
-	  return true;
-	}
+            } else {
+              return listOfTfs.add(tf);
+            }
+        }
+      }
+      return true;
+    }
+
+    /**
+     * @see java.util.Collection#add(java.lang.Object)
+     */
+    public TfString addRetTFString(TfI tf) {
+      if (this.add(tf)) 
+      return this;
+      else return null;
+    }
 
   public boolean addAll(Collection<? extends TfI> c) {
     boolean out = true;

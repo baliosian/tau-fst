@@ -129,7 +129,7 @@ public class Tffst implements Serializable {
     a.initial = s0;
     State s1 = new State();
     s1.setAccept(true);
-    Transition t = new Transition(SimpleTf.AcceptsAll(), SimpleTf.AcceptsAll(), s1, 1);
+    Transition t = new Transition(SimpleTf.AcceptsAll(), SimpleTf.AcceptsAll(), s1,1);
     s0.addTransition(t);
     a.deterministic = true;
     a = a.kleene();
@@ -362,7 +362,7 @@ public class Tffst implements Serializable {
       }
     }
 //    out.epsilonRemoval();
-//    out.removeDeadTransitions();
+    out.removeDeadTransitions();
 //    out.checkMinimizeAlways();
     return out;
   }
@@ -982,22 +982,23 @@ public class Tffst implements Serializable {
     Iterator<TfI> tOutiter;
     Transition newTr;
     State last;
+    Set<State> states = getStates(); 
     
-    for (State s : getStates()) {
+    for (State s : states) {
       
       if (m.get(s) == null) {
         last = new State();
         m.put(s, last);
         last.accept = s.accept;
         if (s == initial) simpleTffst.initial = last;
-      } else {
-        last = m.get(s);
-      }
-
+      } 
+      
       for (Transition t : s.transitions) {
+        
+        last = m.get(s);
+
         tIniter = t.labelIn.iterator();
         tOutiter = t.labelOut.iterator();
-        
         //labels maintain at least a epsilon Tf inside.  
         while (tIniter.hasNext() || tOutiter.hasNext()) {
           // creates an epsilon/epsilon transition
@@ -1008,11 +1009,13 @@ public class Tffst implements Serializable {
 
           if (!tIniter.hasNext() && !tOutiter.hasNext()){
             if (m.get(t.to) == null) {
+              
               State newTo = new State();
               m.put(t.to, newTo);
+              newTo.accept = t.to.accept;
+              if (t.to == initial) simpleTffst.initial = newTo;
+
               newTr.to = newTo;
-              last.accept = s.accept;
-              if (s == initial) simpleTffst.initial = last;
             } else {
               newTr.to = m.get(t.to);
             }

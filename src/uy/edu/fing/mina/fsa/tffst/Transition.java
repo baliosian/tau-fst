@@ -73,22 +73,6 @@ public class Transition implements Serializable {
 		return (labelIn.hashCode() + labelOut.hashCode() + to.hashCode())%Integer.MAX_VALUE;
 	}
 
-/**
-   * Constructs new transition with only one tf in the output.
-   * 
-   * @param labelIn
-   * @param labelOut
-   * @param to
-   *          destination state
-   * @param identity
-   */
-  public Transition(TfI labelIn, TfI labelOut, State to, int identity) { //FIXME the identity int MUST exits
-    this(new TfString(labelIn), new TfString(labelOut), to);
-    if (identity == 1 || identity == 0 || identity == -1) {
-      labelOut.setIdentityTf(labelIn);
-    } else
-      System.err.println("ERROR: bad identity value");
-  }
 
   /**
    * Constructs new transition.
@@ -98,12 +82,36 @@ public class Transition implements Serializable {
    * @param to
    *          destination state
    */
+	
   public Transition(TfString labelIn, TfString labelOut, State to) {
     this.to = to;
     this.labelIn = labelIn;
     this.labelOut = labelOut;
   }
 
+
+  /**
+   * Constructs new transition.
+   * 
+   * @param labelIn
+   * @param labelOut
+   * @param to
+   *          destination state
+   *          
+   */
+  
+  public Transition(TfI labelIn, TfI labelOut, State to, int identityType) {
+    this.to = to;
+    this.labelIn = new TfString(labelIn);
+    this.labelOut = new TfString(labelOut);
+    if (identityType == 1 || identityType == -1 ) {
+      labelOut.setIdentityTf(labelIn);
+      labelIn.setIdentityTf(labelOut);
+    }
+    labelOut.setIdentityType(identityType);    
+    labelIn.setIdentityType(identityType);    
+  }
+  
   void appendDot(StringBuffer b) {
     b.append(" -> ").append(to.getNumber()).append(" [label=\"");
     b.append(this.toString());

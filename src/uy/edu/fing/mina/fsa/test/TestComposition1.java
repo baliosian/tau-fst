@@ -22,7 +22,7 @@ import uy.edu.fing.mina.fsa.utils.Utils;
 public class TestComposition1 {
 
    /**
-    * uy.edu.fing.mina.omega.tffst.test 8. it shows determinization of a union 
+    * composition test 1  
     * 
     * @param args
     */
@@ -32,11 +32,12 @@ public class TestComposition1 {
       
 
 // tffst1 before toSimpleTransitions:   <!C>/<!C>
-//                                    ┌───────────┐
-//                                    ▼           │
-//                 ┌───┐  <D>/<D>   ┌───────────────┐  C/CK   ╔═══╗
-//    initial  ──▶ │ 0 │ ─────────▶ │       2       │ ──────▶ ║ 1 ║
-//                 └───┘            └───────────────┘         ╚═══╝
+//                 <!D>/<!D>                    <!C>/<!C>
+//               ┌───────────┐                ┌───────────┐
+//               ▼           │                ▼           │
+//             ┌───────────────┐  <D>/<D>   ┌───────────────┐  C/CK  ╔═══╗
+//initial  ──▶ │       0       │ ─────────▶ │       1       │ ─────▶ ║ 2 ║
+//             └───────────────┘            └───────────────┘        ╚═══╝
 
       
       Tffst tffst1 = new Tffst();
@@ -47,25 +48,21 @@ public class TestComposition1 {
       State s2 = new State();
       s2.setAccept(true);
 
-//      s0.addTransition(new Transition(new SimpleTf("D"), new SimpleTf("D"), s1, 1));
-//      s0.addTransition(new Transition((new SimpleTf("D")).not(), (new SimpleTf("D")).not(), s0, 1));
-//
-//      s1.addTransition(new Transition(new TfString(SimpleTf("C")), new TfString(new SimpleTf("C")).add(new SimpleTf("K")), s2, 1));
-//      s1.addTransition(new Transition((new SimpleTf("C")).not(), (new SimpleTf("C")).not(), s1, 1));
-//
-//      s1.addTransition(trans3);
-//      
-
+      s0.addTransition(new Transition(new SimpleTf("D"), new SimpleTf("D"), s1, 1));
+      s0.addTransition(new Transition((new SimpleTf("D")).not(), (new SimpleTf("D")).not(), s0, 1));
+      s1.addTransition(new Transition((new SimpleTf("C")).not(), (new SimpleTf("C")).not(), s1, 1));
+      s1.addTransition(new Transition(new TfString(new SimpleTf("C")), (new TfString(
+      new SimpleTf("C"))).addRetTFString(new SimpleTf("K")), s2));
       
       Utils.showDot(tffst1.toDot("tffst1 before toSimpleTransitions"));
       
 //      tffst1 simple transitions:
-//                                        <!C>/<!C>
-//                                      ┌───────────┐
-//                                      ▼           │
-//                   ┌───┐  <D>/<D>   ┌───────────────┐  C/C   ┌───┐  /K   ╔═══╗
-//      initial  ──▶ │ 3 │ ─────────▶ │       2       │ ─────▶ │ 0 │ ────▶ ║ 1 ║
-//                   └───┘            └───────────────┘        └───┘       ╚═══╝
+//                       <!D>/<!D>                    <!C>/<!C>
+//                     ┌───────────┐                ┌───────────┐
+//                     ▼           │                ▼           │
+//                   ┌───────────────┐  <D>/<D>   ┌───────────────┐  C/C   ┌───┐  /K   ╔═══╗
+//      initial  ──▶ │       3       │ ─────────▶ │       2       │ ─────▶ │ 0 │ ────▶ ║ 1 ║
+//                   └───────────────┘            └───────────────┘        └───┘       ╚═══╝
       
       tffst1 = tffst1.toSimpleTransitions();
       
@@ -73,39 +70,25 @@ public class TestComposition1 {
 
 //            tffst2
 //      
-//                       <!E>/<!E>                    <!C>/<!C>               All/<All>
-//                     ┌───────────┐                ┌───────────┐           ┌───────────┐
-//                     ▼           │                ▼           │           ▼           │
-//                   ┌───────────────┐  <E>/<E>   ┌───────────────┐  C/   ╔═══════════════╗
-//      initial  ──▶ │       1       │ ─────────▶ │       2       │ ────▶ ║       0       ║
+//                       <!E>/<!E>                    <!C>/<!C>             
+//                     ┌───────────┐                ┌───────────┐           
+//                     ▼           │                ▼           │           
+//                   ┌───────────────┐  <E>/<E>   ┌───────────────┐  C/C  ╔═══════════════╗
+//      initial  ──▶ │       20      │ ─────────▶ │       21      │ ────▶ ║       22      ║
 //                   └───────────────┘            └───────────────┘       ╚═══════════════╝
       
       Tffst tffst2 = new Tffst();
 
-      State s02 = new State();
-      tffst2.setInitialState(s02);
-      State s12 = new State();
+      State s20 = new State();
+      tffst2.setInitialState(s20);
+      State s21 = new State();
       State s22 = new State();
       s22.setAccept(true);
 
-      SimpleTf tfe = new SimpleTf();
-      tfe.setSLabel("E");
-      Transition trans12 = new Transition(tfe, tfe, s12, 1);
-      s02.addTransition(trans12);
-//      
-//      Transition trans22 = new Transition(tfall_c, tfall_c, s12, 1);
-//      s12.addTransition(trans22);
-//      
-//      TfI tfepsilon = SimpleTf.Epsilon();
-//      Transition trans32 = new Transition(tfc, tfepsilon, s22, 0);
-//      s12.addTransition(trans32);
-
-      Transition trans42 = new Transition(SimpleTf.AcceptsAll().and(tfe.not()) ,SimpleTf.AcceptsAll().and(tfe.not()), s02, 1);
-      s02.addTransition(trans42);
-
-      Transition trans52 = new Transition(SimpleTf.AcceptsAll(),SimpleTf.AcceptsAll(), s22, 1);
-      s22.addTransition(trans52);
-      // -------- tffst2   
+      s20.addTransition(new Transition(new SimpleTf("E"), new SimpleTf("E"), s21, 1));
+      s20.addTransition(new Transition((new SimpleTf("E")).not(), (new SimpleTf("E")).not(), s20, 1));
+      s21.addTransition(new Transition((new SimpleTf("C")).not(), (new SimpleTf("C")).not(), s21, 1));
+      s21.addTransition(new Transition(new SimpleTf("C"),new SimpleTf("C") , s22));
       
       Utils.showDot(tffst2.toDot("tffst2"));
       
@@ -116,4 +99,7 @@ public class TestComposition1 {
 
    }
   
+
+   
+   
 }
