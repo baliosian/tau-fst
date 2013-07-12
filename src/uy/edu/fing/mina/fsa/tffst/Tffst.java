@@ -145,21 +145,26 @@ public class Tffst implements Serializable {
   static public Tffst concatenate(List<Tffst> l) {
     if (l.isEmpty()) return makeEmptyString();
     Iterator<Tffst> i = l.iterator();
-    Tffst b = i.next().clone();
-    Iterator<State> j = b.getAcceptStates().iterator();
-    while (i.hasNext()) {
-      Tffst a = ((Tffst) i.next()).clone();
-      Set<State> ns = a.getAcceptStates();
-      while (j.hasNext()) {
-        State s = j.next();
-        s.accept = false;
-        s.addEpsilon(a.initial);
-        if (s.accept) ns.add(s);
+    Tffst b = null;
+    try {
+      b = i.next().clone();
+      Iterator<State> j = b.getAcceptStates().iterator();
+      while (i.hasNext()) {
+        Tffst a = ((Tffst) i.next()).clone();
+        Set<State> ns = a.getAcceptStates();
+        while (j.hasNext()) {
+          State s = j.next();
+          s.accept = false;
+          s.addEpsilon(a.initial);
+          if (s.accept) ns.add(s);
+        }
+        j = ns.iterator();
       }
-      j = ns.iterator();
+      b.deterministic = false;
+      b.checkMinimizeAlways();
+    } catch (CloneNotSupportedException e) {
+      e.printStackTrace();
     }
-    b.deterministic = false;
-    b.checkMinimizeAlways();
     return b;
   }
 
@@ -204,16 +209,22 @@ public class Tffst implements Serializable {
    * Complexity: linear in number of states.
    */
   static public Tffst union(List<Tffst> l) {
-    State s = new State();
-    Iterator<Tffst> i = l.iterator();
-    while (i.hasNext()) {
-      Tffst b = (i.next()).clone();
-      s.addEpsilon(b.initial);
+    Tffst a = null;
+    try {
+      a = new Tffst();
+      State s = new State();
+      Iterator<Tffst> i = l.iterator();
+      while (i.hasNext()) {
+        Tffst b;
+        b = (i.next()).clone();
+        s.addEpsilon(b.initial);
+      }
+      a.initial = s;
+      a.deterministic = false;
+      a.checkMinimizeAlways();
+    } catch (CloneNotSupportedException e) {
+      e.printStackTrace();
     }
-    Tffst a = new Tffst();
-    a.initial = s;
-    a.deterministic = false;
-    a.checkMinimizeAlways();
     return a;
   }
 
@@ -270,8 +281,9 @@ public class Tffst implements Serializable {
 
   /**
    * Returns a clone of this Tffst.
+   * @throws CloneNotSupportedException 
    */
-  public Tffst clone() {
+  public Tffst clone() throws CloneNotSupportedException {
 
     Tffst a = new Tffst();
     HashMap<State, State> m = new HashMap<State, State>();
@@ -316,10 +328,11 @@ public class Tffst implements Serializable {
    * 
    */
   
-  public Tffst composition(Tffst theOther) { //FIXME see TestComposition1
+  public Tffst composition(Tffst theOther) { 
 
     Tffst thisSimple = this.toSimpleTransitions();
     Tffst theOtherSimple = theOther.toSimpleTransitions();
+    
     Tffst out = new Tffst();
 
     Set<State> thisStates = thisSimple.getLiveStates();
@@ -335,35 +348,52 @@ public class Tffst implements Serializable {
         if (outStartState == null) {
           outStartState = new State();
           newstates.put(new StatePair(thisState, theOtherState), outStartState);
-          if (thisState.equals(this.initial) && theOtherState.equals(theOther.initial))
+          if (thisState.equals(thisSimple.initial) && theOtherState.equals(theOtherSimple.initial))
             out.initial = outStartState;
           outStartState.setAccept(thisState.isAccept() && theOtherState.isAccept());
         }
 
-        for (Transition t1 : thisState.getTransitions()) {
-          for (Transition t2 : theOtherState.getTransitions()) {
-            if (!t1.labelOut.isEpsilon() && !t2.labelIn.isEpsilon()) {
-              if (t1.labelOut.get(0).andSimple(t2.labelIn.get(0)).satisfiable()){
+        Set<Transition> thisStateTrans = thisState.getTransitions();
+        Set<Transition> theOtherStateTrans = theOtherState.getTransitions(); 
+        //add fake e/e transition loop  
+        thisStateTrans.add(new Transition(SimpleTf.Epsilon(),SimpleTf.Epsilon(),thisState));
+        theOtherStateTrans.add(new Transition(SimpleTf.Epsilon(),SimpleTf.Epsilon(),theOtherState));
+
+        for (Transition t1 : thisStateTrans) {
+          for (Transition t2 : theOtherStateTrans) {
+            if (t1.labelOut.get(0).andSimple(t2.labelIn.get(0)).satisfiable()){
+//              if (t1.labelOut.get(0).equals(t2.labelIn.get(0))){
 
                 // get the new state that is equivalent to this pair, create it. 
                 State outToState = newstates.get(new StatePair(t1.to, t2.to));
                 if (outToState == null){
                   outToState = new State();
                   newstates.put(new StatePair(t1.to, t2.to), outToState );
-                  if (t1.to.equals(this.initial) && t2.to.equals(theOther.initial))
-                    out.initial = outStartState;
+                  if (t1.to.equals(thisSimple.initial) && t2.to.equals(theOtherSimple.initial))
+                    out.initial = outToState;
                   outToState.setAccept(t1.to.isAccept() && t2.to.isAccept());
                 }
-                outStartState.transitions.add(new Transition(t1.labelIn,t2.labelOut,outToState));
+                try {
+                  TfString lin = t1.labelIn.clone();
+                  TfString lout = t2.labelOut.clone();
+                  lout.get(0).setIdentityType(t2.labelOut.get(0).getIdentityType());
+                  if (lout.get(0).getIdentityType() != 0) lout.get(0).setIdentityTf(lin.get(0));
+                  
+                  outStartState.transitions.add(new Transition(lin, lout, outToState));
+                  
+                } catch (CloneNotSupportedException e) {
+                  e.printStackTrace();
+                }
               }
-            }
           }
         }
       }
     }
-//    out.epsilonRemoval();
+    out.inLabelEpsilonRemoval();
     out.removeDeadTransitions();
 //    out.checkMinimizeAlways();
+    //out.setDeterministic(false);
+    //out.determinize();
     return out;
   }
 
@@ -374,16 +404,21 @@ public class Tffst implements Serializable {
    * Complexity: linear in number of states.
    */
   public Tffst concatenate(Tffst a) {
-    a = a.clone();
-    Tffst b = clone();
-    Iterator<State> i = b.getAcceptStates().iterator();
-    while (i.hasNext()) {
-      State s = i.next();
-      s.accept = false;
-      s.addEpsilon(a.initial);
+    Tffst b = null;
+    try {
+      a = a.clone();
+      b = clone();
+      Iterator<State> i = b.getAcceptStates().iterator();
+      while (i.hasNext()) {
+        State s = i.next();
+        s.accept = false;
+        s.addEpsilon(a.initial);
+      }
+      b.deterministic = false;
+      b.checkMinimizeAlways();
+    } catch (CloneNotSupportedException e) {
+      e.printStackTrace();
     }
-    b.deterministic = false;
-    b.checkMinimizeAlways();
     return b;
   }
 
@@ -399,141 +434,182 @@ public class Tffst implements Serializable {
     determinize(initialset);
   }
 
+//  /**
+//   * EPSILON REMOVAL FOR TRANSDUCERS
+//   * 
+//   * tffst cannot contain epsilon cycles
+//   * 
+//   */
+//  public void domainEpsilonsRemoval() {
+//
+//    List<State> allLiveStates = new LinkedList<State>(getLiveStates());
+//
+//    while (allLiveStates.size() > 0) {
+//      State workingState = allLiveStates.remove(0);
+//      for (Transition outgoingT : new HashSet<Transition>(workingState.getTransitions())) {
+//        if (outgoingT.labelIn.isEpsilon()) {
+//          State stateToAdd = new State();
+//          allLiveStates.add(stateToAdd);
+//          for (Transition t : outgoingT.to.getTransitions()) {
+//            Transition newT;
+//            try {
+//              newT = t.clone();
+//              newT.labelOut = outgoingT.labelOut.clone();
+//              newT.labelOut.addAll(t.labelOut.clone());
+//              stateToAdd.addTransition(newT);
+//            } catch (CloneNotSupportedException e) {
+//              e.printStackTrace();
+//            }
+//          }
+//          workingState.removeTransition(outgoingT);
+//          workingState.addEpsilon(stateToAdd);
+//        }
+//      }
+//    }
+//  }
+
   /**
-   * EPSILON REMOVAL FOR TRANSDUCERS
-   * 
-   * tffst cannot contain epsilon cycles
+   * EPSILON REMOVAL FOR TRANSDUCERS cannot have epsilon loops!!!!! except for
+   * epsilon/epsilon loops. removes epsilon-input labeled arcs. this is actually
+   * changing the tffst semantics.
    * 
    */
-  public void domainEpsilonsRemoval() {
+  public void inLabelEpsilonRemoval() {
 
-    List<State> allLiveStates = new LinkedList<State>(getLiveStates());
+    try {
+      Set<State> workingStates = new HashSet<State>();
+      Map<State,Map<Transition,State>> acceptStates = new HashMap<State,Map<Transition,State>>();
+      workingStates.add(initial);
+      State state;
+      boolean removeState = false;
 
-    while (allLiveStates.size() > 0) {
-      State workingState = allLiveStates.remove(0);
-      for (Transition outgoingT : new HashSet<Transition>(workingState.getTransitions())) {
-        if (outgoingT.labelIn.isEpsilon()) {
-          State stateToAdd = new State();
-          allLiveStates.add(stateToAdd);
-          for (Transition t : outgoingT.to.getTransitions()) {
-            Transition newT = t.clone();
-            newT.labelOut = outgoingT.labelOut.clone();
-            newT.labelOut.addAll(t.labelOut.clone());
-            stateToAdd.addTransition(newT);
-          }
-          workingState.removeTransition(outgoingT);
-          workingState.addEpsilon(stateToAdd);
-        }
-      }
-    }
-  }
+      //push all output labels of tansitions with epsilon input labels forward
+      while (!workingStates.isEmpty()) {
+        removeState = true;
+        state = workingStates.iterator().next();
 
-  /**
-   * EPSILON REMOVAL FOR TRANSDUCERS
-   * 
-   */
-  public void epsilonRemoval() {
+        Set<Transition> toRemove = new HashSet<Transition>();
+        Set<Transition> toAdd = new HashSet<Transition>();
 
-    // FIXME mal ver ejemplo composition y tranlation
+        for (Transition t : state.transitions) {
+          //take the opportunity to build the set off final states
+          Map<Transition,State> arriving = acceptStates.get(t.to);
+          if (arriving == null){
+            arriving =  new HashMap<Transition,State>();
+            arriving.put(t, state);
+            acceptStates.put(t.to, arriving);
+          } else
+            arriving.put(t, state);
 
-    LinkedList<State> workingList = new LinkedList<State>();
-    workingList.add(initial);
+          workingStates.add(t.to);
 
-    // subset construction
-    Map<State, State> sets = new HashMap<State, State>();
-
-    // for each state
-    while (!workingList.isEmpty()) {
-      Set<Transition> toRemove = new HashSet<Transition>();
-      Set<Transition> toAdd = new HashSet<Transition>();
-      State workingState = workingList.removeFirst();
-      Set<Transition> transitions = workingState.getTransitions();
-
-      // for each transition
-      for (Iterator<Transition> transitionIter = transitions.iterator(); transitionIter.hasNext();) {
-        Transition transition = transitionIter.next();
-        State destination = transition.to;
-        if (destination != workingState) {
-          if (!sets.containsKey(destination)) {
-            sets.put(destination, destination);
-            workingList.add(destination);
-          }
-          Set<Transition> destTransitions = destination.getTransitions();
-          // for each transition at this transition's end
-          for (Iterator<Transition> iterator = destTransitions.iterator(); iterator.hasNext();) {
-            Transition destTransition = iterator.next();
-            // if incoming label is epsilon
-            if (destTransition.labelIn.isEpsilon()) {
-              try {
-                State newDestState = destination.clone();
-                Transition oldTransition = new Transition(transition.labelIn, transition.labelOut,
-                    newDestState);
-                // adding a transition without epsilon to the
-                // new state
-                toAdd.add(oldTransition);
-                newDestState.getTransitions().remove(destTransition);
-                TfString newLabelOut = new TfString(transition.labelOut);
-                newLabelOut.addAll(destTransition.labelOut);
-                Transition newTransition = new Transition(transition.labelIn, newLabelOut,
-                    destTransition.to);
-                // adding a transition to destTransition.to
-                toAdd.add(newTransition);
-                toRemove.add(transition);
-
-              } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
+          if (t.labelIn.isEpsilon() && !t.to.isAccept()) {
+            toRemove.add(t);
+            if (!t.to.equals(state)) {
+              for (Transition tNext : t.to.transitions) {
+                if (!(tNext.labelIn.isEpsilon() && tNext.to.equals(t.to))) {
+                  Transition tNextClone = tNext.clone();
+                  for (int i = 0; i < t.labelOut.size(); i++)
+                    tNextClone.labelOut.add(i, t.labelOut.get(i));
+                  toAdd.add(tNextClone);
+                  removeState = false;
+                }
               }
             }
           }
         }
+        state.transitions.removeAll(toRemove);
+        state.transitions.addAll(toAdd);
+        if (removeState) workingStates.remove(state);
       }
-      for (Iterator<Transition> toAddIt = toAdd.iterator(); toAddIt.hasNext();)
-        workingState.addTransition((Transition) toAddIt.next());
 
-      for (Iterator<Transition> toRemoveIt = toRemove.iterator(); toRemoveIt.hasNext();)
-        workingState.removeTransition((Transition) toRemoveIt.next());
-    }
-
-    sets = new HashMap<State, State>();
-
-    workingList.add(initial);
-    while (!workingList.isEmpty()) {
-      Set<Transition> toRemove = new HashSet<Transition>();
-      Set<Transition> toAdd = new HashSet<Transition>();
-
-      State workingState = workingList.removeFirst();
-      Set<Transition> transitions = workingState.getTransitions();
-      for (Iterator<Transition> transitionIter = transitions.iterator(); transitionIter.hasNext();) {
-        Transition transition = (Transition) transitionIter.next();
-        if (transition.labelIn.isEmpty()) {
-          State destination = transition.to;
-          if (!sets.containsKey(destination)) {
-            sets.put(destination, destination);
-            workingList.add(destination);
+      while (!acceptStates.isEmpty()) {
+        removeState = true;
+        state = acceptStates.keySet().iterator().next();
+        for (Transition t : acceptStates.get(state).keySet()){
+          if (t.labelIn.isEpsilon()) {
+            
           }
-          Set<Transition> destTransitions = destination.getTransitions();
-          for (Iterator<Transition> iterator = destTransitions.iterator(); iterator.hasNext();) {
-            Transition destTransition = iterator.next();
-            TfString newLabelOut = new TfString(transition.labelOut);
-
-            // newLabelOut.add(new Operator(Operator.CONCAT));
-
-            newLabelOut.addAll(destTransition.labelOut);
-            Transition newTransition = new Transition(destTransition.labelIn, newLabelOut,
-                destTransition.to);
-            toAdd.add(newTransition);
-          }
-          toRemove.add(transition);
+          
+          
         }
       }
-      for (Iterator<Transition> toAddIt = toAdd.iterator(); toAddIt.hasNext();)
-        workingState.addTransition((Transition) toAddIt.next());
 
-      for (Iterator<Transition> toRemoveIt = toRemove.iterator(); toRemoveIt.hasNext();)
-        workingState.removeTransition((Transition) toRemoveIt.next());
+    } catch (CloneNotSupportedException e) {
+      e.printStackTrace();
     }
+
   }
 
+  
+//  /**
+//   * EPSILON REMOVAL FOR TRANSDUCERS cannot have epsilon loops!!!!! except for
+//   * epsilon/epsilon loops. removes epsilon-input labeled arcs. this is actually
+//   * changing the tffst semantics.
+//   * 
+//   */
+//  public void inLabelEpsilonRemoval() {
+//
+//    try {
+//      Set<State> workingStates = new HashSet<State>();
+//      workingStates.add(initial);
+//      State state;
+//      boolean removeState = false;
+//  
+//      while (!workingStates.isEmpty()) {
+//        removeState = true;
+//        state = workingStates.iterator().next();
+//        Set<Transition> toRemove = new HashSet<Transition>();
+//        Set<Transition> toAdd = new HashSet<Transition>();
+//        for (Transition t : state.transitions) {
+//          workingStates.add(t.to);
+//          for (Transition tNext : t.to.transitions) {
+//            if (tNext.labelIn.isEpsilon() && tNext.to.isAccept() && !tNext.to.equals(t.to)) {
+//              State newFinal = new State();
+//              newFinal.setAccept(true);
+//              Transition newT = t.clone();
+//              newT.to = newFinal;
+//              for (int i = 0; i < tNext.labelOut.size(); i++)
+//                newT.labelOut.add(tNext.labelOut.get(i));
+//              toAdd.add(newT);
+//              removeState = false;
+//            } else {
+//              if (t.labelIn.isEpsilon()) {
+//                if (t.to.isAccept()) {
+//                  toRemove.add(t);
+//                } else {
+//                  if (t.to.equals(state)) {
+//                    toRemove.add(t);
+//                  } else {
+//                    if (!(tNext.labelIn.isEpsilon() && tNext.to.equals(t.to))) {
+//                      Transition tNextClone = tNext.clone();
+//                      for (int i = 0; i < t.labelOut.size(); i++)
+//                        tNextClone.labelOut.add(i, t.labelOut.get(i));
+//                      toAdd.add(tNextClone);
+//                      removeState = false;
+//                    }
+//                    toRemove.add(t);
+//                  }
+//                }
+//              }
+//            }
+//          }
+//        }
+//        state.transitions.removeAll(toRemove);
+//        state.transitions.addAll(toAdd);
+//        if (removeState) workingStates.remove(state);
+//      }
+//    } catch (CloneNotSupportedException e) {
+//      e.printStackTrace();
+//    }
+//
+//  }
+//  
+  
+  
+  
+  
+  
   /**
    * returns a Tffsr representing this tffst. it expands subEpochs in simpe
    * pairts of TFs adding epsilons
@@ -672,7 +748,6 @@ public class Tffst implements Serializable {
    * numbers).
    */
   public Transition[][] getSortedTransitions() {
-    setStateNumbers();
     Transition[][] transitions = new Transition[getStates().size()][];
     Iterator<State> i = getStates().iterator();
     while (i.hasNext()) {
@@ -768,18 +843,23 @@ public class Tffst implements Serializable {
    * 
    */
   public Tffst kleene() {
-    Tffst a = clone();
-    State s = new State();
-    s.accept = true;
-    s.addEpsilon(a.initial);
+    Tffst a = null;
+    try {
+      a = clone();
+      State s = new State();
+      s.accept = true;
+      s.addEpsilon(a.initial);
 
-    for (State p : a.getAcceptStates())
-      p.addEpsilon(s);
+      for (State p : a.getAcceptStates())
+        p.addEpsilon(s);
 
-    a.initial = s;
+      a.initial = s;
 
-    a.deterministic = false;
-    a.checkMinimizeAlways();
+      a.deterministic = false;
+      a.checkMinimizeAlways();
+    } catch (CloneNotSupportedException e) {
+      e.printStackTrace();
+    }
     return a;
   }
 
@@ -805,34 +885,40 @@ public class Tffst implements Serializable {
    * <code>max</code>.
    */
   public Tffst kleene(int min, int max) {
-    if (min > max) return makeEmpty();
-    max -= min;
-    Tffst a;
-    if (min == 0) a = makeEmptyString();
-    else if (min == 1) a = (Tffst) clone();
-    else {
-      a = this;
-      while (--min > 0)
-        a = concatenate(a);
-    }
-    if (max == 0) return a;
-    Tffst d = (Tffst) clone();
-    while (--max > 0) {
-      Tffst c = (Tffst) clone();
-      Iterator<State> i = c.getAcceptStates().iterator();
+    
+    Tffst a = null;
+    
+    try {
+      if (min > max) return makeEmpty();
+      max -= min;
+      if (min == 0) a = makeEmptyString();
+      else if (min == 1) a = (Tffst) clone();
+      else {
+        a = this;
+        while (--min > 0)
+          a = concatenate(a);
+      }
+      if (max == 0) return a;
+      Tffst d = (Tffst) clone();
+      while (--max > 0) {
+        Tffst c = (Tffst) clone();
+        Iterator<State> i = c.getAcceptStates().iterator();
+        while (i.hasNext()) {
+          State p = i.next();
+          p.addEpsilon(d.initial);
+        }
+        d = c;
+      }
+      Iterator<State> i = a.getAcceptStates().iterator();
       while (i.hasNext()) {
         State p = i.next();
         p.addEpsilon(d.initial);
       }
-      d = c;
+      a.deterministic = false;
+      a.checkMinimizeAlways();
+    } catch (CloneNotSupportedException e) {
+      e.printStackTrace();
     }
-    Iterator<State> i = a.getAcceptStates().iterator();
-    while (i.hasNext()) {
-      State p = i.next();
-      p.addEpsilon(d.initial);
-    }
-    a.deterministic = false;
-    a.checkMinimizeAlways();
     return a;
   }
 
@@ -848,7 +934,7 @@ public class Tffst implements Serializable {
     tffsr.minimize();
     Tffst tffst = tffsr.toTffst();
     assign(tffst);
-    epsilonRemoval();
+    inLabelEpsilonRemoval();
   }
 
   /**
@@ -887,18 +973,18 @@ public class Tffst implements Serializable {
     initial = s;
   }
 
-  /**
-   * Assigns consecutive numbers to this tffst states. FIXED
-   */
-  public void setStateNumbers() {
-    Iterator<State> i = getStates().iterator();
-    int number = 0;
-    while (i.hasNext()) {
-      // System.out.println(number);
-      State s = i.next();
-      s.setNumber(number++);
-    }
-  }
+//  /**
+//   * Assigns consecutive numbers to this tffst states. FIXED
+//   */
+//  public void setStateNumbers() {
+//    Iterator<State> i = getStates().iterator();
+//    int number = 0;
+//    while (i.hasNext()) {
+//      // System.out.println(number);
+//      State s = i.next();
+//      s.setNumber(number++);
+//    }
+//  }
 
   /**
    * Returns <a href="http://www.research.att.com/sw/tools/graphviz/"
@@ -909,13 +995,12 @@ public class Tffst implements Serializable {
     StringBuffer b = new StringBuffer("digraph Tffst {\n"); //$NON-NLS-1$
     b.append("rankdir = \"LR\"\n;");
     b.append("label = \"").append(label).append("\"\n;");
-    setStateNumbers();
     Iterator<State> i = getStates().iterator();
     while (i.hasNext()) {
       State s = i.next();
       b.append("  ").append(s.getNumber()); //$NON-NLS-1$
-      if (s.accept) b
-          .append(" [shape=doublecircle,label=\"").append(s.getNumber()).append("\"];\n"); //$NON-NLS-1$
+      if (s.accept) 
+        b.append(" [shape=doublecircle,label=\"").append(s.getNumber()).append("\"];\n"); //$NON-NLS-1$
       else
         b.append(" [shape=circle,label=\"").append(s.getNumber()).append("\"];\n"); //$NON-NLS-1$
       if (s == initial) {
@@ -1033,7 +1118,6 @@ public class Tffst implements Serializable {
 
     simpleTffst.deterministic = deterministic;
     simpleTffst.info = info;
-    simpleTffst.setStateNumbers();// xop
     return simpleTffst;
   }
 
@@ -1075,14 +1159,19 @@ public class Tffst implements Serializable {
    * Complexity: linear in number of states.
    */
   public Tffst union(Tffst t) {
-    Tffst a = (Tffst) t.clone();
-    Tffst b = clone();
-    State s = new State();
-    s.addEpsilon(a.initial);
-    s.addEpsilon(b.initial);
-    a.initial = s;
-    a.deterministic = false;
-    a.checkMinimizeAlways();
+    Tffst a = null;
+    try {
+      a = (Tffst) t.clone();
+      Tffst b = clone();
+      State s = new State();
+      s.addEpsilon(a.initial);
+      s.addEpsilon(b.initial);
+      a.initial = s;
+      a.deterministic = false;
+      a.checkMinimizeAlways();
+    } catch (CloneNotSupportedException e) {
+      e.printStackTrace();
+    }
     return a;
   }
 
@@ -1092,7 +1181,6 @@ public class Tffst implements Serializable {
    */
   public String toString() {
     StringBuffer b = new StringBuffer();
-    setStateNumbers();
     b.append("initial state: ").append(initial.getNumber()).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
     Iterator<State> i = getStates().iterator();
     while (i.hasNext()) {
@@ -1185,7 +1273,7 @@ public class Tffst implements Serializable {
   private void determinize(Set<State> initialSetOfStates) {
 
     // removes all epsilon labels in the domain part
-    domainEpsilonsRemoval();
+    inLabelEpsilonRemoval();
     toSimpleInLabels();
     
     // stores new states
@@ -1231,7 +1319,7 @@ public class Tffst implements Serializable {
         }
       }
     }
-    epsilonRemoval();
+    inLabelEpsilonRemoval();
     removeDeadTransitions();
     deterministic = true;
   }

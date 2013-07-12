@@ -31,13 +31,13 @@ public class TestComposition1 {
       Tffst.setMinimizeAlways(false);
       
 
-// tffst1 before toSimpleTransitions:   <!C>/<!C>
-//                 <!D>/<!D>                    <!C>/<!C>
-//               ┌───────────┐                ┌───────────┐
-//               ▼           │                ▼           │
-//             ┌───────────────┐  <D>/<D>   ┌───────────────┐  C/CK  ╔═══╗
-//initial  ──▶ │       0       │ ─────────▶ │       1       │ ─────▶ ║ 2 ║
-//             └───────────────┘            └───────────────┘        ╚═══╝
+// tffst1 :   
+//                   <!D>/<!D>                
+//                 ┌───────────┐              
+//                 ▼           │              
+//               ┌───────────────┐  <D>/<D>   ╔═══╗
+//  initial  ──▶ │       0       │ ─────────▶ ║ 1 ║
+//               └───────────────┘            ╚═══╝
 
       
       Tffst tffst1 = new Tffst();
@@ -45,50 +45,31 @@ public class TestComposition1 {
       State s0 = new State();
       tffst1.setInitialState(s0);
       State s1 = new State();
-      State s2 = new State();
-      s2.setAccept(true);
+      s1.setAccept(true);
 
       s0.addTransition(new Transition(new SimpleTf("D"), new SimpleTf("D"), s1, 1));
       s0.addTransition(new Transition((new SimpleTf("D")).not(), (new SimpleTf("D")).not(), s0, 1));
-      s1.addTransition(new Transition((new SimpleTf("C")).not(), (new SimpleTf("C")).not(), s1, 1));
-      s1.addTransition(new Transition(new TfString(new SimpleTf("C")), (new TfString(
-      new SimpleTf("C"))).addRetTFString(new SimpleTf("K")), s2));
       
-      Utils.showDot(tffst1.toDot("tffst1 before toSimpleTransitions"));
+      Utils.showDot(tffst1.toDot("tffst1"));
       
-//      tffst1 simple transitions:
-//                       <!D>/<!D>                    <!C>/<!C>
-//                     ┌───────────┐                ┌───────────┐
-//                     ▼           │                ▼           │
-//                   ┌───────────────┐  <D>/<D>   ┌───────────────┐  C/C   ┌───┐  /K   ╔═══╗
-//      initial  ──▶ │       3       │ ─────────▶ │       2       │ ─────▶ │ 0 │ ────▶ ║ 1 ║
-//                   └───────────────┘            └───────────────┘        └───┘       ╚═══╝
-      
-      tffst1 = tffst1.toSimpleTransitions();
-      
-      Utils.showDot(tffst1.toDot("tffst1 simple transitions"));
 
-//            tffst2
-//      
-//                       <!E>/<!E>                    <!C>/<!C>             
-//                     ┌───────────┐                ┌───────────┐           
-//                     ▼           │                ▼           │           
-//                   ┌───────────────┐  <E>/<E>   ┌───────────────┐  C/C  ╔═══════════════╗
-//      initial  ──▶ │       20      │ ─────────▶ │       21      │ ────▶ ║       22      ║
-//                   └───────────────┘            └───────────────┘       ╚═══════════════╝
+// tffst2 :   
+//                   <!D>/<!D>                
+//                 ┌───────────┐              
+//                 ▼           │              
+//               ┌───────────────┐  <D>/<D>   ╔═══╗
+//  initial  ──▶ │       0       │ ─────────▶ ║ 1 ║
+//               └───────────────┘            ╚═══╝
       
       Tffst tffst2 = new Tffst();
 
       State s20 = new State();
       tffst2.setInitialState(s20);
       State s21 = new State();
-      State s22 = new State();
-      s22.setAccept(true);
+      s21.setAccept(true);
 
-      s20.addTransition(new Transition(new SimpleTf("E"), new SimpleTf("E"), s21, 1));
-      s20.addTransition(new Transition((new SimpleTf("E")).not(), (new SimpleTf("E")).not(), s20, 1));
-      s21.addTransition(new Transition((new SimpleTf("C")).not(), (new SimpleTf("C")).not(), s21, 1));
-      s21.addTransition(new Transition(new SimpleTf("C"),new SimpleTf("C") , s22));
+      s20.addTransition(new Transition((new SimpleTf("C")).not(), (new SimpleTf("C")).not(), s20, 1));
+      s20.addTransition(new Transition(new SimpleTf("C"),new SimpleTf("C") , s21, 1));
       
       Utils.showDot(tffst2.toDot("tffst2"));
       

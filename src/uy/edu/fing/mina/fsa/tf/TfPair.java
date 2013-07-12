@@ -56,19 +56,6 @@ public class TfPair extends SimpleTf {
     setNot(tf.isNot());
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
-  public boolean equals(Object o) {
-    if (super.equals(o) && o instanceof TfPair) {
-      TfPair tfp = (TfPair) o;
-      if (tfIn.equals(tfp.tfIn) && tfOut.equals(tfp.tfOut)) return true;
-    }
-    return false;
-  }
-
   /**
    * @return Returns the tfIn.
    */
@@ -213,7 +200,7 @@ public class TfPair extends SimpleTf {
   }
 
   @Override
-  public boolean isEpsilon() {
+  public boolean isEpsilon() { //FIXME 
     return false;
   }
 
@@ -228,6 +215,36 @@ public boolean in(TfI tf) {
 		return true;
 	
 	return false;
+}
+
+/* (non-Javadoc)
+ * @see java.lang.Object#hashCode()
+ */
+@Override
+public int hashCode() {
+  final int prime = 31;
+  int result = super.hashCode();
+  result = prime * result + ((tfIn == null) ? 0 : tfIn.hashCode());
+  result = prime * result + ((tfOut == null) ? 0 : tfOut.hashCode());
+  return result;
+}
+
+/* (non-Javadoc)
+ * @see java.lang.Object#equals(java.lang.Object)
+ */
+@Override
+public boolean equals(Object obj) {
+  if (this == obj) return true;
+  if (!super.equals(obj)) return false;
+  if (!(obj instanceof TfPair)) return false;
+  TfPair other = (TfPair) obj;
+  if (tfIn == null) {
+    if (other.tfIn != null) return false;
+  } else if (!tfIn.equals(other.tfIn)) return false;
+  if (tfOut == null) {
+    if (other.tfOut != null) return false;
+  } else if (!tfOut.equals(other.tfOut)) return false;
+  return true;
 }
 
 

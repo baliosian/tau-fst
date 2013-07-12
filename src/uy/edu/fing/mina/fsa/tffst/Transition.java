@@ -122,8 +122,9 @@ public class Transition implements Serializable {
    * Clones this transition.
    * 
    * @return clone with same character interval and destination state
+   * @throws CloneNotSupportedException 
    */
-  public Transition clone() {
+  public Transition clone() throws CloneNotSupportedException {
     return new Transition(this.labelIn.clone(), this.labelOut.clone(), to);
   }
 

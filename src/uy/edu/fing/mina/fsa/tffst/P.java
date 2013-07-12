@@ -29,38 +29,34 @@ public class P implements Set<ElementOfP> {
     return p.containsAll(c);
   }
 
-  public boolean equals(Object o) {
-    boolean out = true;
-    boolean in = true;
-
-    if (o instanceof P) {
-      P op = (P) o;
-
-      if (op.size() == this.size()) {
-        out = true;
-        for (ElementOfP eop : p) {
-          in = false;
-          for (ElementOfP eoop : op) 
-            if (in = eop.equals(eoop)) break;
-          out = out && in;
-        }
-        if (out) return true;
-      }
-    }
-
-    return false;
-  }
-
-  public int hashCode() {
-    int hashcode = 0;
-    for (ElementOfP eop : this) 
-      hashcode += eop.hashCode();
-    
-    return hashcode;
-  }
-
   public boolean isEmpty() {
     return p.isEmpty();
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((p == null) ? 0 : p.hashCode());
+    return result;
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (!(obj instanceof P)) return false;
+    P other = (P) obj;
+    if (p == null) {
+      if (other.p != null) return false;
+    } else if (!p.equals(other.p)) return false;
+    return true;
   }
 
   public Iterator<ElementOfP> iterator() {

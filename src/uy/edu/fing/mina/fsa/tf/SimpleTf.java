@@ -14,8 +14,6 @@ import uy.edu.fing.mina.fsa.utils.Configuration;
 
 public class SimpleTf extends Tf {
 
-    private static int sequence = 0;
-
     /**
      * Comment for <code>serialVersionUID</code>
      */
@@ -42,8 +40,6 @@ public class SimpleTf extends Tf {
 
     private boolean isEpsilon = false;
 
-    private int number;
-
     private String sLabel = null;
 
     private TfSymbol tfSymbol = null;
@@ -53,10 +49,8 @@ public class SimpleTf extends Tf {
 
     public SimpleTf() {
         super();
-        this.number = sequence;
         this.tfSymbol = new TfSymbol(this);
         setSLabel("All");
-        sequence++;
     }
     
     public SimpleTf(String sLabel) {
@@ -82,17 +76,23 @@ public class SimpleTf extends Tf {
             clon.setAcceptNone();
         
         clon.setTfSymbol(this.tfSymbol);
-        clon.setFormula(this.formula);
         
         return clon;
     }
 
+    
+    
+    
     /**
-     * Compares this object with the specified object for order. States are
-     * ordered by the time of construction.
+     * Compares this object with the specified object for order. 
      */
     public int compareTo(Object o) {
-        return ((SimpleTf) o).number - number;
+      if (o instanceof SimpleTf) {
+        SimpleTf stf = (SimpleTf) o;
+        return this.toString().compareTo(stf.toString());
+        
+      }
+        return Integer.MIN_VALUE;
     }
 
 
@@ -201,6 +201,7 @@ public class SimpleTf extends Tf {
             return false;
     }
 
+
     @Override
     public int hashCode() {
         return getTfSymbol().hashCode();
@@ -208,4 +209,5 @@ public class SimpleTf extends Tf {
 
 
 
+    
 }

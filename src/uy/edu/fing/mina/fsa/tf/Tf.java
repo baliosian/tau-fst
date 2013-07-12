@@ -33,9 +33,7 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
 
   private TfI identityTf = null;
   
-  private static int sequence=1;
-  
-  private int id;
+  private int id; //TODO check with lupa team if this can be removed
   
   private TfI refersTo = null;
   
@@ -60,7 +58,8 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
   public Tf(boolean not, String label) {
     super();
     this.not = not;
-    this.id=sequence++;
+    this.identityTf = null;
+    this.identityType = 0;
   }
 
   /**
@@ -188,7 +187,7 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
    * @return a simplified version of the formula. 
    */
   
-  public TfI andSimple(TfI tf) {
+  public TfI andSimple(TfI tf) {  //FIXME look at the (epsilon and *) case 
     TfI outTf;
 
     if (this.acceptsNone() || tf.acceptsNone()) {
@@ -219,7 +218,14 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
    * @see java.lang.Object#clone()
    */
   public Object clone() throws CloneNotSupportedException {
-    return super.clone();
+    Tf tf = (Tf) super.clone();
+    tf.formula = this.formula;
+    tf.id = this.id;
+    tf.identityTf = this.identityTf;
+    tf.identityType = this.identityType;
+    tf.not = this.not;
+    tf.refersTo = this.refersTo;
+    return tf;
   }
 
   /**
@@ -296,20 +302,6 @@ public void setNot(boolean not) {
     this.formula = getFormula().not();
 }
 
-@Override
-public boolean equals(Object obj) {
-  
-  if (obj instanceof TfI) {
-    TfI tfin = (TfI) obj;
-    return tfin.getName().equals(this.getName());
-  }
-  return false;
-}
-
-@Override
-public int hashCode() {
-  return getName().hashCode();
-}
 
 /**
  * Returns true if the tf is satisfiable. It must be overwritten by CompositeTf to make the composition work.  
@@ -329,6 +321,61 @@ public int getIdentityType() {
 public void setIdentityType(int identityType) {
   this.identityType = identityType;
 }
+
+/* (non-Javadoc)
+ * @see java.lang.Object#hashCode()
+ */
+@Override
+public int hashCode() {
+  final int prime = 31;
+  int result = 1;
+  result = prime * result + ((formula == null) ? 0 : formula.hashCode());
+  result = prime * result + id;
+  result = prime * result + ((identityTf == null) ? 0 : identityTf.hashCode());
+  result = prime * result + identityType;
+  result = prime * result + (not ? 1231 : 1237);
+  result = prime * result + ((refersTo == null) ? 0 : refersTo.hashCode());
+  return result;
+}
+
+/* (non-Javadoc)
+ * @see java.lang.Object#equals(java.lang.Object)
+ */
+@Override
+public boolean equals(Object obj) {
+  if (this == obj) return true;
+  if (obj == null) return false;
+  if (!(obj instanceof Tf)) return false;
+  Tf other = (Tf) obj;
+  if (formula == null) {
+    if (other.formula != null) return false;
+  } else if (!formula.equals(other.formula)) return false;
+  if (id != other.id) return false;
+  if (identityTf == null) {
+    if (other.identityTf != null) return false;
+  } else if (!identityTf.equals(other.identityTf)) return false;
+  if (identityType != other.identityType) return false;
+  if (not != other.not) return false;
+  if (refersTo == null) {
+    if (other.refersTo != null) return false;
+  } else if (!refersTo.equals(other.refersTo)) return false;
+  return true;
+}
+
+//@Override
+//public int hashCode() {
+//  return getName().hashCode();
+//}
+//
+//@Override
+//public boolean equals(Object obj) {
+//  
+//  if (obj instanceof TfI) {
+//    TfI tfin = (TfI) obj;
+//    return tfin.getName().equals(this.getName());
+//  }
+//  return false;
+//}
 
 
 

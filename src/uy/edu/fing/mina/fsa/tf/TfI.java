@@ -40,8 +40,6 @@ public interface TfI extends java.io.Serializable {
 
   public int compareTo(Object arg0);
 
-  public boolean equals(Object o);
-
   public TfI getIdentityTf();
 
   public void setIdentityTf(TfI labelIn);
@@ -75,5 +73,8 @@ public interface TfI extends java.io.Serializable {
   public void setRefersTo(TfI refersTo);
   
   public boolean satisfiable();
-
+  
+  public boolean equals(Object o);
+  
+  public int hashCode();
 }

@@ -63,7 +63,7 @@ public class TestEpsilonRem {
       tffst1 = tffst1.toSimpleTransitions();
       Utils.showDot(tffst1.toDot("tffst1"));
       
-      tffst1.epsilonRemoval();
+      tffst1.inLabelEpsilonRemoval();
       Utils.showDot(tffst1.toDot("tffst1 without epsilons"));
 
 //      tffst1.removeDeadTransitions();
