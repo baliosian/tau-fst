@@ -1229,11 +1229,11 @@ public class Tffst implements Serializable {
                                                // matching
               TfString newSE = new TfString();
               for (TfI tfpairp : pairP.arrivingTFs){
-                newSE.add(tfpairp);
-//              newSE.add(tfpairp.and(t.labelIn.get(0)));
+//              newSE.add(tfpairp);
+                newSE.add(tfpairp.andSimple(t.labelIn.get(0)));
               }
-//              newSE.add(t.labelOut.get(0).and(t.labelIn.get(0))); //TODO fix this to be more general
-              newSE.add(t.labelOut.get(0)); 
+              newSE.add(t.labelOut.get(0).andSimple(t.labelIn.get(0))); //TODO fix this to be more general
+//              newSE.add(t.labelOut.get(0)); 
               retPair = new ElementOfP(t.to, newSE);
               unionOfTransPelements.add(retPair);
             }

@@ -41,6 +41,8 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
   
   private int identityType = 0;
 
+  
+  
   public Tf() {
     this(false, "");
   }
@@ -120,10 +122,10 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
 
   
   /**
-   * The OR operator with an automatic Quinn-McCluskey simplification. 
-   *  
+   * The OR operator with an automatic Quinn-McCluskey simplification.
+   * 
    * @param tf
-   * @return a simplified version of the formula. 
+   * @return a simplified version of the formula.
    */
 
   public TfI orSimple(TfI tf) {
@@ -131,25 +133,29 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
 
     // --
     if (this.acceptsAll() || tf.acceptsAll()) {
-        SimpleTf stf = new SimpleTf();
-        stf.setAcceptAll();
-        outTf = stf;
-      } else if (this.acceptsNone()) {
-        outTf = tf;
-      } else if (tf.acceptsNone()) {
-        outTf = this;
-      } else if (this.equals(tf)) {
-        outTf = this;
-      } else if (this.equals(tf.not())) {
-        SimpleTf stf = new SimpleTf();
-        stf.setAcceptAll();
-        outTf = stf;
-      }else if (this instanceof SimpleTf && tf instanceof SimpleTf ) {
-        outTf = new CompositeTf(Operator.OR, this, tf);
-      } else {
-        outTf = new CompositeTf(Operator.OR, this, tf);
-        outTf = Utils.simplify(outTf);
-      }
+      SimpleTf stf = new SimpleTf();
+      stf.setAcceptAll();
+      outTf = stf;
+    } else if (this.isEpsilon()) {
+      outTf = tf;
+    } else if (tf.isEpsilon()) {
+      outTf = this;
+    } else if (this.acceptsNone()) {
+      outTf = tf;
+    } else if (tf.acceptsNone()) {
+      outTf = this;
+    } else if (this.equals(tf)) {
+      outTf = this;
+    } else if (this.equals(tf.not())) {
+      SimpleTf stf = new SimpleTf();
+      stf.setAcceptAll();
+      outTf = stf;
+    } else if (this instanceof SimpleTf && tf instanceof SimpleTf) {
+      outTf = new CompositeTf(Operator.OR, this, tf);
+    } else {
+      outTf = new CompositeTf(Operator.OR, this, tf);
+      outTf = Utils.simplify(outTf);
+    }
     // --
     return outTf;
   }
