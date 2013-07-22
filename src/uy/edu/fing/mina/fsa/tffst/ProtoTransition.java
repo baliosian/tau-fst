@@ -104,7 +104,6 @@ public class ProtoTransition {
   public TfString longestPrefix() {
 
     TfString outSE = new TfString();
-
     boolean match = true;
 
     if (unionOfTransP.size() != 0) {
@@ -127,6 +126,14 @@ public class ProtoTransition {
         }
       }
     }
+    
+    // I need to create a new P because comparison between sets does not tolerate changes in their elements.
+    P newP = new P(); 
+    for (ElementOfP elementOfP : unionOfTransP) {
+      newP.add(elementOfP);
+    } 
+    
+    this.unionOfTransP = newP; 
     return outSE;
   }
 

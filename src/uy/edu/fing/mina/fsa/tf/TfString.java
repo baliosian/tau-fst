@@ -140,27 +140,27 @@ public class TfString implements List<TfI> {// extends Tf implements List {
     return listOfTfs.containsAll(arg0);
   }
 
-  /**
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
-  public boolean equals(Object o) {
-
-    if (o instanceof TfString) {
-      TfString se = (TfString) o;
-      if (this.size() == se.size()) {
-        Iterator<TfI> itThis = this.listOfTfs.iterator();
-        for (Iterator<TfI> itThat = se.listOfTfs.iterator(); itThat.hasNext();) {
-          TfI thatElem = itThat.next();
-          TfI thisElem = itThis.next();
-          if (!thatElem.equals(thisElem)) return false;
-        }
-        return true;
-      }
-    } else if (size() == 1 && o instanceof TfI) {
-      if (get(0).equals(o)) return true;
-    }
-    return false;
-  }
+//  /**
+//   * @see java.lang.Object#equals(java.lang.Object)
+//   */
+//  public boolean equals(Object o) {
+//
+//    if (o instanceof TfString) {
+//      TfString se = (TfString) o;
+//      if (this.size() == se.size()) {
+//        Iterator<TfI> itThis = this.listOfTfs.iterator();
+//        for (Iterator<TfI> itThat = se.listOfTfs.iterator(); itThat.hasNext();) {
+//          TfI thatElem = itThat.next();
+//          TfI thisElem = itThis.next();
+//          if (!thatElem.equals(thisElem)) return false;
+//        }
+//        return true;
+//      }
+//    } else if (size() == 1 && o instanceof TfI) {
+//      if (get(0).equals(o)) return true;
+//    }
+//    return false;
+//  }
 
   public TfI get(int index) {
     return this.listOfTfs.get(index);
@@ -349,14 +349,45 @@ public class TfString implements List<TfI> {// extends Tf implements List {
     return listOfTfs.toArray(a);
   }
 
+  /* (non-Javadoc)
+   * @see java.lang.Object#hashCode()
+   */
   @Override
   public int hashCode() {
-    int out = 0;
-    for (Iterator<TfI> iterator = listOfTfs.iterator(); iterator.hasNext();) {
-      TfI tf = (TfI) iterator.next();
-      out += tf.hashCode() % Integer.MAX_VALUE;
-    }
-    return out;
+    final int prime = 31;
+    int result = 1;
+ 
+    if (isEpsilon())
+      result = prime * result + 0;
+    else 
+      result = prime * result + ((listOfTfs == null) ? 0 : listOfTfs.hashCode());
+    
+    return result;
   }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (!(obj instanceof TfString)) return false;
+    TfString other = (TfString) obj;
+    if (listOfTfs == null) {
+      if (other.listOfTfs != null) return false;
+    } else if (!listOfTfs.equals(other.listOfTfs)) return false;
+    return true;
+  }
+
+//  @Override
+//  public int hashCode() {
+//    int out = 0;
+//    for (Iterator<TfI> iterator = listOfTfs.iterator(); iterator.hasNext();) {
+//      TfI tf = (TfI) iterator.next();
+//      out += tf.hashCode() % Integer.MAX_VALUE;
+//    }
+//    return out;
+//  }
 
 }

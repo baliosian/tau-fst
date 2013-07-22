@@ -29,13 +29,11 @@ public class TestComposition3 {
    public static void main(String[] args) {
       
       Tffst.setMinimizeAlways(false);
-      
 
 // tffst1 :                                                          
 //               ┌───┐  A/A    ┌───┐  B/e   ┌───┐  C/e   ┌───┐  D/D  ╔═══╗
 //  initial  ──▶ │ 0 │ ─────▶  │ 1 │ ─────▶ │ 2 │ ─────▶ │ 3 │ ─────▶║ 4 ║
 //               └───┘         └───┘        └───┘        └───┘       ╚═══╝
-
       
       Tffst tffst1 = new Tffst();
 
@@ -53,7 +51,6 @@ public class TestComposition3 {
       s3.addTransition(new Transition(new SimpleTf("D"), new SimpleTf("D"), s4));
       
       Utils.showDot(tffst1.toDot("tffst1"));
-      
 
 // tffst1 :                                                          
 //               ┌───┐  A/D    ┌───┐  e/E   ┌───┐  D/A  ╔═══╗

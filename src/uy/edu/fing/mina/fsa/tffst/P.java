@@ -7,7 +7,12 @@ import java.util.Set;
 
 public class P implements Set<ElementOfP> {
   
-  Set<ElementOfP> p = new HashSet<ElementOfP>();
+  private Set<ElementOfP> p;
+  
+  public P() {
+    super();
+    this.p = new HashSet<ElementOfP>();
+  }
 
   public boolean add(ElementOfP e) {
     return p.add(e);
@@ -41,6 +46,9 @@ public class P implements Set<ElementOfP> {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((p == null) ? 0 : p.hashCode());
+    
+    System.out.println("P.hashcode " + this + " " + result);
+    
     return result;
   }
 
@@ -53,9 +61,13 @@ public class P implements Set<ElementOfP> {
     if (obj == null) return false;
     if (!(obj instanceof P)) return false;
     P other = (P) obj;
+
     if (p == null) {
-      if (other.p != null) return false;
-    } else if (!p.equals(other.p)) return false;
+      if (other.p != null) 
+        return false;
+    } else if (!p.equals(other.p)) 
+      return false;
+    
     return true;
   }
 

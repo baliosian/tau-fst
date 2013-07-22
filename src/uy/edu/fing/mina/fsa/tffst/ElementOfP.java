@@ -6,9 +6,6 @@
  * */
 package uy.edu.fing.mina.fsa.tffst;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import uy.edu.fing.mina.fsa.tf.TfString;
 
 
@@ -19,7 +16,7 @@ import uy.edu.fing.mina.fsa.tf.TfString;
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
 
-public class ElementOfP implements Comparable<ElementOfP> {
+public class ElementOfP {
 
    /**
     * 
@@ -36,7 +33,7 @@ public class ElementOfP implements Comparable<ElementOfP> {
    State state;
 
    
-   Map<Transition,Transition> usedTrans = new HashMap<Transition,Transition>();
+   //Map<Transition,Transition> usedTrans = new HashMap<Transition,Transition>();
 
    /**
     * @param state
@@ -48,28 +45,28 @@ public class ElementOfP implements Comparable<ElementOfP> {
       this.arrivingTFs = arriving;
    }
 
-   /**
-    * @param to
-    * @param newSE
-    * @param newMap
-    */
-   public ElementOfP(State to, TfString newSE, Map<Transition,Transition> newMap) {
-      this(to,newSE);
-      this.usedTrans = newMap;
-   }
+//   /**
+//    * @param to
+//    * @param newSE
+//    * @param newMap
+//    */
+//   public ElementOfP(State to, TfString newSE, Map<Transition,Transition> newMap) {
+//      this(to,newSE);
+//      //this.usedTrans = newMap;
+//   }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Comparable#compareTo(java.lang.Object)
-    */
-   public int compareTo(ElementOfP compTo) {
-      
-      if (this.state.compareTo(compTo.state) == 0 ){
-         return this.arrivingTFs.compareTo(compTo.arrivingTFs); 
-      } else 
-         return this.state.compareTo(compTo.state);
-   }
+//   /*
+//    * (non-Javadoc)
+//    * 
+//    * @see java.lang.Comparable#compareTo(java.lang.Object)
+//    */
+//   public int compareTo(ElementOfP compTo) {
+//      
+//      if (this.state.compareTo(compTo.state) == 0 ){
+//         return this.arrivingTFs.compareTo(compTo.arrivingTFs); 
+//      } else 
+//         return this.state.compareTo(compTo.state);
+//   }
 
    /* (non-Javadoc)
    * @see java.lang.Object#hashCode()
@@ -80,7 +77,10 @@ public class ElementOfP implements Comparable<ElementOfP> {
     int result = 1;
     result = prime * result + ((arrivingTFs == null) ? 0 : arrivingTFs.hashCode());
     result = prime * result + ((state == null) ? 0 : state.hashCode());
-    result = prime * result + ((usedTrans == null) ? 0 : usedTrans.hashCode());
+    //result = prime * result + ((usedTrans == null) ? 0 : usedTrans.hashCode());
+    
+    System.out.println("ElementOfP.hashcode " + this + " " + result);
+    
     return result;
   }
 
@@ -89,20 +89,21 @@ public class ElementOfP implements Comparable<ElementOfP> {
    */
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (!(obj instanceof ElementOfP)) return false;
+    boolean ret = true;
+    if (this == obj) ret = true;
+    if (obj == null) ret = false;
+    if (!(obj instanceof ElementOfP)) ret = false;
     ElementOfP other = (ElementOfP) obj;
     if (arrivingTFs == null) {
-      if (other.arrivingTFs != null) return false;
-    } else if (!arrivingTFs.equals(other.arrivingTFs)) return false;
+      if (other.arrivingTFs != null) ret = false;
+    } else if (!arrivingTFs.equals(other.arrivingTFs)) ret = false;
     if (state == null) {
-      if (other.state != null) return false;
-    } else if (!state.equals(other.state)) return false;
-    if (usedTrans == null) {
-      if (other.usedTrans != null) return false;
-    } else if (!usedTrans.equals(other.usedTrans)) return false;
-    return true;
+      if (other.state != null) ret = false;
+    } else if (!state.equals(other.state)) ret = false;
+
+    System.out.println("ElementOfP.equal " + this + " " + obj);
+    
+    return ret;
   }
 
    /*

@@ -83,35 +83,40 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
   abstract public boolean acceptsNone();
 
   /**
-   * The OR operator with no simplification, Except for the basic ones such as A OR {} -> A
+   * The OR operator with no simplification, Except for the basic ones such as A
+   * OR {} -> A
    * 
    * @param tf
    * @return
-   *  
+   * 
    */
-    public TfI or(TfI tf) {
-        TfI outTf;
+  public TfI or(TfI tf) {
+    TfI outTf;
 
-        if (this.acceptsAll() || tf.acceptsAll()) {
-            SimpleTf stf = new SimpleTf();
-            stf.setAcceptAll();
-            outTf = stf;
-          } else if (this.acceptsNone()) {
-            outTf = tf;
-          } else if (tf.acceptsNone()) {
-            outTf = this;
-          } else if (this.equals(tf)) {
-            outTf = this;
-          } else if (this.equals(tf.not())) {
-            SimpleTf stf = new SimpleTf();
-            stf.setAcceptAll();
-            outTf = stf;
-          } else {
-            outTf = new CompositeTf(Operator.OR, this, tf);
-          }
+    if (this.acceptsAll() || tf.acceptsAll()) {
+      SimpleTf stf = new SimpleTf();
+      stf.setAcceptAll();
+      outTf = stf;
+    } else if (this.isEpsilon()) {
+      outTf = tf;
+    } else if (tf.isEpsilon()) {
+      outTf = this;
+    } else if (this.acceptsNone()) {
+      outTf = tf;
+    } else if (tf.acceptsNone()) {
+      outTf = this;
+    } else if (this.equals(tf)) {
+      outTf = this;
+    } else if (this.equals(tf.not())) {
+      SimpleTf stf = new SimpleTf();
+      stf.setAcceptAll();
+      outTf = stf;
+    } else {
+      outTf = new CompositeTf(Operator.OR, this, tf);
+    }
 
-        return outTf;
-      }
+    return outTf;
+  }
 
   
   /**
@@ -155,7 +160,7 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
    *  
    */
   
-  public TfI and(TfI tf) {
+  public TfI and(TfI tf) { //FIXME arreglar lo de los epsilons
     TfI outTf;
 
     if (this.acceptsNone() || tf.acceptsNone()) {

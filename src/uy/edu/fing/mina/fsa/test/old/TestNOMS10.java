@@ -50,25 +50,25 @@ public class TestNOMS10 {
 		s1.addTransition(trans1);
 		s1.addTransition(trans2);
 
-		Tffst rule1b = new Tffst();
+//		Tffst rule1b = new Tffst();
+//		
+//		State s0b = new State();
+//		rule1b.setInitialState(s0b);
+//		State s1b = new State();
+//		State s2b = new State();
+//		s2b.setAccept(true);
+//
+//		Transition trans0b = new Transition(ev2, act1, s1b);				
+//		Transition trans1b = new Transition(ev1.not(), act1, s1b);
+//		Transition trans2b = new Transition(ev1, act2, s2b);
+//
+//		s0b.addTransition(trans0b);
+//		s1b.addTransition(trans1b);
+//		s1b.addTransition(trans2b);
+//
+//		return rule1a.union(rule1b);
 		
-		State s0b = new State();
-		rule1b.setInitialState(s0b);
-		State s1b = new State();
-		State s2b = new State();
-		s2b.setAccept(true);
-
-		Transition trans0b = new Transition(ev2, act1, s1b);				
-		Transition trans1b = new Transition(ev1.not(), act1, s1b);
-		Transition trans2b = new Transition(ev1, act2, s2b);
-
-		s0b.addTransition(trans0b);
-		s1b.addTransition(trans1b);
-		s1b.addTransition(trans2b);
-
-		return rule1a.union(rule1b);
-		
-		//return rule1a;
+		return rule1a;
 		
 	}
 		
@@ -132,34 +132,34 @@ public class TestNOMS10 {
 		List<Tffst> rules = new ArrayList<Tffst>();
 
 		//rule 1: if is\_high($T/H$) and increasing($T/H$) then turn\_on($GW_H$)
-		rules.add(TestNOMS10.ruletypeA(etf_ih, etf_ii, atf_Eps, atf_tongwh));
+		rules.add(TestNOMS10.ruletypeA(etf_ih, etf_ii, atf_Eps, atf_tongwh)); 
 		
-		//if is\_high($T/H$) and steady($T/H$) then turn\_on($GW_H$)
+//		//if is\_high($T/H$) and steady($T/H$) then turn\_on($GW_H$)
 		rules.add(TestNOMS10.ruletypeA(etf_ih, etf_is, atf_Eps, atf_tongwh));
-		
-		//if is\_low($T/H$) and steady($T/H$) then turn\_off($GW_H$)
-		rules.add(TestNOMS10.ruletypeA(etf_il, etf_is, atf_Eps, atf_toffgwh));
-
-		//if is\_low($T/H$) and decreasing($T/H$) then turn\_off($GW_H$)
-		rules.add(TestNOMS10.ruletypeA(etf_il, etf_id, atf_Eps, atf_toffgwh));
-
-		//if is\_low($T/H$) and increasing($T/H$) then decrease\_price\_fast
-		rules.add(TestNOMS10.ruletypeA(etf_il, etf_ii, atf_Eps, atf_dpf));
-				
-		//if is\_medium($T/H$) and steady($T/H$) then decrease\_price\_slow
-		rules.add(TestNOMS10.ruletypeA(etf_im, etf_is, atf_Eps, atf_dps));
-
-		//if is\_medium($T/H$) and decreasing($T/H$) then  decrease\_price\_fast
-		rules.add(TestNOMS10.ruletypeA(etf_im, etf_id, atf_Eps, atf_dpf));
-		
-		//if is\_high($T/H$) and steady($T/H$) then increase\_price\_slow
-		rules.add(TestNOMS10.ruletypeA(etf_ih, etf_is, atf_Eps, atf_ips));
-		
-		//if is\_high($T/H$) and decreasing($T/H$) then  decrease\_price\_slow
-		rules.add(TestNOMS10.ruletypeA(etf_ih, etf_id, atf_Eps, atf_dps));
-		
-		//if is\_high($T/H$) and increasing($T/H$) then increase\_price\_fast
-		rules.add(TestNOMS10.ruletypeA(etf_ih, etf_ii, atf_Eps, atf_ipf));
+//		
+//		//if is\_low($T/H$) and steady($T/H$) then turn\_off($GW_H$)
+//		rules.add(TestNOMS10.ruletypeA(etf_il, etf_is, atf_Eps, atf_toffgwh));
+//
+//		//if is\_low($T/H$) and decreasing($T/H$) then turn\_off($GW_H$)
+//		rules.add(TestNOMS10.ruletypeA(etf_il, etf_id, atf_Eps, atf_toffgwh));
+//
+//		//if is\_low($T/H$) and increasing($T/H$) then decrease\_price\_fast
+//		rules.add(TestNOMS10.ruletypeA(etf_il, etf_ii, atf_Eps, atf_dpf));
+//				
+//		//if is\_medium($T/H$) and steady($T/H$) then decrease\_price\_slow
+//		rules.add(TestNOMS10.ruletypeA(etf_im, etf_is, atf_Eps, atf_dps));
+//
+//		//if is\_medium($T/H$) and decreasing($T/H$) then  decrease\_price\_fast
+//		rules.add(TestNOMS10.ruletypeA(etf_im, etf_id, atf_Eps, atf_dpf));
+//		
+//		//if is\_high($T/H$) and steady($T/H$) then increase\_price\_slow
+//		rules.add(TestNOMS10.ruletypeA(etf_ih, etf_is, atf_Eps, atf_ips));
+//		
+//		//if is\_high($T/H$) and decreasing($T/H$) then  decrease\_price\_slow
+//		rules.add(TestNOMS10.ruletypeA(etf_ih, etf_id, atf_Eps, atf_dps));
+//		
+//		//if is\_high($T/H$) and increasing($T/H$) then increase\_price\_fast
+//		rules.add(TestNOMS10.ruletypeA(etf_ih, etf_ii, atf_Eps, atf_ipf));
 		
 //
 //		if new\_price(gwX) and\\ price(gwX) < current\_price(defaultGW)\\ then setGW(gwX)
