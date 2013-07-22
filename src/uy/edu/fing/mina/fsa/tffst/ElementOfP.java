@@ -78,9 +78,6 @@ public class ElementOfP {
     result = prime * result + ((arrivingTFs == null) ? 0 : arrivingTFs.hashCode());
     result = prime * result + ((state == null) ? 0 : state.hashCode());
     //result = prime * result + ((usedTrans == null) ? 0 : usedTrans.hashCode());
-    
-    System.out.println("ElementOfP.hashcode " + this + " " + result);
-    
     return result;
   }
 
@@ -100,9 +97,6 @@ public class ElementOfP {
     if (state == null) {
       if (other.state != null) ret = false;
     } else if (!state.equals(other.state)) ret = false;
-
-    System.out.println("ElementOfP.equal " + this + " " + obj);
-    
     return ret;
   }
 

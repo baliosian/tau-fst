@@ -46,9 +46,6 @@ public class P implements Set<ElementOfP> {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((p == null) ? 0 : p.hashCode());
-    
-    System.out.println("P.hashcode " + this + " " + result);
-    
     return result;
   }
 
