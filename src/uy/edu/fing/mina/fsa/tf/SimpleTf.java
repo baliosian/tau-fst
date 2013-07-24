@@ -136,7 +136,7 @@ public class SimpleTf extends Tf {
         setSLabel(Configuration.getString("SimpleTf.epsilon"));
     }
 
-    public void setSLabel(String label) {
+    public void setSLabel(String label) { // TODO cambiar a setLabel
         sLabel = label;
         this.tfSymbol.setSignifier(this.getName());
         this.setFormula(cl.createSymbol(this.getTfSymbol()));
@@ -206,7 +206,6 @@ public class SimpleTf extends Tf {
     public int hashCode() {
         return getTfSymbol().hashCode();
     }
-
 
 
     

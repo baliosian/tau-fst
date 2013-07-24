@@ -77,4 +77,9 @@ public interface TfI extends java.io.Serializable {
   public boolean equals(Object o);
   
   public int hashCode();
+  
+  public float getWeight();
+  
+  public void setWeight(float weight);
+  
 }

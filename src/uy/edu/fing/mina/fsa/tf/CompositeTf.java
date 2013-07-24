@@ -20,11 +20,11 @@ public class CompositeTf extends Tf {
    */
   private static final long serialVersionUID = 1L;
 
-  public TfI leftTf;
+  public TfI left;
 
-  public String operator;
+  public String op;
 
-  public TfI rightTf;
+  public TfI right;
   
   public CompositeTf() {
     super();
@@ -33,9 +33,9 @@ public class CompositeTf extends Tf {
   public CompositeTf(String op, TfI leftTf, TfI rightTf) {
     super();
     
-    this.operator = op;
-    this.leftTf = leftTf;
-    this.rightTf = rightTf;
+    this.op = op;
+    this.left = leftTf;
+    this.right = rightTf;
     
     this.getFormula();
     
@@ -90,8 +90,8 @@ public class CompositeTf extends Tf {
     } else {
       if (tf instanceof CompositeTf) {
         CompositeTf ctf = (CompositeTf) tf;
-        listOfTfs.addAll(ctfToArrayList(ctf.leftTf));
-        listOfTfs.addAll(ctfToArrayList(ctf.rightTf));
+        listOfTfs.addAll(ctfToArrayList(ctf.left));
+        listOfTfs.addAll(ctfToArrayList(ctf.right));
       }
     }
     return listOfTfs;
@@ -100,16 +100,16 @@ public class CompositeTf extends Tf {
   public Object clone() throws CloneNotSupportedException {
     CompositeTf clon = (CompositeTf) super.clone();
 
-    if (leftTf instanceof SimpleTf)
-      clon.leftTf = leftTf;
+    if (left instanceof SimpleTf)
+      clon.left = left;
     else
-      clon.leftTf = (TfI) leftTf.clone();
-    if (rightTf instanceof SimpleTf)
-      clon.rightTf = rightTf;
+      clon.left = (TfI) left.clone();
+    if (right instanceof SimpleTf)
+      clon.right = right;
     else
-      clon.rightTf = (TfI) rightTf.clone();
+      clon.right = (TfI) right.clone();
     
-    clon.operator = operator;
+    clon.op = op;
     
     clon.formula = formula;
 
@@ -119,10 +119,10 @@ public class CompositeTf extends Tf {
   public boolean equals(Object o) {
         if (o instanceof CompositeTf) {
             CompositeTf ctf = (CompositeTf) o;
-            if (ctf.operator == operator
+            if (ctf.op == op
                     && ctf.isEpsilon() == isEpsilon()
                     && ctf.isNot() == isNot()
-                    && ctf.leftTf.equals(leftTf) && ctf.rightTf.equals(rightTf))
+                    && ctf.left.equals(left) && ctf.right.equals(right))
                 return true;
         }
         return false;
@@ -159,21 +159,21 @@ public class CompositeTf extends Tf {
    * @return Returns the leftTf.
    */
   public TfI getLeftTf() {
-    return leftTf;
+    return left;
   }
 
   /**
    * @return Returns the operator.
    */
   public String getOperator() {
-    return operator;
+    return op;
   }
 
   /**
    * @return Returns the rightTf.
    */
   public TfI getRightTf() {
-    return rightTf;
+    return right;
   }
 
   /**
@@ -181,7 +181,7 @@ public class CompositeTf extends Tf {
    *          The leftTf to set.
    */
   public void setLeftTf(TfI leftTf) {
-    this.leftTf = leftTf;
+    this.left = leftTf;
   }
 
   /**
@@ -189,7 +189,7 @@ public class CompositeTf extends Tf {
    *          The operator to set.
    */
   public void setOperator(String operator) {
-    this.operator = operator;
+    this.op = operator;
   }
 
   /**
@@ -197,7 +197,7 @@ public class CompositeTf extends Tf {
    *          The rightTf to set.
    */
   public void setRightTf(TfI rightTf) {
-    this.rightTf = rightTf;
+    this.right = rightTf;
   }
 
 //  /**
@@ -242,7 +242,7 @@ public class CompositeTf extends Tf {
 
   /** */
   public String toString() {
-      return isNot() ? "!" : "" + "(" + leftTf.toString() + " " + operator + " " +  rightTf.toString() + ")";
+      return isNot() ? "!" : "" + "(" + left.toString() + " " + op + " " +  right.toString() + ")";
   }
 
   /*
@@ -251,7 +251,7 @@ public class CompositeTf extends Tf {
    * @see uy.edu.fing.mina.omega.tffst.utils.tf.TfI#size()
    */
   public int size() {
-    return this.leftTf.size() + this.rightTf.size();
+    return this.left.size() + this.right.size();
   }
 
   /*
@@ -263,9 +263,9 @@ public class CompositeTf extends Tf {
     int ret = 0;
     if (arg0 instanceof CompositeTf) {
       CompositeTf ctf = (CompositeTf) arg0;
-      ret = this.leftTf.compareTo(ctf.leftTf);
+      ret = this.left.compareTo(ctf.left);
       if (ret == 0)
-        ret = this.rightTf.compareTo(ctf.rightTf);
+        ret = this.right.compareTo(ctf.right);
       else
         return ret;
     } else {
@@ -287,7 +287,7 @@ public class CompositeTf extends Tf {
 
   @Override
   public String getName() {
-    return isNot() ? "!" : "" + "(" + leftTf.getName() + " " + operator + " " +  rightTf.getName() + ")";
+    return isNot() ? "!" : "" + "(" + left.getName() + " " + op + " " +  right.getName() + ")";
   }
 
   @Override
@@ -296,10 +296,10 @@ public class CompositeTf extends Tf {
   }
 
   public Formula getFormula() {
-    if (operator.equals(Operator.AND))
-      this.formula = leftTf.getFormula().and(rightTf.getFormula());
-    if (operator.equals(Operator.OR))
-      this.formula = leftTf.getFormula().or(rightTf.getFormula());
+    if (op.equals(Operator.AND))
+      this.formula = left.getFormula().and(right.getFormula());
+    if (op.equals(Operator.OR))
+      this.formula = left.getFormula().or(right.getFormula());
     return this.formula;
   }
 
@@ -317,7 +317,7 @@ public boolean in(TfI tf) {
 
 @Override
 public int hashCode() {
-    return (leftTf.hashCode() + rightTf.hashCode() + operator.hashCode())%Integer.MAX_VALUE;
+    return (left.hashCode() + right.hashCode() + op.hashCode())%Integer.MAX_VALUE;
 }
 
 /**
@@ -380,7 +380,255 @@ public int hashCode() {
     }
  }
 
+ 
+  /**
+   * Recursively uses the de Morgan theorem to push NOTs to the leaves. Recurses
+   * all the way to the leaves and works backwards, i.e. depth-first processing
+   * 
+   * <ul>
+   * <li>NOT(a AND b) -> NOT(a) OR NOT(b)</li>
+   * <li>NOT(a OR b) -> NOT(a) AND NOT(b)</li>
+   * </ul>
+   * 
+   * @param expression
+   * @return
+   */
+  public CompositeTf pushNotsDown() {
+    CompositeTf ret = new CompositeTf();
+    try {
+      if (this.not) {
+        if (left instanceof SimpleTf) 
+          ret.left = ((SimpleTf) left.clone()).not();
+        else 
+          ret.left = ((CompositeTf) left).pushNotsDown();
+        
+        if (right instanceof SimpleTf) 
+          ret.right = ((SimpleTf) right.clone()).not();
+        else 
+          ret.right = ((CompositeTf) right).pushNotsDown();
 
+        if (op.equals(Operator.AND)) 
+          ret.op = Operator.OR;
+        else 
+          ret.op = Operator.AND;
+        return ret;
+      } else {
+        if (left instanceof SimpleTf) 
+          ret.left = ((SimpleTf) left.clone());
+        else 
+          ret.left = ((CompositeTf) left).pushNotsDown();
+        
+        if (right instanceof SimpleTf) 
+          ret.right = ((SimpleTf) right.clone());
+        else 
+          ret.right = ((CompositeTf) right).pushNotsDown();
+        ret.op = op;
+        return ret;
+      }
+    } catch (CloneNotSupportedException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
 
+  /**
+   * 
+   * transform this tf to its dnf. assumes all negatives where pushed down to
+   * the leaves and aplies 
+   * 
+   * a∧(b∨c)=(a∧b)∨(a∧c) 
+   * (a∨b)∧(c∨d)=((a∧c)v(a∧d))v((b∧c)v(b∧d))
+   * 
+   * @return
+   */
+  
+  public CompositeTf pushORsUP() {
 
+    CompositeTf ret = new CompositeTf();
+
+    try {
+      if (op.equals(Operator.AND)) {
+        if (left instanceof CompositeTf) {
+          ret.left = ((CompositeTf) left).pushORsUP();
+          if (right instanceof CompositeTf) {
+            ret.right = ((CompositeTf) right).pushORsUP();
+            if (((CompositeTf) ret.left).op.equals(Operator.OR)) {
+              if (((CompositeTf) ret.right).op.equals(Operator.OR)) {
+                //  (a∨b)∧(c∨d)=((a∧c)v(a∧d))v((b∧c)v(b∧d)) 
+                CompositeTf newl  = new CompositeTf();
+                CompositeTf newr  = new CompositeTf();
+                CompositeTf newll = new CompositeTf();
+                CompositeTf newlr = new CompositeTf();
+                CompositeTf newrl = new CompositeTf();
+                CompositeTf newrr = new CompositeTf();
+                
+                newll.left  = ((CompositeTf) ret.left).left; 
+                newll.right = ((CompositeTf) ret.right).left; 
+                newll.op    = Operator.AND;
+
+                newlr.left  = ((CompositeTf) ret.left).left; 
+                newlr.right = ((CompositeTf) ret.right).right; 
+                newlr.op    = Operator.AND;
+                
+                newrl.left  = ((CompositeTf) ret.left).right; 
+                newrl.right = ((CompositeTf) ret.right).left; 
+                newrl.op    = Operator.AND;
+                
+                newrr.left  = ((CompositeTf) ret.left).right; 
+                newrr.right = ((CompositeTf) ret.right).right; 
+                newrr.op    = Operator.AND;
+                
+                newl.left  = newll;
+                newl.right = newlr;
+                newl.op    = Operator.OR;
+
+                newr.left  = newrl;
+                newr.right = newrr;
+                newr.op    = Operator.OR;
+                
+                ret.left  = newl;
+                ret.right = newr;
+                ret.op    = Operator.OR;
+                
+                return ret;
+              } else { 
+                //  (a∨b)∧(c∧d)=(a∧(c∧d))v(b∧(c∧d)) 
+                
+                CompositeTf newl  = new CompositeTf();
+                CompositeTf newr  = new CompositeTf();
+                
+                CompositeTf newlr = new CompositeTf();
+                CompositeTf newrr = new CompositeTf();
+                
+                newlr.left  = ((CompositeTf) ret.right).left; 
+                newlr.right = ((CompositeTf) ret.right).right; 
+                newlr.op    = Operator.AND;
+                
+                newrr.left  = ((CompositeTf) ret.right).left; 
+                newrr.right = ((CompositeTf) ret.right).right; 
+                newrr.op    = Operator.AND;
+                
+                newl.left  = ((CompositeTf) ret.left).left;
+                newl.right = newlr;
+                newl.op    = Operator.AND;
+
+                newr.left  = ((CompositeTf) ret.left).right;
+                newr.right = newrr;
+                newr.op    = Operator.AND;
+                
+                ret.left  = newl;
+                ret.right = newr;
+                ret.op    = Operator.OR;
+                
+                return ret;
+              }
+            } else { //left is not OR 
+              if (((CompositeTf) ret.right).op.equals(Operator.OR)) {
+                //  (a∧b)∧(cvd)=((a∧b)∧c)v((a∧b)∧d) 
+                
+                CompositeTf newl  = new CompositeTf();
+                CompositeTf newr  = new CompositeTf();
+                
+                CompositeTf newll = new CompositeTf();
+                CompositeTf newrl = new CompositeTf();
+                
+                newll.left  = ((CompositeTf) ret.left).left; 
+                newll.right = ((CompositeTf) ret.left).right; 
+                newll.op    = Operator.AND;
+                
+                newrl.left  = ((CompositeTf) ret.left).left; 
+                newrl.right = ((CompositeTf) ret.left).right; 
+                newrl.op    = Operator.AND;
+                
+                newl.left  = newll;
+                newl.right = ((CompositeTf) ret.right).left;
+                newl.op    = Operator.AND;
+
+                newr.left  = newrl;
+                newr.right = ((CompositeTf) ret.right).right;
+                newr.op    = Operator.AND;
+                
+                ret.left  = newl;
+                ret.right = newr;
+                ret.op    = Operator.OR;
+                
+                return ret;
+              } else { // both are AND  
+                ret.op = op;
+                return ret; 
+              }
+            } 
+          } else { // right is simple
+            ret.right = (SimpleTf) right.clone();
+            if (((CompositeTf) ret.left).op.equals(Operator.OR)) {
+              // (b∨c)∧a=(a∧b)∨(a∧c)
+              
+              CompositeTf newltf = new CompositeTf();
+              newltf.left = ret.right;
+              newltf.right = ((CompositeTf) ret.left).left;
+              newltf.op = Operator.AND;
+              
+              CompositeTf newrtf = new CompositeTf();
+              newrtf.left = ret.right;
+              newrtf.right = ((CompositeTf) ret.left).right;
+              newrtf.op = Operator.AND;
+              
+              ret.left = newltf;
+              ret.right = newrtf;
+              ret.op = Operator.OR;
+              
+              return ret;
+
+            } else { // both are AND
+              ret.op = op;
+              return ret;
+            }
+          }
+        } else { // left is simple
+          ret.left = (SimpleTf) left.clone();
+          if (right instanceof CompositeTf) {
+            ret.right = ((CompositeTf) right).pushORsUP();
+            if (((CompositeTf) ret.right).op.equals(Operator.OR)) {
+              //a∧(b∨c)=(a∧b)∨(a∧c) 
+              
+              CompositeTf newltf = new CompositeTf();
+              newltf.left = ret.left;
+              newltf.right = ((CompositeTf) ret.right).left;
+              newltf.op = Operator.AND;
+              
+              CompositeTf newrtf = new CompositeTf();
+              newrtf.left = ret.left;
+              newrtf.right = ((CompositeTf) ret.right).right;
+              newrtf.op = Operator.AND;
+              
+              ret.left = newltf;
+              ret.right = newrtf;
+              ret.op = Operator.OR;
+              
+              return ret;
+
+            } else { // right is AND 
+              ret.op = op;
+              return ret;
+            }
+          } else { // both are simple
+            ret.right = (SimpleTf) right.clone();
+            ret.op = op;
+            return ret;
+          }
+        }
+      } else {
+        return (CompositeTf) this.clone();
+      }
+    } catch (CloneNotSupportedException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  public CompositeTf toDNF() {
+    CompositeTf ctf = pushNotsDown();
+    return ctf.pushORsUP();
+  }
+  
  }

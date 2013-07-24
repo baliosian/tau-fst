@@ -163,8 +163,8 @@ public class LupaExporter {
 		String functionName = functionName(tfi);
 		if(tfi instanceof CompositeTf){
 			compositeActions.put(functionName, tfi);
-			loadActions(((CompositeTf) tfi).leftTf);
-			loadActions(((CompositeTf) tfi).rightTf);
+			loadActions(((CompositeTf) tfi).left);
+			loadActions(((CompositeTf) tfi).right);
 			
 		}
 		else if(tfi instanceof ActionTf){
@@ -187,8 +187,8 @@ public class LupaExporter {
 		String functionName = functionName(tfi);
 		if(tfi instanceof CompositeTf){
 			compositeEvents.put(functionName, tfi);
-			loadEvents(((CompositeTf) tfi).leftTf);
-			loadEvents(((CompositeTf) tfi).rightTf);
+			loadEvents(((CompositeTf) tfi).left);
+			loadEvents(((CompositeTf) tfi).right);
 		}
 		else if(tfi instanceof EventTf){
 			if(tfi.isNot()){
@@ -271,8 +271,8 @@ public class LupaExporter {
 				}
 				if (tfi instanceof CompositeTf) {
 					CompositeTf c = (CompositeTf) tfi;
-					TfI leftTf = c.leftTf;
-					TfI rightTf = c.rightTf;
+					TfI leftTf = c.left;
+					TfI rightTf = c.right;
 					workingList.add(leftTf);
 					workingList.add(rightTf);
 				}
@@ -397,20 +397,20 @@ public class LupaExporter {
 			functionName = functionName(function);
 			if(function instanceof CompositeTf){
 				comp = (CompositeTf) function;
-				leftTf = comp.leftTf;
-				rightTf = comp.rightTf;
+				leftTf = comp.left;
+				rightTf = comp.right;
 				out = out.concat("-- " + function.getName() + "\n");
 				out = out.concat("events." + functionName + " = function(e) \n");
 //				out = out.concat(functionHeader(functionName) + "\n");
 				out = out.concat("\tlocal left= events." + functionName(leftTf) + "(e)\n");
 				out = out.concat("\tlocal right= events."	+ functionName(rightTf) + "(e)\n");
-				if (comp.operator == Operator.AND) {
+				if (comp.op == Operator.AND) {
 					out = out.concat("\tif left < right then return left else return right end\n");
-				} else if (comp.operator == Operator.OR) {
+				} else if (comp.op == Operator.OR) {
 					out = out.concat("\tif left > right then return left else return right end\n");
-				} else if (comp.operator == Operator.TAUTER_THAN) {
+				} else if (comp.op == Operator.TAUTER_THAN) {
 					out = out.concat("\tif left < right then return left else return -1 end\n");
-				} else if (comp.operator == Operator.AS_TAUT_AS) {
+				} else if (comp.op == Operator.AS_TAUT_AS) {
 					out = out.concat("\tif left == right then return left else return -1 end\n");
 				}
 				out = out.concat("end\n");
@@ -456,20 +456,20 @@ public class LupaExporter {
 			functionName = functionName(function);
 			if(function instanceof CompositeTf){
 				comp = (CompositeTf) function;
-				leftTf = comp.leftTf;
-				rightTf = comp.rightTf;
+				leftTf = comp.left;
+				rightTf = comp.right;
 				out = out.concat("-- " + function.getName() + "\n");
 //				out = out.concat(functionHeader(functionName) + "\n");
 				out = out.concat("actions." + functionName + " = function(e)\n");
 				out = out.concat("\tlocal left= actions." + functionName(leftTf) + "(e)\n");
 				out = out.concat("\tlocal right= actions."	+ functionName(rightTf) + "(e)\n");
-				if (comp.operator == Operator.AND) {
+				if (comp.op == Operator.AND) {
 					out = out.concat("\tif left < right then return left else return right end\n");
-				} else if (comp.operator == Operator.OR) {
+				} else if (comp.op == Operator.OR) {
 					out = out.concat("\tif left > right then return left else return right end\n");
-				} else if (comp.operator == Operator.TAUTER_THAN) {
+				} else if (comp.op == Operator.TAUTER_THAN) {
 					out = out.concat("\tif left < right then return left else return -1 end\n");
-				} else if (comp.operator == Operator.AS_TAUT_AS) {
+				} else if (comp.op == Operator.AS_TAUT_AS) {
 					out = out.concat("\tif left == right then return left else return -1 end\n");
 				}
 				out = out.concat("end\n");
@@ -610,8 +610,8 @@ public class LupaExporter {
 					out.append("local shared_" + tfi.getId() + " = {}\n");
 				} else if (tfi instanceof CompositeTf) {
 					CompositeTf c = (CompositeTf) tfi;
-					TfI leftTf = c.leftTf;
-					TfI rightTf = c.rightTf;
+					TfI leftTf = c.left;
+					TfI rightTf = c.right;
 					workingList.add(leftTf);
 					workingList.add(rightTf);
 				}

@@ -12,7 +12,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import orbital.logic.imp.Formula;
-
 import uy.edu.fing.mina.fsa.logics.Utils;
 
 /**
@@ -40,6 +39,9 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
   protected Formula formula;
   
   private int identityType = 0;
+  
+  private float weight;
+  
 
   public Tf() {
     this(false, "");
@@ -367,20 +369,19 @@ public boolean equals(Object obj) {
   return true;
 }
 
-//@Override
-//public int hashCode() {
-//  return getName().hashCode();
-//}
-//
-//@Override
-//public boolean equals(Object obj) {
-//  
-//  if (obj instanceof TfI) {
-//    TfI tfin = (TfI) obj;
-//    return tfin.getName().equals(this.getName());
-//  }
-//  return false;
-//}
+/**
+ * @return the weight
+ */
+public float getWeight() {
+  return weight;
+}
+
+/**
+ * @param weight the weight to set
+ */
+public void setWeight(float weight) {
+  this.weight = weight;
+}
 
 
 

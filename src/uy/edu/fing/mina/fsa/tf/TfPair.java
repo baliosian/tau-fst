@@ -159,12 +159,12 @@ public class TfPair extends SimpleTf {
     } else if (tf instanceof CompositeTf) {
       CompositeTf ctf = (CompositeTf) tf;
       if (ctf.getOperator().equals(Operator.OR)) {
-        out.addAll(breakTfPairs(ctf.leftTf));
-        out.addAll(breakTfPairs(ctf.rightTf));
+        out.addAll(breakTfPairs(ctf.left));
+        out.addAll(breakTfPairs(ctf.right));
       } else if (ctf.getOperator().equals(Operator.AND)) {
 
-        Set<TfPair> l = breakTfPairs(ctf.leftTf);
-        Set<TfPair> r = breakTfPairs(ctf.rightTf);
+        Set<TfPair> l = breakTfPairs(ctf.left);
+        Set<TfPair> r = breakTfPairs(ctf.right);
 
         for (Iterator<TfPair> iter = l.iterator(); iter.hasNext();) {
           TfPair ltfp = (TfPair) iter.next();
@@ -200,8 +200,8 @@ public class TfPair extends SimpleTf {
   }
 
   @Override
-  public boolean isEpsilon() { //FIXME 
-    return false;
+  public boolean isEpsilon() { 
+    return tfIn.isEpsilon() && tfOut.isEpsilon();
   }
 
   public Formula getFormula() {

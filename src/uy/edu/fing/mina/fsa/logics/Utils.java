@@ -75,8 +75,8 @@ public class Utils {
         } else if (tf instanceof CompositeTf) {
             CompositeTf ctf = (CompositeTf) tf;
 
-            Formula fLeft = toFormula(ctf.leftTf);
-            Formula fRight = toFormula(ctf.rightTf);
+            Formula fLeft = toFormula(ctf.left);
+            Formula fRight = toFormula(ctf.right);
 
             if (ctf.getOperator().equals(Operator.AND))
                 out = fLeft.and(fRight);
@@ -242,19 +242,19 @@ public class Utils {
         List<Term> termList = new ArrayList<Term>();
 
         if (tf instanceof CompositeTf) {
-            if (((CompositeTf) tf).operator.equals(Operator.AND)) {
+            if (((CompositeTf) tf).op.equals(Operator.AND)) {
 
-                TfTerm[] tftermarrayL = toTermList(((CompositeTf) tf).leftTf).get(0).varVals;
-                TfTerm[] tftermarrayR = toTermList(((CompositeTf) tf).rightTf).get(0).varVals;
+                TfTerm[] tftermarrayL = toTermList(((CompositeTf) tf).left).get(0).varVals;
+                TfTerm[] tftermarrayR = toTermList(((CompositeTf) tf).right).get(0).varVals;
 
                 TfTerm[] tftermarray = new TfTerm[tftermarrayL.length + tftermarrayR.length];
                 System.arraycopy(tftermarrayL, 0, tftermarray, 0,tftermarrayL.length);
                 System.arraycopy(tftermarrayR, 0, tftermarray, tftermarrayL.length, tftermarrayR.length);
                 termList.add(new Term(tftermarray));
 
-            } else if (((CompositeTf) tf).operator.equals(Operator.OR)) {
-                termList = toTermList(((CompositeTf) tf).leftTf);
-                termList.addAll(toTermList(((CompositeTf) tf).rightTf));
+            } else if (((CompositeTf) tf).op.equals(Operator.OR)) {
+                termList = toTermList(((CompositeTf) tf).left);
+                termList.addAll(toTermList(((CompositeTf) tf).right));
             }
         } else if (tf instanceof SimpleTf) {
             TfTerm[] tftermarray = new TfTerm[1];
