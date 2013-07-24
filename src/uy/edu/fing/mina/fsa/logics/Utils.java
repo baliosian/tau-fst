@@ -56,6 +56,19 @@ public class Utils {
         return tfsimplified;
     }
 
+    public static TfI disjunctiveFormByMua(TfI tf) {
+
+      TfI dnftf = null;
+      
+      if (tf instanceof CompositeTf)
+        dnftf = ((CompositeTf)tf).toDNF();
+
+      //TODO add other tupes of Tfs. 
+      
+      return dnftf;
+  }
+
+    
     /**
      * Creates a orbital.logic.imp.Formula representing the given TF. It would
      * be usefull for compacting the TF using Orbital library.
@@ -172,22 +185,42 @@ public class Utils {
     /*
      * @see uy.edu.fing.mina.omega.tffst.utils.tf.TfI#simplify()
      */
-    public static TfI simplify(TfI tf) {
+  public static TfI simplifyByMua(TfI tf) {
 
-        TfI simplifiedTf = disjunctiveForm(tf);
-        List<Term> termList = toTermList(simplifiedTf);
-        if (termList.size() > 0) {
-//          termList = expandDontCares(termList,0);
-            QmcFormula qmcf = new QmcFormula(termList);
-            qmcf.reduceToPrimeImplicants();
-            qmcf.reducePrimeImplicantsToSubset();
-            simplifiedTf = termsListToTf(qmcf.termList);
-        } else 
-            return SimpleTf.AcceptsNone();
+    // TfI simplifiedTf = disjunctiveForm(tf);
+    TfI simplifiedTf = disjunctiveFormByMua(tf);
 
-        return simplifiedTf;
+    List<Term> termList = toTermList(simplifiedTf);
+    if (termList.size() > 0) {
+      // termList = expandDontCares(termList,0);
+      QmcFormula qmcf = new QmcFormula(termList);
+      qmcf.reduceToPrimeImplicants();
+      qmcf.reducePrimeImplicantsToSubset();
+      simplifiedTf = termsListToTf(qmcf.termList);
+    } else
+      return SimpleTf.AcceptsNone();
 
-    }
+    return simplifiedTf;
+
+  }
+
+  public static TfI simplify(TfI tf) {
+
+    TfI simplifiedTf = disjunctiveForm(tf);
+
+    List<Term> termList = toTermList(simplifiedTf);
+    if (termList.size() > 0) {
+      // termList = expandDontCares(termList,0);
+      QmcFormula qmcf = new QmcFormula(termList);
+      qmcf.reduceToPrimeImplicants();
+      qmcf.reducePrimeImplicantsToSubset();
+      simplifiedTf = termsListToTf(qmcf.termList);
+    } else
+      return SimpleTf.AcceptsNone();
+
+    return simplifiedTf;
+
+  }
 
     private static TfI termsListToTf(List<Term> termList) {
         

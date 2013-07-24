@@ -242,7 +242,7 @@ public class CompositeTf extends Tf {
 
   /** */
   public String toString() {
-      return isNot() ? "!" : "" + "(" + left.toString() + " " + op + " " +  right.toString() + ")";
+      return (isNot() ? "!" : "") + "(" + left.toString() + " " + op + " " +  right.toString() + ")";
   }
 
   /*
@@ -400,12 +400,12 @@ public int hashCode() {
         if (left instanceof SimpleTf) 
           ret.left = ((SimpleTf) left.clone()).not();
         else 
-          ret.left = ((CompositeTf) left).pushNotsDown();
+          ret.left = ((CompositeTf) left.not()).pushNotsDown();
         
         if (right instanceof SimpleTf) 
           ret.right = ((SimpleTf) right.clone()).not();
         else 
-          ret.right = ((CompositeTf) right).pushNotsDown();
+          ret.right = ((CompositeTf) right.not()).pushNotsDown();
 
         if (op.equals(Operator.AND)) 
           ret.op = Operator.OR;

@@ -8,7 +8,6 @@ package uy.edu.fing.mina.fsa.test;
 
 import uy.edu.fing.mina.fsa.tf.CompositeTf;
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
-import uy.edu.fing.mina.fsa.tf.TfI;
 
 /**
  * @author Javier Baliosian &lt; <a
@@ -60,8 +59,9 @@ public class TestLogicsDNF {
     System.out.println(((CompositeTf)(tfa.and(tfb.or(tfc)))));
     System.out.println(((CompositeTf)(tfa.and(tfb.or(tfc)))).toDNF());
 
-    
-    
+    System.out.println(((CompositeTf)tfa.and((tfb.and(tfc.and(tfc.and(tfd.and(tfe))))).not())));
+    System.out.println(((CompositeTf)tfa.and((tfb.and(tfc.and(tfc.and(tfd.and(tfe))))).not())).pushNotsDown());
+    System.out.println(((CompositeTf)tfa.and((tfb.and(tfc.and(tfc.and(tfd.and(tfe))))).not())).toDNF());
     
   }
 
