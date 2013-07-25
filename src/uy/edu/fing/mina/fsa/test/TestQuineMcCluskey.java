@@ -6,11 +6,7 @@
  * */
 package uy.edu.fing.mina.fsa.test;
 
-import orbital.logic.imp.Formula;
-import orbital.moon.logic.ClassicalLogic;
-import uy.edu.fing.mina.fsa.logics.TfSymbol;
 import uy.edu.fing.mina.fsa.logics.Utils;
-import uy.edu.fing.mina.fsa.logics.quineMcCluskey.TfTerm;
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
 
 /**
@@ -41,17 +37,6 @@ public class TestQuineMcCluskey {
 		SimpleTf tfd = new SimpleTf();
 		tfd.setSLabel("D");
 
-		TfSymbol tfSymbola = new TfSymbol(tfa);
-		tfSymbola.setSignifier("a");
-
-		TfSymbol tfSymbolb = new TfSymbol(tfb);
-		tfSymbolb.setSignifier("b");
-
-		TfSymbol tfSymbolc = new TfSymbol(tfc);
-		tfSymbolc.setSignifier("c");
-
-		TfSymbol tfSymbold = new TfSymbol(tfd);
-		tfSymbold.setSignifier("d");
 
 //		System.out.println((
 //		        tfa.not()	.and(tfb.not()	.and(tfc.not()	.and(tfd.not())))
@@ -110,16 +95,6 @@ public class TestQuineMcCluskey {
             .or(tfa                 .and(tfb        .and(tfc.and(tfd))))
     )));        
 
-        System.out.println((Utils.simplifyByMua(
-            tfa.not()           .and(tfb.not()  .and(tfc.not()))
-            .or(tfa.not()           .and(tfb.not()  .and(tfc)))
-            .or(tfa.not()           .and(tfb        .and(tfd)))
-            .or(tfa                 .and(tfb.not()  .and(tfd.not())))
-            .or(tfa                 .and(tfb        .and(tfc.not())))
-            .or(tfa                 .and(tfb        .and(tfc.and(tfd))))
-    )));        
-
-		
 		
 
 //		System.out.println((

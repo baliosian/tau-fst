@@ -7,7 +7,6 @@
 
 package uy.edu.fing.mina.fsa.tf;
 
-import orbital.logic.imp.Formula;
 
 
 /**
@@ -64,10 +63,10 @@ public interface TfI extends java.io.Serializable {
 
   public int getId();  
 
-  public Formula getFormula();
-  
-  public void setFormula(Formula formula);
-  
+//  public Formula getFormula();
+//  
+//  public void setFormula(Formula formula);
+//  
   public TfI refersTo(); 
   
   public void setRefersTo(TfI refersTo);

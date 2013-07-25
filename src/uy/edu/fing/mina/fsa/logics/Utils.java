@@ -12,11 +12,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-import orbital.logic.imp.Formula;
-import orbital.moon.logic.ClassicalLogic;
-import orbital.moon.logic.resolution.DefaultClausalFactory;
 import uy.edu.fing.mina.fsa.logics.quineMcCluskey.QmcFormula;
 import uy.edu.fing.mina.fsa.logics.quineMcCluskey.Term;
 import uy.edu.fing.mina.fsa.logics.quineMcCluskey.TfTerm;
@@ -31,30 +27,30 @@ import uy.edu.fing.mina.fsa.tf.TfI;
  */
 public class Utils {
 
-    public static TfI conjunctiveForm(TfI tf) {
+//    public static TfI conjunctiveForm(TfI tf) {
+//
+//        TfI tfsimplified = tf;
+//
+//        if (!(tf.acceptsAll() || tf.acceptsNone())) {
+//            Formula formula = Utils.toFormula(tf);
+//            DefaultClausalFactory dcf = new DefaultClausalFactory();
+//            formula = dcf.asClausalSet(formula).toFormula();
+//            tfsimplified = Utils.toTF(formula);
+//        }
+//        return tfsimplified;
+//    }
 
-        TfI tfsimplified = tf;
-
-        if (!(tf.acceptsAll() || tf.acceptsNone())) {
-            Formula formula = Utils.toFormula(tf);
-            DefaultClausalFactory dcf = new DefaultClausalFactory();
-            formula = dcf.asClausalSet(formula).toFormula();
-            tfsimplified = Utils.toTF(formula);
-        }
-        return tfsimplified;
-    }
-
-    public static TfI disjunctiveForm(TfI tf) {
-
-        TfI tfsimplified = tf;
-
-        if (!(tf.acceptsAll() || tf.acceptsNone())) {
-            Formula formula = Utils.toFormula(tf);
-            formula = ClassicalLogic.Utilities.disjunctiveForm(formula, true);
-            tfsimplified = Utils.toTF(formula);
-        }
-        return tfsimplified;
-    }
+//    public static TfI disjunctiveForm(TfI tf) {
+//
+//        TfI tfsimplified = tf;
+//
+//        if (!(tf.acceptsAll() || tf.acceptsNone())) {
+//            Formula formula = Utils.toFormula(tf);
+//            formula = ClassicalLogic.Utilities.disjunctiveForm(formula, true);
+//            tfsimplified = Utils.toTF(formula);
+//        }
+//        return tfsimplified;
+//    }
 
     public static TfI disjunctiveFormByMua(TfI tf) {
 
@@ -63,129 +59,51 @@ public class Utils {
       if (tf instanceof CompositeTf)
         dnftf = ((CompositeTf)tf).toDNF();
 
-      //TODO add other tupes of Tfs. 
+      //TODO add other types of Tfs. 
       
       return dnftf;
   }
 
     
-    /**
-     * Creates a orbital.logic.imp.Formula representing the given TF. It would
-     * be usefull for compacting the TF using Orbital library.
-     * 
-     * @param tf
-     * @return a Formula
-     */
+//  /**
+//   * Creates a orbital.logic.imp.Formula representing the given TF. It would be
+//   * usefull for compacting the TF using Orbital library.
+//   * 
+//   * @param tf
+//   * @return a Formula
+//   */
+//
+//  public static Formula toFormula(TfI tf) {
+//
+//    ClassicalLogic cl = new ClassicalLogic();
+//    Formula out = null;
+//
+//    if (tf instanceof SimpleTf) {
+//      SimpleTf stf = (SimpleTf) tf;
+//      out = cl.createSymbol(stf.getTfSymbol());
+//    } else if (tf instanceof CompositeTf) {
+//      CompositeTf ctf = (CompositeTf) tf;
+//
+//      Formula fLeft = toFormula(ctf.left);
+//      Formula fRight = toFormula(ctf.right);
+//
+//      if (ctf.getOperator().equals(Operator.AND)) out = fLeft.and(fRight);
+//      else if (ctf.getOperator().equals(Operator.OR)) out = fLeft.or(fRight);
+//      else
+//        System.err.println("ERROR: operator different of AND and OR");
+//    }
+//
+//    if (tf.isNot()) out = out.not();
+//
+//    return out;
+//  }
 
-    public static Formula toFormula(TfI tf) {
-
-        ClassicalLogic cl = new ClassicalLogic();
-        Formula out = null;
-
-        if (tf instanceof SimpleTf) {
-            SimpleTf stf = (SimpleTf) tf;
-            out = cl.createSymbol(stf.getTfSymbol());
-        } else if (tf instanceof CompositeTf) {
-            CompositeTf ctf = (CompositeTf) tf;
-
-            Formula fLeft = toFormula(ctf.left);
-            Formula fRight = toFormula(ctf.right);
-
-            if (ctf.getOperator().equals(Operator.AND))
-                out = fLeft.and(fRight);
-            else if (ctf.getOperator().equals(Operator.OR))
-                out = fLeft.or(fRight);
-            else
-                System.err.println("ERROR: operator different of AND and OR");
-        }
-
-        if (tf.isNot())
-            out = out.not();
-
-        return out;
-    }
-
-    /**
-     * 
-     * @param tfFormula
-     * @return
-     */
-    public static TfI toTF(Formula tfFormula) {
-
-        if (tfFormula instanceof Formula.Composite) {
-            Formula.Composite fcomp = (Formula.Composite) tfFormula;
-
-            // obtains the operator
-            Object o = fcomp.getCompositor();
-
-            if (o.toString().equals(TfSymbol.orbitAND)) {
-                CompositeTf ctf = new CompositeTf();
-                ctf.setOperator(Operator.AND);
-                Object o1 = fcomp.getComponent();
-                if (o1 instanceof Formula[]) {
-                    Formula[] comps = (Formula[]) o1;
-                    ctf.setLeftTf(toTF(comps[0]));
-                    ctf.setRightTf(toTF(comps[1]));
-                }
-
-                return ctf;
-
-            } else if (o.toString().equals(TfSymbol.orbitOR)) {
-                CompositeTf ctf = new CompositeTf();
-                ctf.setOperator(Operator.OR);
-                Object o1 = fcomp.getComponent();
-                if (o1 instanceof Formula[]) {
-                    Formula[] comps = (Formula[]) o1;
-                    ctf.setLeftTf(toTF(comps[0]));
-                    ctf.setRightTf(toTF(comps[1]));
-                }
-
-                return ctf;
-
-            } else if (o.toString().equals(TfSymbol.orbitNOT)) {
-                TfI tf;
-                Object o1 = fcomp.getComponent();
-                if (o1 instanceof Formula) {
-                    Formula comp = (Formula) o1;
-                    tf = toTF(comp);
-
-                    return tf.not();
-
-                }
-            }
-
-        } else if (tfFormula instanceof Formula) {
-            Formula fas = (Formula) tfFormula;
-            // obtains the TfSymbols
-            Set sfas = fas.getVariables();
-            if (sfas.size() == 1) {
-                Iterator iter = sfas.iterator();
-                TfSymbol tfs = (TfSymbol) iter.next();
-                return tfs.getTf();
-            } else if (fas.toString().equals("false")) {
-                SimpleTf stf = new SimpleTf();
-                stf.setAcceptNone();
-
-                return stf;
-
-            } else if (fas.toString().equals("true")) {
-                SimpleTf stf = new SimpleTf();
-                stf.setAcceptAll();
-
-                return stf;
-
-            } else {
-                System.err.println("Utils.toTF()");
-                System.err.println("ERROR: bad formula structure.");
-            }
-        }
-        return null;
-    }
+    
 
     /*
      * @see uy.edu.fing.mina.omega.tffst.utils.tf.TfI#simplify()
      */
-  public static TfI simplifyByMua(TfI tf) {
+  public static TfI simplify(TfI tf) {
 
     // TfI simplifiedTf = disjunctiveForm(tf);
     TfI simplifiedTf = disjunctiveFormByMua(tf);
@@ -204,23 +122,23 @@ public class Utils {
 
   }
 
-  public static TfI simplify(TfI tf) {
-
-    TfI simplifiedTf = disjunctiveForm(tf);
-
-    List<Term> termList = toTermList(simplifiedTf);
-    if (termList.size() > 0) {
-      // termList = expandDontCares(termList,0);
-      QmcFormula qmcf = new QmcFormula(termList);
-      qmcf.reduceToPrimeImplicants();
-      qmcf.reducePrimeImplicantsToSubset();
-      simplifiedTf = termsListToTf(qmcf.termList);
-    } else
-      return SimpleTf.AcceptsNone();
-
-    return simplifiedTf;
-
-  }
+//  public static TfI simplify(TfI tf) {
+//
+//    TfI simplifiedTf = disjunctiveForm(tf);
+//
+//    List<Term> termList = toTermList(simplifiedTf);
+//    if (termList.size() > 0) {
+//      // termList = expandDontCares(termList,0);
+//      QmcFormula qmcf = new QmcFormula(termList);
+//      qmcf.reduceToPrimeImplicants();
+//      qmcf.reducePrimeImplicantsToSubset();
+//      simplifiedTf = termsListToTf(qmcf.termList);
+//    } else
+//      return SimpleTf.AcceptsNone();
+//
+//    return simplifiedTf;
+//
+//  }
 
     private static TfI termsListToTf(List<Term> termList) {
         

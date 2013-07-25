@@ -10,7 +10,6 @@ package uy.edu.fing.mina.fsa.tf;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import orbital.logic.imp.Formula;
 import uy.edu.fing.mina.fsa.logics.Utils;
 
 public class CompositeTf extends Tf {
@@ -37,7 +36,7 @@ public class CompositeTf extends Tf {
     this.left = leftTf;
     this.right = rightTf;
     
-    this.getFormula();
+//    this.getFormula();
     
 //    this.setSLabel();
   }
@@ -111,7 +110,7 @@ public class CompositeTf extends Tf {
     
     clon.op = op;
     
-    clon.formula = formula;
+//    clon.formula = formula;
 
     return clon;
   }
@@ -295,13 +294,13 @@ public class CompositeTf extends Tf {
     return false;
   }
 
-  public Formula getFormula() {
-    if (op.equals(Operator.AND))
-      this.formula = left.getFormula().and(right.getFormula());
-    if (op.equals(Operator.OR))
-      this.formula = left.getFormula().or(right.getFormula());
-    return this.formula;
-  }
+//  public Formula getFormula() {
+//    if (op.equals(Operator.AND))
+//      this.formula = left.getFormula().and(right.getFormula());
+//    if (op.equals(Operator.OR))
+//      this.formula = left.getFormula().or(right.getFormula());
+//    return this.formula;
+//  }
 
 
 public boolean in(TfI tf) {

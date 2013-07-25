@@ -11,10 +11,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import orbital.logic.imp.Formula;
-import orbital.moon.logic.ClassicalLogic;
-import uy.edu.fing.mina.fsa.logics.TfSymbol;
-
 /**
  * Tautnes Function Pair. Useful for reductions of tffsts into tffsrs.
  * 
@@ -43,9 +39,9 @@ public class TfPair extends SimpleTf {
   public TfPair(TfI tfIn, TfI tfOut) {
     this.tfIn = tfIn;
     this.tfOut = tfOut;
-    this.setTfSymbol(new TfSymbol(this));
-	this.getTfSymbol().setSignifier(this.getName());
-    this.setFormula(this.cl.createSymbol(this.getTfSymbol()));
+//    this.setTfSymbol(new TfSymbol(this));
+//	this.getTfSymbol().setSignifier(this.getName());
+    //this.setFormula(this.cl.createSymbol(this.getTfSymbol()));
   }
 
   /* Methods ****************************************************************** */
@@ -204,9 +200,9 @@ public class TfPair extends SimpleTf {
     return tfIn.isEpsilon() && tfOut.isEpsilon();
   }
 
-  public Formula getFormula() {
-    return tfIn.getFormula().and(tfOut.getFormula());
-  }
+//  public Formula getFormula() {
+//    return tfIn.getFormula().and(tfOut.getFormula());
+//  }
 
 
 public boolean in(TfI tf) {

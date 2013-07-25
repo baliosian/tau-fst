@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import orbital.logic.imp.Formula;
 import uy.edu.fing.mina.fsa.logics.Utils;
 
 /**
@@ -36,7 +35,7 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
   
   private TfI refersTo = null;
   
-  protected Formula formula;
+  //protected Formula formula;
   
   private int identityType = 0;
   
@@ -226,7 +225,7 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
    */
   public Object clone() throws CloneNotSupportedException {
     Tf tf = (Tf) super.clone();
-    tf.formula = this.formula;
+//    tf.formula = this.formula;
     tf.id = this.id;
     tf.identityTf = this.identityTf;
     tf.identityType = this.identityType;
@@ -263,7 +262,7 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
         ((SimpleTf) r).setAcceptAll();
       else {
         r.setNot(!isNot());
-        r.setFormula(getFormula().not());
+        //r.setFormula(getFormula().not());
       }
       
       return r;
@@ -296,17 +295,17 @@ public void setRefersTo(TfI refersTo) {
     this.refersTo = refersTo;
 }
 
-/**
- * beware, you should not use this
- * 
- */
-public void setFormula(Formula formula) {
-  this.formula = formula;
-}
+///**
+// * beware, you should not use this
+// * 
+// */
+//public void setFormula(Formula formula) {
+//  this.formula = formula;
+//}
 
 public void setNot(boolean not) {
     this.not = not;
-    this.formula = getFormula().not();
+    //this.formula = getFormula().not();
 }
 
 
@@ -336,7 +335,7 @@ public void setIdentityType(int identityType) {
 public int hashCode() {
   final int prime = 31;
   int result = 1;
-  result = prime * result + ((formula == null) ? 0 : formula.hashCode());
+  //result = prime * result + ((formula == null) ? 0 : formula.hashCode());
   result = prime * result + id;
   result = prime * result + ((identityTf == null) ? 0 : identityTf.hashCode());
   result = prime * result + identityType;
@@ -354,9 +353,9 @@ public boolean equals(Object obj) {
   if (obj == null) return false;
   if (!(obj instanceof Tf)) return false;
   Tf other = (Tf) obj;
-  if (formula == null) {
-    if (other.formula != null) return false;
-  } else if (!formula.equals(other.formula)) return false;
+//  if (formula == null) {
+//    if (other.formula != null) return false;
+//  } else if (!formula.equals(other.formula)) return false;
   if (id != other.id) return false;
   if (identityTf == null) {
     if (other.identityTf != null) return false;

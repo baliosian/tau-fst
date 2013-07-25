@@ -7,9 +7,6 @@
 
 package uy.edu.fing.mina.fsa.tf;
 
-import orbital.logic.imp.Formula;
-import orbital.moon.logic.ClassicalLogic;
-import uy.edu.fing.mina.fsa.logics.TfSymbol;
 import uy.edu.fing.mina.fsa.utils.Configuration;
 
 public class SimpleTf extends Tf {
@@ -42,14 +39,14 @@ public class SimpleTf extends Tf {
 
     private String sLabel = null;
 
-    private TfSymbol tfSymbol = null;
+//    private TfSymbol tfSymbol = null;
     
-    public ClassicalLogic cl = new ClassicalLogic();
+//    public ClassicalLogic cl = new ClassicalLogic();
 
 
     public SimpleTf() {
         super();
-        this.tfSymbol = new TfSymbol(this);
+//        this.tfSymbol = new TfSymbol(this);
         setSLabel("All");
     }
     
@@ -75,7 +72,7 @@ public class SimpleTf extends Tf {
         else if (this.acceptsNone())
             clon.setAcceptNone();
         
-        clon.setTfSymbol(this.tfSymbol);
+//        clon.setTfSymbol(this.tfSymbol);
         
         return clon;
     }
@@ -107,12 +104,12 @@ public class SimpleTf extends Tf {
         }
     }
 
-    /**
-     * @return Returns the tfSymbol.
-     */
-    public TfSymbol getTfSymbol() {
-        return tfSymbol;
-    }
+//    /**
+//     * @return Returns the tfSymbol.
+//     */
+//    public TfSymbol getTfSymbol() {
+//        return tfSymbol;
+//    }
 
     public boolean isEpsilon() {
         return isEpsilon;
@@ -120,7 +117,7 @@ public class SimpleTf extends Tf {
 
     public void setAcceptAll() {
         setSLabel("All");
-        this.tfSymbol.setSignifier(this.getName());
+//        this.tfSymbol.setSignifier(this.getName());
     }
 
     /**
@@ -128,7 +125,7 @@ public class SimpleTf extends Tf {
      */
     public void setAcceptNone() {
         setSLabel("None");
-        this.tfSymbol.setSignifier(this.getName());
+//        this.tfSymbol.setSignifier(this.getName());
     }
 
     public void setEpsilon() {
@@ -138,19 +135,19 @@ public class SimpleTf extends Tf {
 
     public void setSLabel(String label) { // TODO cambiar a setLabel
         sLabel = label;
-        this.tfSymbol.setSignifier(this.getName());
-        this.setFormula(cl.createSymbol(this.getTfSymbol()));
+        //this.tfSymbol.setSignifier(this.getName());
+        //this.setFormula(cl.createSymbol(this.getTfSymbol()));
     }
 
 
-    /**
-     * @param tfSymbol
-     *            The tfSymbol to set.
-     */
-    public void setTfSymbol(TfSymbol tfSymbol) {
-        this.tfSymbol = tfSymbol;
-        this.setFormula(cl.createSymbol(this.getTfSymbol()));
-    }
+//    /**
+//     * @param tfSymbol
+//     *            The tfSymbol to set.
+//     */
+//    public void setTfSymbol(TfSymbol tfSymbol) {
+////        this.tfSymbol = tfSymbol;
+//        //this.setFormula(cl.createSymbol(this.getTfSymbol()));
+//    }
 
     /**
      * @see uy.edu.fing.mina.omega.tffst.utils.tf.TfI#size()
@@ -166,9 +163,9 @@ public class SimpleTf extends Tf {
         return out;
     }
 
-  public Formula getFormula() {
-    return this.formula;
-  }
+//  public Formula getFormula() {
+//    return this.formula;
+//  }
 
 
     @Override
@@ -177,7 +174,7 @@ public class SimpleTf extends Tf {
             SimpleTf otherStf = (SimpleTf) obj;
             if (this.not == otherStf.not
                     && this.isEpsilon == otherStf.isEpsilon
-                    && this.tfSymbol.equals(otherStf.tfSymbol)
+//                    && this.tfSymbol.equals(otherStf.tfSymbol)
                     && this.acceptsAll() == otherStf.acceptsAll()
                     && this.acceptsNone() == otherStf.acceptsNone())
                 return true;
@@ -204,7 +201,7 @@ public class SimpleTf extends Tf {
 
     @Override
     public int hashCode() {
-        return getTfSymbol().hashCode();
+        return toString().hashCode();
     }
 
 
