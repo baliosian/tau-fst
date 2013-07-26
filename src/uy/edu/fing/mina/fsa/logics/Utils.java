@@ -27,82 +27,20 @@ import uy.edu.fing.mina.fsa.tf.TfI;
  */
 public class Utils {
 
-//    public static TfI conjunctiveForm(TfI tf) {
-//
-//        TfI tfsimplified = tf;
-//
-//        if (!(tf.acceptsAll() || tf.acceptsNone())) {
-//            Formula formula = Utils.toFormula(tf);
-//            DefaultClausalFactory dcf = new DefaultClausalFactory();
-//            formula = dcf.asClausalSet(formula).toFormula();
-//            tfsimplified = Utils.toTF(formula);
-//        }
-//        return tfsimplified;
-//    }
+  public static TfI disjunctiveFormByMua(TfI tf) {
 
-//    public static TfI disjunctiveForm(TfI tf) {
-//
-//        TfI tfsimplified = tf;
-//
-//        if (!(tf.acceptsAll() || tf.acceptsNone())) {
-//            Formula formula = Utils.toFormula(tf);
-//            formula = ClassicalLogic.Utilities.disjunctiveForm(formula, true);
-//            tfsimplified = Utils.toTF(formula);
-//        }
-//        return tfsimplified;
-//    }
+    TfI dnftf = null;
 
-    public static TfI disjunctiveFormByMua(TfI tf) {
+    if (tf instanceof CompositeTf) dnftf = ((CompositeTf) tf).toDNF();
 
-      TfI dnftf = null;
-      
-      if (tf instanceof CompositeTf)
-        dnftf = ((CompositeTf)tf).toDNF();
+    // TODO add other types of Tfs.
 
-      //TODO add other types of Tfs. 
-      
-      return dnftf;
+    return dnftf;
   }
 
-    
-//  /**
-//   * Creates a orbital.logic.imp.Formula representing the given TF. It would be
-//   * usefull for compacting the TF using Orbital library.
-//   * 
-//   * @param tf
-//   * @return a Formula
-//   */
-//
-//  public static Formula toFormula(TfI tf) {
-//
-//    ClassicalLogic cl = new ClassicalLogic();
-//    Formula out = null;
-//
-//    if (tf instanceof SimpleTf) {
-//      SimpleTf stf = (SimpleTf) tf;
-//      out = cl.createSymbol(stf.getTfSymbol());
-//    } else if (tf instanceof CompositeTf) {
-//      CompositeTf ctf = (CompositeTf) tf;
-//
-//      Formula fLeft = toFormula(ctf.left);
-//      Formula fRight = toFormula(ctf.right);
-//
-//      if (ctf.getOperator().equals(Operator.AND)) out = fLeft.and(fRight);
-//      else if (ctf.getOperator().equals(Operator.OR)) out = fLeft.or(fRight);
-//      else
-//        System.err.println("ERROR: operator different of AND and OR");
-//    }
-//
-//    if (tf.isNot()) out = out.not();
-//
-//    return out;
-//  }
-
-    
-
-    /*
-     * @see uy.edu.fing.mina.omega.tffst.utils.tf.TfI#simplify()
-     */
+  /*
+   * @see uy.edu.fing.mina.omega.tffst.utils.tf.TfI#simplify()
+   */
   public static TfI simplify(TfI tf) {
 
     // TfI simplifiedTf = disjunctiveForm(tf);
@@ -122,136 +60,112 @@ public class Utils {
 
   }
 
-//  public static TfI simplify(TfI tf) {
-//
-//    TfI simplifiedTf = disjunctiveForm(tf);
-//
-//    List<Term> termList = toTermList(simplifiedTf);
-//    if (termList.size() > 0) {
-//      // termList = expandDontCares(termList,0);
-//      QmcFormula qmcf = new QmcFormula(termList);
-//      qmcf.reduceToPrimeImplicants();
-//      qmcf.reducePrimeImplicantsToSubset();
-//      simplifiedTf = termsListToTf(qmcf.termList);
-//    } else
-//      return SimpleTf.AcceptsNone();
-//
-//    return simplifiedTf;
-//
-//  }
+  private static TfI termsListToTf(List<Term> termList) {
 
-    private static TfI termsListToTf(List<Term> termList) {
-        
-        TfI out = null; 
-        
-        for (Iterator<Term> iterator = termList.iterator(); iterator.hasNext();) {
-            Term term = (Term) iterator.next();
-            if (out== null)
-                out = termToTf(term);
-            else 
-                out = new CompositeTf(Operator.OR,out, termToTf(term));         
-        }   
-                
-        return out;
+    TfI out = null;
+
+    for (Iterator<Term> iterator = termList.iterator(); iterator.hasNext();) {
+      Term term = (Term) iterator.next();
+      if (out == null) out = termToTf(term);
+      else
+        out = new CompositeTf(Operator.OR, out, termToTf(term));
     }
 
-    private static TfI termToTf(Term term) {
+    return out;
+  }
 
-        TfI out = null;
+  private static TfI termToTf(Term term) {
 
-        for (int i = 0; i < term.varVals.length; i++) {
-            TfTerm tfterm = term.varVals[i];
-            if (tfterm.b == 0)
-                // assumes the and is simplified already
-                if (out==null)
-                    out = tfterm.tf.not();
-                else
-                    out = new CompositeTf(Operator.AND, out, tfterm.tf.not());
-            else if (tfterm.b == 1)
-                // assumes the and is simplified already
-                if (out==null)
-                    out = tfterm.tf;
-                else
-                    out = new CompositeTf(Operator.AND, out, tfterm.tf);
-        }
-        
-        if (out == null) return SimpleTf.AcceptsNone();
-        else             return out;
-        
+    TfI out = null;
+
+    for (int i = 0; i < term.varVals.length; i++) {
+      TfTerm tfterm = term.varVals[i];
+      if (tfterm.b == 0)
+      // assumes the and is simplified already
+      if (out == null) out = tfterm.tf.not();
+      else
+        out = new CompositeTf(Operator.AND, out, tfterm.tf.not());
+      else if (tfterm.b == 1)
+      // assumes the and is simplified already
+        if (out == null) out = tfterm.tf;
+        else
+          out = new CompositeTf(Operator.AND, out, tfterm.tf);
     }
 
-    /**
-     * transform a TF in a list of terms ready to be minimized by
-     * Quine-McCluskey
-     * 
-     * @param tf
-     *            has to be in DNF
-     * @return
-     */
-    public static List<Term> toTermList(TfI tf) {
+    if (out == null) return SimpleTf.AcceptsNone();
+    else
+      return out;
 
-        List<Term> termList = new ArrayList<Term>();
+  }
 
-        if (tf instanceof CompositeTf) {
-            if (((CompositeTf) tf).op.equals(Operator.AND)) {
+  /**
+   * transform a TF in a list of terms ready to be minimized by Quine-McCluskey
+   * 
+   * @param tf
+   *          has to be in DNF
+   * @return
+   */
+  public static List<Term> toTermList(TfI tf) {
 
-                TfTerm[] tftermarrayL = toTermList(((CompositeTf) tf).left).get(0).varVals;
-                TfTerm[] tftermarrayR = toTermList(((CompositeTf) tf).right).get(0).varVals;
+    List<Term> termList = new ArrayList<Term>();
 
-                TfTerm[] tftermarray = new TfTerm[tftermarrayL.length + tftermarrayR.length];
-                System.arraycopy(tftermarrayL, 0, tftermarray, 0,tftermarrayL.length);
-                System.arraycopy(tftermarrayR, 0, tftermarray, tftermarrayL.length, tftermarrayR.length);
-                termList.add(new Term(tftermarray));
+    if (tf instanceof CompositeTf) {
+      if (((CompositeTf) tf).op.equals(Operator.AND)) {
 
-            } else if (((CompositeTf) tf).op.equals(Operator.OR)) {
-                termList = toTermList(((CompositeTf) tf).left);
-                termList.addAll(toTermList(((CompositeTf) tf).right));
-            }
-        } else if (tf instanceof SimpleTf) {
-            TfTerm[] tftermarray = new TfTerm[1];
-            if (tf.isNot())
-                tftermarray[0] = new TfTerm((SimpleTf) tf.not(), (byte) 0);
-            else
-                tftermarray[0] = new TfTerm((SimpleTf) tf, (byte) 1);
-            termList.add(new Term(tftermarray));
-        } 
+        TfTerm[] tftermarrayL = toTermList(((CompositeTf) tf).left).get(0).varVals;
+        TfTerm[] tftermarrayR = toTermList(((CompositeTf) tf).right).get(0).varVals;
 
-        termList = completeTermList(termList);
-        
-        return termList;
+        TfTerm[] tftermarray = new TfTerm[tftermarrayL.length + tftermarrayR.length];
+        System.arraycopy(tftermarrayL, 0, tftermarray, 0, tftermarrayL.length);
+        System.arraycopy(tftermarrayR, 0, tftermarray, tftermarrayL.length, tftermarrayR.length);
+        termList.add(new Term(tftermarray));
+
+      } else if (((CompositeTf) tf).op.equals(Operator.OR)) {
+        termList = toTermList(((CompositeTf) tf).left);
+        termList.addAll(toTermList(((CompositeTf) tf).right));
+      }
+    } else if (tf instanceof SimpleTf) {
+      TfTerm[] tftermarray = new TfTerm[1];
+      if (tf.isNot()) tftermarray[0] = new TfTerm((SimpleTf) tf.not(), (byte) 0);
+      else
+        tftermarray[0] = new TfTerm((SimpleTf) tf, (byte) 1);
+      termList.add(new Term(tftermarray));
     }
 
-    private static List<Term> expandDontCares(List<Term> termList, int start) {
+    termList = completeTermList(termList);
 
-        List<Term> out = new ArrayList<Term>();
-        boolean expand = false;
+    return termList;
+  }
 
-        for (Iterator<Term> iterator = termList.iterator(); iterator.hasNext();) {
-            Term term = (Term) iterator.next();
+  private static List<Term> expandDontCares(List<Term> termList, int start) {
 
-            Term t0 = new Term(term.varVals.clone());
-            Term t1 = new Term(term.varVals.clone());
-            expand = false;
+    List<Term> out = new ArrayList<Term>();
+    boolean expand = false;
 
-            TfTerm tfterm = term.varVals[start];
-            if (tfterm.b == TfTerm.DontCare.b) {
-                expand = true;
-                t0.varVals[start] = new TfTerm(tfterm.tf, (byte) 0);
-                t1.varVals[start] = new TfTerm(tfterm.tf, (byte) 1);
-            }
-            
-            if (expand) {
-                out.add(t0);
-                out.add(t1);
-            } else
-                out.add(term);
-            if (term.varVals.length > start + 1 )
-                expandDontCares(out, start + 1 );
-        }
-        return out;
+    for (Iterator<Term> iterator = termList.iterator(); iterator.hasNext();) {
+      Term term = (Term) iterator.next();
+
+      Term t0 = new Term(term.varVals.clone());
+      Term t1 = new Term(term.varVals.clone());
+      expand = false;
+
+      TfTerm tfterm = term.varVals[start];
+      if (tfterm.b == TfTerm.DontCare.b) {
+        expand = true;
+        t0.varVals[start] = new TfTerm(tfterm.tf, (byte) 0);
+        t1.varVals[start] = new TfTerm(tfterm.tf, (byte) 1);
+      }
+
+      if (expand) {
+        out.add(t0);
+        out.add(t1);
+      } else
+        out.add(term);
+      if (term.varVals.length > start + 1) expandDontCares(out, start + 1);
     }
-    
-    
+    return out;
+  }
+
   @SuppressWarnings("unchecked")
   public static List<Term> completeTermList(List<Term> termList) {
 
@@ -287,14 +201,12 @@ public class Utils {
     return out;
   }
 
-    
-    
 }
 
 class TfTermsComparator implements Comparator<TfTerm> {
 
-    public int compare(TfTerm o1, TfTerm o2) {
-        return o1.tf.getName().compareTo(o2.tf.getName());
-    }
+  public int compare(TfTerm o1, TfTerm o2) {
+    return o1.tf.getName().compareTo(o2.tf.getName());
+  }
 
 }
