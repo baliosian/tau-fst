@@ -41,28 +41,28 @@ public class TestDeterminizationTwice {
       s4.setAccept(true);
 
       SimpleTf tf1 = new SimpleTf();
-      tf1.setSLabel("A");
+      tf1.setName("A");
 
       SimpleTf tf2 = new SimpleTf();
-      tf2.setSLabel("C");
+      tf2.setName("C");
 
       SimpleTf tf3 = new SimpleTf();
-      tf3.setSLabel("D");
+      tf3.setName("D");
 
       SimpleTf tf4 = new SimpleTf();
-      tf4.setSLabel("E");
+      tf4.setName("E");
 
       SimpleTf tf5 = new SimpleTf();
-      tf5.setSLabel("F");
+      tf5.setName("F");
 
       SimpleTf tf6 = new SimpleTf();
-      tf6.setSLabel("G");
+      tf6.setName("G");
 
       SimpleTf tf7 = new SimpleTf();
-      tf7.setSLabel("I");
+      tf7.setName("I");
 
       SimpleTf tf8 = new SimpleTf();
-      tf8.setSLabel("J");
+      tf8.setName("J");
 
       Transition trans1 = new Transition(tf1, tf2, s1);
       Transition trans2 = new Transition(tf1, tf3, s2);

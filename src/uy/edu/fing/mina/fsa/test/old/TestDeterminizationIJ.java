@@ -35,16 +35,16 @@ public class TestDeterminizationIJ {
       s4.setAccept(true);
 
       SimpleTf tf1 = new SimpleTf();
-      tf1.setSLabel("A");
+      tf1.setName("A");
 
       SimpleTf tf2 = new SimpleTf();
-      tf2.setSLabel("C");
+      tf2.setName("C");
 
       SimpleTf tf7 = new SimpleTf();
-      tf7.setSLabel("I");
+      tf7.setName("I");
 
       SimpleTf tf8 = new SimpleTf();
-      tf8.setSLabel("J");
+      tf8.setName("J");
 
       Transition trans1 = new Transition(tf1, tf2, s4);
       Transition trans5 = new Transition(tf7, tf8, s4);

@@ -18,18 +18,18 @@ public class TestSimplify {
 
 		
 		EventTf etf_ih = new EventTf();
-		etf_ih.setSLabel("ih");
+		etf_ih.setName("ih");
 		
 		EventTf etf_ii = new EventTf();
-		etf_ii.setSLabel("ii");
+		etf_ii.setName("ii");
 		EventTf etf_is = new EventTf();
-		etf_is.setSLabel("is");
+		etf_is.setName("is");
 		 
 		ActionTf atf_togwh = new ActionTf();
-		atf_togwh.setSLabel("togwh");
+		atf_togwh.setName("togwh");
 		
 		ActionTf atf_Eps = new ActionTf();
-		atf_Eps.setSLabel("Eps");
+		atf_Eps.setName("Eps");
 		atf_Eps.setEpsilon();
 
 		// ((is and !ii) and !ih)

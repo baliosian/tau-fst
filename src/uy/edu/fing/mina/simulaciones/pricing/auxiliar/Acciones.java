@@ -25,52 +25,52 @@ public class Acciones {
 	
 	private void  popular(){
 		ActionTf nuevo = new ActionTf();
-		nuevo.setSLabel("generateCompetitorPriceEvents");
+		nuevo.setName("generateCompetitorPriceEvents");
 		conjuntoAcciones.put(nuevo.getName(), nuevo);
 		nuevo = new ActionTf();
-//		nuevo.setSLabel("generateCompetitorPriceLower");
+//		nuevo.setName("generateCompetitorPriceLower");
 //		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
 //		nuevo = new ActionTf();
-//		nuevo.setSLabel("generateCompetitorPriceIncreasingFast");
+//		nuevo.setName("generateCompetitorPriceIncreasingFast");
 //		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
 //		nuevo = new ActionTf();
-//		nuevo.setSLabel("generateCompetitorPriceIncreasingSlow");
+//		nuevo.setName("generateCompetitorPriceIncreasingSlow");
 //		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
 //		nuevo = new ActionTf();
-//		nuevo.setSLabel("generateCompetitorPriceDecreasingFast");
+//		nuevo.setName("generateCompetitorPriceDecreasingFast");
 //		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
 //		nuevo = new ActionTf();
-//		nuevo.setSLabel("generateCompetitorPriceDecreasingSlow");
+//		nuevo.setName("generateCompetitorPriceDecreasingSlow");
 //		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
 //		nuevo = new ActionTf();
-//		nuevo.setSLabel("generateCompetitorPriceSteady");
+//		nuevo.setName("generateCompetitorPriceSteady");
 //		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
 //		nuevo = new ActionTf();
-//		nuevo.setSLabel("generateUsersHigh");
+//		nuevo.setName("generateUsersHigh");
 //		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
 //		nuevo = new ActionTf();
-//		nuevo.setSLabel("generateUsersLow");
+//		nuevo.setName("generateUsersLow");
 //		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
 //		nuevo = new ActionTf();
-//		nuevo.setSLabel("generateUsersMid");
-//		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
-//		
-//		nuevo = new ActionTf();
-//		nuevo.setSLabel("generateUsersDecreasingSlow");
-//		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
-//		nuevo = new ActionTf();
-//		nuevo.setSLabel("generateUsersDecreasingFast");
+//		nuevo.setName("generateUsersMid");
 //		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
 //		
 //		nuevo = new ActionTf();
-//		nuevo.setSLabel("generateUsersIncreasingSlow");
+//		nuevo.setName("generateUsersDecreasingSlow");
 //		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
 //		nuevo = new ActionTf();
-//		nuevo.setSLabel("generateUsersIncreasingFast");
+//		nuevo.setName("generateUsersDecreasingFast");
 //		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
 //		
 //		nuevo = new ActionTf();
-//		nuevo.setSLabel("generateUsersSteady");
+//		nuevo.setName("generateUsersIncreasingSlow");
+//		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
+//		nuevo = new ActionTf();
+//		nuevo.setName("generateUsersIncreasingFast");
+//		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
+//		
+//		nuevo = new ActionTf();
+//		nuevo.setName("generateUsersSteady");
 //		conjuntoAcciones.put(nuevo.getSLabel(), nuevo);
 		
 	}

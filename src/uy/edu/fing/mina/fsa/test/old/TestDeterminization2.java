@@ -31,7 +31,7 @@ public class TestDeterminization2 {
       Tffst.setMinimizeAlways(false);
 
       SimpleTf tfc = new SimpleTf();
-      tfc.setSLabel("C");
+      tfc.setName("C");
 
       Tffst tffst2 = new Tffst();
 
@@ -42,7 +42,7 @@ public class TestDeterminization2 {
       s22.setAccept(true);
 
       SimpleTf tfe = new SimpleTf();
-      tfe.setSLabel("E");
+      tfe.setName("E");
       Transition trans12 = new Transition(tfe, tfe, s12, 1);
       s02.addTransition(trans12);
       

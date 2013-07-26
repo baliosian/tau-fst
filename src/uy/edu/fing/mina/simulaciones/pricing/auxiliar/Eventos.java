@@ -24,7 +24,7 @@ public class Eventos {
 	
 	private void popular(){
 		EventTf nuevo = new EventTf();
-		nuevo.setSLabel("localPriceInformation");
+		nuevo.setName("localPriceInformation");
 		
 //		Just for demonstration.
 //		One subscription to local price:

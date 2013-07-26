@@ -7,10 +7,12 @@
 
 package uy.edu.fing.mina.fsa.tf;
 
-import uy.edu.fing.mina.fsa.utils.Configuration;
-
 public class SimpleTf extends Tf {
 
+  public static final String EPSILON = "(e)";
+  public static final String ALL = "ALL";
+  public static final String NONE = "NONE";
+  
     /**
      * Comment for <code>serialVersionUID</code>
      */
@@ -31,28 +33,22 @@ public class SimpleTf extends Tf {
     public static SimpleTf Epsilon() {
         SimpleTf stfepsilon = new SimpleTf();
         stfepsilon.isEpsilon = true;
-        stfepsilon.setSLabel(Configuration.getString("SimpleTf.epsilon"));
+        stfepsilon.setName(SimpleTf.EPSILON);
         return stfepsilon;
     }
 
     private boolean isEpsilon = false;
 
-    private String sLabel = null;
-
-//    private TfSymbol tfSymbol = null;
-    
-//    public ClassicalLogic cl = new ClassicalLogic();
-
+    private String name = null;
 
     public SimpleTf() {
         super();
-//        this.tfSymbol = new TfSymbol(this);
-        setSLabel("All");
+        setName(SimpleTf.ALL);
     }
     
     public SimpleTf(String sLabel) {
       this();
-      setSLabel(sLabel);
+      setName(sLabel);
     }
     
     public boolean acceptsAll() {
@@ -65,20 +61,15 @@ public class SimpleTf extends Tf {
 
     public Object clone() throws CloneNotSupportedException {
         SimpleTf clon = (SimpleTf) super.clone();
+        clon.name = name;
         if (this.isEpsilon())
             clon.setEpsilon();
         else if (this.acceptsAll())
             clon.setAcceptAll();
         else if (this.acceptsNone())
             clon.setAcceptNone();
-        
-//        clon.setTfSymbol(this.tfSymbol);
-        
         return clon;
     }
-
-    
-    
     
     /**
      * Compares this object with the specified object for order. 
@@ -86,68 +77,35 @@ public class SimpleTf extends Tf {
     public int compareTo(Object o) {
       if (o instanceof SimpleTf) {
         SimpleTf stf = (SimpleTf) o;
-        return this.toString().compareTo(stf.toString());
+        return this.getName().compareTo(stf.getName());
         
       }
         return Integer.MIN_VALUE;
     }
-
-
-    /**
-     * @see uy.edu.fing.mina.omega.tffst.utils.tf.TfI#getSlabel()
-     */
-    public String getName() {
-        if (this.isNot()) {
-            return "!"+this.sLabel;
-        } else {
-            return this.sLabel;
-        }
-    }
-
-//    /**
-//     * @return Returns the tfSymbol.
-//     */
-//    public TfSymbol getTfSymbol() {
-//        return tfSymbol;
-//    }
 
     public boolean isEpsilon() {
         return isEpsilon;
     }
 
     public void setAcceptAll() {
-        setSLabel("All");
-//        this.tfSymbol.setSignifier(this.getName());
+        setName(SimpleTf.ALL);
     }
 
     /**
      * 
      */
     public void setAcceptNone() {
-        setSLabel("None");
-//        this.tfSymbol.setSignifier(this.getName());
+        setName(SimpleTf.NONE);
     }
 
     public void setEpsilon() {
         isEpsilon = true;
-        setSLabel(Configuration.getString("SimpleTf.epsilon"));
+        setName(SimpleTf.EPSILON);
     }
 
-    public void setSLabel(String label) { // TODO cambiar a setLabel
-        sLabel = label;
-        //this.tfSymbol.setSignifier(this.getName());
-        //this.setFormula(cl.createSymbol(this.getTfSymbol()));
+    public void setName(String label) {
+        name = label;
     }
-
-
-//    /**
-//     * @param tfSymbol
-//     *            The tfSymbol to set.
-//     */
-//    public void setTfSymbol(TfSymbol tfSymbol) {
-////        this.tfSymbol = tfSymbol;
-//        //this.setFormula(cl.createSymbol(this.getTfSymbol()));
-//    }
 
     /**
      * @see uy.edu.fing.mina.omega.tffst.utils.tf.TfI#size()
@@ -161,25 +119,6 @@ public class SimpleTf extends Tf {
         if (getIdentityTf() != null)
             out = "<" + out + ">";
         return out;
-    }
-
-//  public Formula getFormula() {
-//    return this.formula;
-//  }
-
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof SimpleTf) {
-            SimpleTf otherStf = (SimpleTf) obj;
-            if (this.not == otherStf.not
-                    && this.isEpsilon == otherStf.isEpsilon
-//                    && this.tfSymbol.equals(otherStf.tfSymbol)
-                    && this.acceptsAll() == otherStf.acceptsAll()
-                    && this.acceptsNone() == otherStf.acceptsNone())
-                return true;
-        }
-        return false;
     }
 
     public boolean in(TfI tf) {
@@ -198,12 +137,40 @@ public class SimpleTf extends Tf {
             return false;
     }
 
-
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode() {
-        return toString().hashCode();
+      final int prime = 31;
+      int result = super.hashCode();
+      result = prime * result + (isEpsilon ? 1231 : 1237);
+      result = prime * result + ((name == null) ? 0 : getName().hashCode());
+      return result;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) return true;
+      if (!super.equals(obj)) return false;
+      if (obj instanceof SimpleTf) {
+            SimpleTf otherStf = (SimpleTf) obj;
+            if (this.not == otherStf.not
+                    && this.isEpsilon == otherStf.isEpsilon
+                    && this.getName().equals(otherStf.getName())
+                    && this.acceptsAll() == otherStf.acceptsAll()
+                    && this.acceptsNone() == otherStf.acceptsNone())
+                return true;
+        }
+        return false;
+    }
 
+    /* (non-Javadoc)
+     * @see uy.edu.fing.mina.fsa.tf.Tf#getName()
+     */
+    @Override
+    public String getName() {
+      return super.not ? "!" + name : name;
+    }
     
 }

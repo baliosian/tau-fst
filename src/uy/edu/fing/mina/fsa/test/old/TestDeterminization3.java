@@ -37,16 +37,16 @@ public class TestDeterminization3 {
       s5.setAccept(true);
 
       SimpleTf tf1 = new SimpleTf();
-      tf1.setSLabel("A");
+      tf1.setName("A");
 
       SimpleTf tf2 = new SimpleTf();
-      tf2.setSLabel("C");
+      tf2.setName("C");
 
       SimpleTf tf3 = new SimpleTf();
-      tf3.setSLabel("D");
+      tf3.setName("D");
 
       SimpleTf tf4 = new SimpleTf();
-      tf4.setSLabel("E");
+      tf4.setName("E");
 
       Transition trans1 = new Transition(tf1, tf2, s4);
       Transition trans2 = new Transition(tf3, tf4, s4);

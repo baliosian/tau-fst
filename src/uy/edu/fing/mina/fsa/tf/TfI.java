@@ -63,10 +63,6 @@ public interface TfI extends java.io.Serializable {
 
   public int getId();  
 
-//  public Formula getFormula();
-//  
-//  public void setFormula(Formula formula);
-//  
   public TfI refersTo(); 
   
   public void setRefersTo(TfI refersTo);

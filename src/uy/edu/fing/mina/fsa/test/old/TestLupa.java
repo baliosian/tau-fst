@@ -45,7 +45,7 @@ public class TestLupa {
         //s2.setAccept(true);
 
         EventTf etf_E1 = new EventTf();
-        etf_E1.setSLabel("E1");
+        etf_E1.setName("E1");
         etf_E1.getFilter().add(new Sentence("message_type", "==", "\"trap\""));
         etf_E1.getFilter().add(new Sentence("watcher_id", "==", "\"e1\""));
         etf_E1.getFilter().add(new Sentence("source", "==", "\"127.0.0.1/lupa/rmoon\""));
@@ -53,7 +53,7 @@ public class TestLupa {
         etf_E1.getInitStrings().add(init_e1_string);
 
         EventTf etf_E2 = new EventTf();
-        etf_E2.setSLabel("E2");
+        etf_E2.setName("E2");
         etf_E2.getFilter().add(new Sentence("message_type", "==", "\"trap\""));
         etf_E2.getFilter().add(new Sentence("watcher_id", "==", "\"e2\""));
         etf_E2.getFilter().add(new Sentence("source", "==", "\"127.0.0.1/lupa/rmoon\""));
@@ -61,7 +61,7 @@ public class TestLupa {
         etf_E2.getInitStrings().add(init_e2_string);
 
         ActionTf atf_S = new ActionTf();
-        atf_S.setSLabel("S");
+        atf_S.setName("S");
         atf_S.setLuaCode("  local e=shared[\"incomming_event\"] --retrieve event\n"
                 +"  print (\"S! value:\", e.value)\n"
                 +"  local ret = {}\n --generate a copy of event..."
@@ -76,7 +76,7 @@ public class TestLupa {
                 +"  return {ret}");
 
         ActionTf atf_Eps = new ActionTf();
-        atf_Eps.setSLabel("Eps");
+        atf_Eps.setName("Eps");
         atf_Eps.setEpsilon();
 
         Transition trans0 = new Transition(etf_E1, atf_Eps, s1);

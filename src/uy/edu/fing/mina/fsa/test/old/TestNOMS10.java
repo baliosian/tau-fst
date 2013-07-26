@@ -97,34 +97,34 @@ public class TestNOMS10 {
 		Tffst.setMinimizeAlways(false);
 		
 		EventTf etf_ih = new EventTf();
-		etf_ih.setSLabel("ih");
+		etf_ih.setName("ih");
 		EventTf etf_ii = new EventTf();
-		etf_ii.setSLabel("ii");
+		etf_ii.setName("ii");
 		EventTf etf_is = new EventTf();
-		etf_is.setSLabel("is");
+		etf_is.setName("is");
 		EventTf etf_il = new EventTf();
-		etf_il.setSLabel("il");
+		etf_il.setName("il");
 		EventTf etf_id = new EventTf();
-		etf_id.setSLabel("id");
+		etf_id.setName("id");
 		EventTf etf_im = new EventTf();
-		etf_im.setSLabel("im");
+		etf_im.setName("im");
 		 
 		ActionTf atf_tongwh = new ActionTf();
-		atf_tongwh.setSLabel("tongwh");
+		atf_tongwh.setName("tongwh");
 		ActionTf atf_toffgwh = new ActionTf();
-		atf_toffgwh.setSLabel("toffgwh");
+		atf_toffgwh.setName("toffgwh");
 		ActionTf atf_dpf = new ActionTf();
-		atf_dpf.setSLabel("dpf");
+		atf_dpf.setName("dpf");
 		ActionTf atf_dps = new ActionTf();
-		atf_dps.setSLabel("dps");
+		atf_dps.setName("dps");
 		ActionTf atf_ips = new ActionTf();
-		atf_ips.setSLabel("ips");
+		atf_ips.setName("ips");
 		ActionTf atf_ipf = new ActionTf();
-		atf_ipf.setSLabel("ipf");
+		atf_ipf.setName("ipf");
 		
 		
 		ActionTf atf_Eps = new ActionTf();
-		atf_Eps.setSLabel("Eps");
+		atf_Eps.setName("Eps");
 		atf_Eps.setEpsilon();
 
 		List<Tffst> rules = new ArrayList<Tffst>();

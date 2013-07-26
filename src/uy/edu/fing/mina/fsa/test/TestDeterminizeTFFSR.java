@@ -31,16 +31,16 @@ public class TestDeterminizeTFFSR {
     s1.setAccept(true);
 
     SimpleTf tf1 = new SimpleTf();
-    tf1.setSLabel("A");
+    tf1.setName("A");
 
     SimpleTf tf2 = new SimpleTf();
-    tf2.setSLabel("B");
+    tf2.setName("B");
 
     SimpleTf tf3 = new SimpleTf();
-    tf3.setSLabel("C");
+    tf3.setName("C");
 
     SimpleTf tf4 = new SimpleTf();
-    tf4.setSLabel("D");
+    tf4.setName("D");
 
     Transition trans1 = new Transition(tf1, tf2, s1);
 
@@ -58,16 +58,16 @@ public class TestDeterminizeTFFSR {
     s21.setAccept(true);
 
     SimpleTf tf21 = new SimpleTf();
-    tf21.setSLabel("E");
+    tf21.setName("E");
 
     SimpleTf tf22 = new SimpleTf();
-    tf22.setSLabel("F");
+    tf22.setName("F");
 
     SimpleTf tf23 = new SimpleTf();
-    tf23.setSLabel("G");
+    tf23.setName("G");
 
     SimpleTf tf24 = new SimpleTf();
-    tf24.setSLabel("H");
+    tf24.setName("H");
 
     Transition trans21 = new Transition(tf21, tf22, s21);
 

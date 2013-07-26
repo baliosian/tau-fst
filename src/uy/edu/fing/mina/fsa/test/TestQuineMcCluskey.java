@@ -26,16 +26,16 @@ public class TestQuineMcCluskey {
 	public static void main(String[] args) {
 
 		SimpleTf tfa = new SimpleTf();
-		tfa.setSLabel("A");
+		tfa.setName("A");
 
 		SimpleTf tfb = new SimpleTf();
-		tfb.setSLabel("B");
+		tfb.setName("B");
 
 		SimpleTf tfc = new SimpleTf();
-		tfc.setSLabel("C");
+		tfc.setName("C");
 
 		SimpleTf tfd = new SimpleTf();
-		tfd.setSLabel("D");
+		tfd.setName("D");
 
 
 //		System.out.println((

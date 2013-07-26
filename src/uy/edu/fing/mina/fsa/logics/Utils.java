@@ -252,41 +252,40 @@ public class Utils {
     }
     
     
-    @SuppressWarnings("unchecked")
-    public static List<Term> completeTermList(List<Term> termList) {
+  @SuppressWarnings("unchecked")
+  public static List<Term> completeTermList(List<Term> termList) {
 
-        List<Term> out = new ArrayList<Term>();
-        HashMap<String, TfTerm> tfMap = new HashMap<String, TfTerm>();
+    List<Term> out = new ArrayList<Term>();
+    HashMap<String, TfTerm> tfMap = new HashMap<String, TfTerm>();
 
-        for (Iterator iterator = termList.iterator(); iterator.hasNext();) {
-            Term term = (Term) iterator.next();
-            for (int i = 0; i < term.varVals.length; i++) {
-                TfTerm tfterm = term.varVals[i];
-                tfMap.put(tfterm.tf.toString(), new TfTerm(tfterm.tf, TfTerm.DontCare.b));
-            }
-        }
-
-        // until here we have a map with all variables -- JB
-
-        for (Iterator iterator = termList.iterator(); iterator.hasNext();) {
-            Term term = (Term) iterator.next();
-            HashMap<String, TfTerm> tfMapTemp = (HashMap<String, TfTerm>) tfMap.clone();
-            boolean skip = false;
-            for (int i = 0; i < term.varVals.length; i++) {
-                TfTerm tfterm = term.varVals[i];
-                if (tfMapTemp.get(tfterm.tf.toString()).b == TfTerm.DontCare.b)
-                    tfMapTemp.put(tfterm.tf.toString(), tfterm);
-                else if (tfMapTemp.get(tfterm.tf.toString()).b != tfterm.b)
-                    skip = true;
-            }
-            if (!skip) {
-                TfTerm[] tftermarray = tfMapTemp.values().toArray(new TfTerm[tfMapTemp.values().size()]);
-                Arrays.sort(tftermarray, new TfTermsComparator());
-                out.add(new Term(tftermarray));
-            }
-        }
-        return out;
+    for (Iterator iterator = termList.iterator(); iterator.hasNext();) {
+      Term term = (Term) iterator.next();
+      for (int i = 0; i < term.varVals.length; i++) {
+        TfTerm tfterm = term.varVals[i];
+        tfMap.put(tfterm.tf.getName(), new TfTerm(tfterm.tf, TfTerm.DontCare.b));
+      }
     }
+
+    // until here we have a map with all variables -- JB
+
+    for (Iterator iterator = termList.iterator(); iterator.hasNext();) {
+      Term term = (Term) iterator.next();
+      HashMap<String, TfTerm> tfMapTemp = (HashMap<String, TfTerm>) tfMap.clone();
+      boolean skip = false;
+      for (int i = 0; i < term.varVals.length; i++) {
+        TfTerm tfterm = term.varVals[i];
+        if (tfMapTemp.get(tfterm.tf.getName()).b == TfTerm.DontCare.b) tfMapTemp.put(
+            tfterm.tf.getName(), tfterm);
+        else if (tfMapTemp.get(tfterm.tf.getName()).b != tfterm.b) skip = true;
+      }
+      if (!skip) {
+        TfTerm[] tftermarray = tfMapTemp.values().toArray(new TfTerm[tfMapTemp.values().size()]);
+        Arrays.sort(tftermarray, new TfTermsComparator());
+        out.add(new Term(tftermarray));
+      }
+    }
+    return out;
+  }
 
     
     
@@ -295,7 +294,7 @@ public class Utils {
 class TfTermsComparator implements Comparator<TfTerm> {
 
     public int compare(TfTerm o1, TfTerm o2) {
-        return o1.tf.toString().compareTo(o2.tf.toString());
+        return o1.tf.getName().compareTo(o2.tf.getName());
     }
 
 }

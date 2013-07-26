@@ -102,11 +102,6 @@ public class Transition implements Serializable {
       this.label = label;
    }
 
-
-	public void setSLabel() {
-		this.sLabel = this.label.toString();
-	}
-
    /**
     * @param to The to to set.
     * 
@@ -118,8 +113,7 @@ public class Transition implements Serializable {
 
 	
 	public String toString(){
-		if (sLabel == null) setSLabel();
-		return sLabel;
+		return label.toString();
 	}
 
 	void appendDot(StringBuffer b) {

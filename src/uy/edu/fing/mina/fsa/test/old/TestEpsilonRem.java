@@ -39,21 +39,21 @@ public class TestEpsilonRem {
       s2.setAccept(true);
 
       SimpleTf tfd = new SimpleTf();
-      tfd.setSLabel("D");
+      tfd.setName("D");
       Transition trans1 = new Transition(tfd, tfd, s1, 1);
       s0.addTransition(trans1);
       
       SimpleTf tfall = new SimpleTf();
       tfall.setAcceptAll();
       SimpleTf tfc = new SimpleTf();
-      tfc.setSLabel("C");
+      tfc.setName("C");
       TfI tfall_c = tfall.and(tfc.not());
       
       Transition trans2 = new Transition(tfall_c, tfall_c, s1, 1);
       s1.addTransition(trans2);
       
       SimpleTf tfk = new SimpleTf();
-      tfk.setSLabel("K");
+      tfk.setName("K");
       TfString sec = new TfString(tfc);
       TfString seck = new TfString(tfc);
       seck.add(tfk);

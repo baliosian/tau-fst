@@ -24,7 +24,7 @@ public class Eventos {
 	
 	private void popular(){
 		EventTf nuevo = new EventTf();
-		nuevo.setSLabel("localPriceInformation");
+		nuevo.setName("localPriceInformation");
 
 		nuevo.addInitString("{target_service=\"AP0VE/lupa/rmoon\", command=\"watch_mib\", mib=\"price\", op=\">\", value=\"0\", notification_id=\"AP0-Price\" .. math.random(2^30), watcher_id=\"AP0Price\" .. configuration.my_name_pdp, timeout=\"10\"}");
 		nuevo.addInitString("{target_service=\"AP1VE/lupa/rmoon\", command=\"watch_mib\", mib=\"price\", op=\">\", value=\"0\", notification_id=\"AP1-Price\" .. math.random(2^30), watcher_id=\"AP1Price\" .. configuration.my_name_pdp, timeout=\"10\"}");
@@ -60,7 +60,7 @@ public class Eventos {
 		conjuntoEventos.put(nuevo.getName(), nuevo);
 		
 		nuevo = new EventTf();
-		nuevo.setSLabel("localClientsInformation");
+		nuevo.setName("localClientsInformation");
 		conjuntoEventos.put(nuevo.getName(), nuevo);
 		
 	}

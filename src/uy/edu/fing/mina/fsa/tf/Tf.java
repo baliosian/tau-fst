@@ -295,30 +295,21 @@ public void setRefersTo(TfI refersTo) {
     this.refersTo = refersTo;
 }
 
-///**
-// * beware, you should not use this
-// * 
-// */
-//public void setFormula(Formula formula) {
-//  this.formula = formula;
-//}
-
 public void setNot(boolean not) {
     this.not = not;
-    //this.formula = getFormula().not();
 }
 
+  /**
+   * Returns true if the tf is satisfiable. It must be overwritten by
+   * CompositeTf to make the composition work.
+   * 
+   */
 
-/**
- * Returns true if the tf is satisfiable. It must be overwritten by CompositeTf to make the composition work.  
- * 
- */
-
-public boolean satisfiable(){
-
-  return !this.equals(SimpleTf.AcceptsNone()); //TODO this MUST be overwritten properly in CompositeTf
-  
-}
+  public boolean satisfiable() {
+    return !this.equals(SimpleTf.AcceptsNone()); // TODO this MUST be
+                                                 // overwritten properly in
+                                                 // CompositeTf
+  }
 
 public int getIdentityType() {
   return identityType;
@@ -335,7 +326,6 @@ public void setIdentityType(int identityType) {
 public int hashCode() {
   final int prime = 31;
   int result = 1;
-  //result = prime * result + ((formula == null) ? 0 : formula.hashCode());
   result = prime * result + id;
   result = prime * result + ((identityTf == null) ? 0 : identityTf.hashCode());
   result = prime * result + identityType;
@@ -353,9 +343,6 @@ public boolean equals(Object obj) {
   if (obj == null) return false;
   if (!(obj instanceof Tf)) return false;
   Tf other = (Tf) obj;
-//  if (formula == null) {
-//    if (other.formula != null) return false;
-//  } else if (!formula.equals(other.formula)) return false;
   if (id != other.id) return false;
   if (identityTf == null) {
     if (other.identityTf != null) return false;
@@ -381,7 +368,5 @@ public float getWeight() {
 public void setWeight(float weight) {
   this.weight = weight;
 }
-
-
 
 }

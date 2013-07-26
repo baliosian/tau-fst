@@ -25,20 +25,20 @@ public class Acciones {
 	
 	private void  popular(){
 		ActionTf nuevo = new ActionTf();
-		nuevo.setSLabel("increasePriceFast");
+		nuevo.setName("increasePriceFast");
 		
 		conjuntoAcciones.put(nuevo.getName(), nuevo);
 		nuevo = new ActionTf();
-		nuevo.setSLabel("increasePriceSlow");
+		nuevo.setName("increasePriceSlow");
 		conjuntoAcciones.put(nuevo.getName(), nuevo);
 		nuevo = new ActionTf();
-		nuevo.setSLabel("decreasePriceSlow");
+		nuevo.setName("decreasePriceSlow");
 		conjuntoAcciones.put(nuevo.getName(), nuevo);
 		nuevo = new ActionTf();
-		nuevo.setSLabel("decreasePriceFast");
+		nuevo.setName("decreasePriceFast");
 		conjuntoAcciones.put(nuevo.getName(), nuevo);
 		nuevo = new ActionTf();
-		nuevo.setSLabel("keepPrice");
+		nuevo.setName("keepPrice");
 		conjuntoAcciones.put(nuevo.getName(), nuevo);
 	}
 	
