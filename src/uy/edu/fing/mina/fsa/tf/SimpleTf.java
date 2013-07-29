@@ -170,7 +170,8 @@ public class SimpleTf extends Tf {
      */
     @Override
     public String getName() {
-      return super.not ? "!" + name : name;
+      String ret = super.getName();
+      return ret + name;
     }
     
 }

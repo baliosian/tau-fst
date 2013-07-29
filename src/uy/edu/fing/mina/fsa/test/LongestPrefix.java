@@ -7,7 +7,7 @@ import uy.edu.fing.mina.fsa.tffst.P;
 import uy.edu.fing.mina.fsa.tffst.ProtoTransition;
 import uy.edu.fing.mina.fsa.tffst.State;
 
-public class TestLongestPrefix {
+public class LongestPrefix {
   
   public static void main(String[] args) {
     

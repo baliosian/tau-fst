@@ -19,12 +19,9 @@ public class Operator implements Comparable<Operator>, Serializable {
      */
     private static final long serialVersionUID = 1L;
 
-    public static final String AND = "and";
-    public static final String OR = "or";
-    public static final String TAUTER_THAN = "tt";
-    public static final String AS_TAUT_AS = "ats";
-    public static final String CONCAT = "c";
-    public static final String NOT = "!";
+    public static final String AND = "∧";
+    public static final String OR = "∨";
+    public static final String NOT = "¬";
 
     public String op;
 
@@ -78,18 +75,6 @@ public class Operator implements Comparable<Operator>, Serializable {
 
     public static Operator or() {
         return new Operator(Operator.OR);
-    }
-
-    public static Operator tt() {
-        return new Operator(Operator.TAUTER_THAN);
-    }
-
-    public static Operator ata() {
-        return new Operator(Operator.AS_TAUT_AS);
-    }
-
-    public static Operator concat() {
-        return new Operator(Operator.CONCAT);
     }
 
     public static Operator not() {

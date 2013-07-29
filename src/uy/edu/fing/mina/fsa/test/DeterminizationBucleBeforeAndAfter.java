@@ -19,7 +19,7 @@ import uy.edu.fing.mina.fsa.utils.Utils;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class TestDeterminizationBucleBeforeAndAfter {
+public class DeterminizationBucleBeforeAndAfter {
 
   /**
    * uy.edu.fing.mina.omega.tffst.test 8. it shows determinization of a union
@@ -28,7 +28,7 @@ public class TestDeterminizationBucleBeforeAndAfter {
    */
   public static void main(String[] args) {
 
-    TestDeterminizationBucleBeforeAndAfter test = new TestDeterminizationBucleBeforeAndAfter();
+    DeterminizationBucleBeforeAndAfter test = new DeterminizationBucleBeforeAndAfter();
     Tffst.setMinimizeAlways(false);
 
     SimpleTf tfc = new SimpleTf();

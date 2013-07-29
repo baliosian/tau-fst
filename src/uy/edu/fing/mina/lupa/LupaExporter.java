@@ -408,11 +408,7 @@ public class LupaExporter {
 					out = out.concat("\tif left < right then return left else return right end\n");
 				} else if (comp.op == Operator.OR) {
 					out = out.concat("\tif left > right then return left else return right end\n");
-				} else if (comp.op == Operator.TAUTER_THAN) {
-					out = out.concat("\tif left < right then return left else return -1 end\n");
-				} else if (comp.op == Operator.AS_TAUT_AS) {
-					out = out.concat("\tif left == right then return left else return -1 end\n");
-				}
+				} 
 				out = out.concat("end\n");
 			}
 			else if (function.isNot()) {
@@ -436,64 +432,61 @@ public class LupaExporter {
 		return out;
 	}
 	
-	/**
-	 * Creates a String with actions functions that are CompositeTf or Nots.
-	 * @param tffst The TFFST to export.
-	 * @return The updated String objects with the new function bodies that it may have.
-	 * @throws UnsupportedTFFSTException 
-	 */
-	private static String compositeActionsToLupa(Tffst tffst) throws UnsupportedTFFSTException {
-		String out = new String();
-		
-		out = out.concat("-----------------------------------------------\n");
-		out = out.concat("--          BEGIN COMPOSITE ACTIONS          --\n");
-		out = out.concat("-----------------------------------------------\n");
-		CompositeTf comp;
-		TfI leftTf;
-		TfI rightTf;
-		String functionName;
-		for(TfI function : compositeActions.values()){
-			functionName = functionName(function);
-			if(function instanceof CompositeTf){
-				comp = (CompositeTf) function;
-				leftTf = comp.left;
-				rightTf = comp.right;
-				out = out.concat("-- " + function.getName() + "\n");
-//				out = out.concat(functionHeader(functionName) + "\n");
-				out = out.concat("actions." + functionName + " = function(e)\n");
-				out = out.concat("\tlocal left= actions." + functionName(leftTf) + "(e)\n");
-				out = out.concat("\tlocal right= actions."	+ functionName(rightTf) + "(e)\n");
-				if (comp.op == Operator.AND) {
-					out = out.concat("\tif left < right then return left else return right end\n");
-				} else if (comp.op == Operator.OR) {
-					out = out.concat("\tif left > right then return left else return right end\n");
-				} else if (comp.op == Operator.TAUTER_THAN) {
-					out = out.concat("\tif left < right then return left else return -1 end\n");
-				} else if (comp.op == Operator.AS_TAUT_AS) {
-					out = out.concat("\tif left == right then return left else return -1 end\n");
-				}
-				out = out.concat("end\n");
-			}
-			else if (function.isNot()) {
-				out = out.concat("-- " + function.getName() + "\n");
-				out = out.concat("actions." + functionName + " = function(e)\n");
-				TfI nonneg = function.not();
-				out = out.concat("\tlocal nonneg = actions." + functionName(nonneg) + "(e)\n");
-				out = out.concat("\treturn -nonneg\n");
-				out = out.concat("end\n");
-			}
-			else{
-				throw new UnsupportedTFFSTException("A problematic function (" + function.getName() +") was detected. A generated ACTION function should always be composite or not.");
-			}
-		}
-		
-		
-		out = out.concat("-----------------------------------------------\n");
-		out = out.concat("--           END COMPOSITE ACTIONS           --\n");
-		out = out.concat("-----------------------------------------------\n");
-		
-		return out;
-	}
+  /**
+   * Creates a String with actions functions that are CompositeTf or Nots.
+   * 
+   * @param tffst
+   *          The TFFST to export.
+   * @return The updated String objects with the new function bodies that it may
+   *         have.
+   * @throws UnsupportedTFFSTException
+   */
+  private static String compositeActionsToLupa(Tffst tffst) throws UnsupportedTFFSTException {
+    String out = new String();
+
+    out = out.concat("-----------------------------------------------\n");
+    out = out.concat("--          BEGIN COMPOSITE ACTIONS          --\n");
+    out = out.concat("-----------------------------------------------\n");
+    CompositeTf comp;
+    TfI leftTf;
+    TfI rightTf;
+    String functionName;
+    for (TfI function : compositeActions.values()) {
+      functionName = functionName(function);
+      if (function instanceof CompositeTf) {
+        comp = (CompositeTf) function;
+        leftTf = comp.left;
+        rightTf = comp.right;
+        out = out.concat("-- " + function.getName() + "\n");
+        // out = out.concat(functionHeader(functionName) + "\n");
+        out = out.concat("actions." + functionName + " = function(e)\n");
+        out = out.concat("\tlocal left= actions." + functionName(leftTf) + "(e)\n");
+        out = out.concat("\tlocal right= actions." + functionName(rightTf) + "(e)\n");
+        if (comp.op == Operator.AND) {
+          out = out.concat("\tif left < right then return left else return right end\n");
+        } else if (comp.op == Operator.OR) {
+          out = out.concat("\tif left > right then return left else return right end\n");
+        } 
+        out = out.concat("end\n");
+      } else if (function.isNot()) {
+        out = out.concat("-- " + function.getName() + "\n");
+        out = out.concat("actions." + functionName + " = function(e)\n");
+        TfI nonneg = function.not();
+        out = out.concat("\tlocal nonneg = actions." + functionName(nonneg) + "(e)\n");
+        out = out.concat("\treturn -nonneg\n");
+        out = out.concat("end\n");
+      } else {
+        throw new UnsupportedTFFSTException("A problematic function (" + function.getName()
+            + ") was detected. A generated ACTION function should always be composite or not.");
+      }
+    }
+
+    out = out.concat("-----------------------------------------------\n");
+    out = out.concat("--           END COMPOSITE ACTIONS           --\n");
+    out = out.concat("-----------------------------------------------\n");
+
+    return out;
+  }
 	
 
 //	private static String actionsToLupa(Tffst tffst) {

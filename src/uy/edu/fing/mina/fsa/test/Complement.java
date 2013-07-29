@@ -19,7 +19,7 @@ import uy.edu.fing.mina.fsa.utils.Utils;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class TestComplement {
+public class Complement {
 
    /**
     * uy.edu.fing.mina.omega.tffst.test 8. it shows determinization of a union 

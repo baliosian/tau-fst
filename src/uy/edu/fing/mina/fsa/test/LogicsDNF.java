@@ -13,7 +13,7 @@ import uy.edu.fing.mina.fsa.tf.SimpleTf;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class TestLogicsDNF {
+public class LogicsDNF {
 
   /**
    * uy.edu.fing.mina.omega.tffst.test logics 1. it

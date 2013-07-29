@@ -36,9 +36,6 @@ public class CompositeTf extends Tf {
     this.left = leftTf;
     this.right = rightTf;
     
-//    this.getFormula();
-    
-//    this.setSLabel();
   }
 
   /*
@@ -46,35 +43,6 @@ public class CompositeTf extends Tf {
    * **************************************************************************
    */
 
-  /**
-   * Builds a CompositeTF with the TFs in partitionList with the order of
-   * indices
-   * 
-   * @param indices
-   *          an array og int with the new order for partitionList
-   * @param partitionList
-   *          An ArrayList with the TFs to be ordered
-   * @return a CompositeTF with the new permutation of TFs and an OR between all
-   *         of them
-   */
-  public static TfI arrayLisToctf(int[] indices, ArrayList<TfI> partitionList) {
-
-    if (indices.length == 0) return null; // this shall never happens but...
-
-    if (indices.length == 1) return (TfI) partitionList.get(0);
-
-    // length is at least 2
-    CompositeTf ctf1 = new CompositeTf(Operator.TAUTER_THAN, (TfI) partitionList.get(indices[0]),
-        (TfI) partitionList.get(indices[1]));
-
-    for (int i = 2; i < indices.length; i++) {
-      CompositeTf ctf2 = new CompositeTf(Operator.TAUTER_THAN, ctf1, (TfI) partitionList
-          .get(indices[i]));
-      ctf1 = ctf2;
-    }
-
-    return ctf1;
-  }
 
   /**
    * @param tf
@@ -199,49 +167,12 @@ public class CompositeTf extends Tf {
     this.right = rightTf;
   }
 
-//  /**
-//   * @see uy.edu.fing.mina.omega.tffst.utils.tf.TfI#setSLabel()
-//   */
-//  public void setSLabel() {
-//    String lab = "";
-//
-//    lab += "(" + (this.leftTf == null ? "null" : this.leftTf.toString()) + " " + this.operator
-//        + " " + (this.rightTf == null ? "null" : this.rightTf.toString()) + ")";
-//    this.setSLabel(lab);
-//  }
-
-//  /*
-//   * (non-Javadoc)
-//   * 
-//   * @see uy.edu.fing.mina.omega.tffst.utils.tf.TfI#setValue()
-//   */
-//  public void setValue() {
-//
-//    float tf = MIN_TF;
-//
-//    if (this.operator.equals(Operator.AND)) {
-//      this.setValue(Math.min(this.leftTf.getFixedValue(), this.rightTf.getFixedValue()));
-//    } else if (this.operator.equals(Operator.OR)) {
-//      this.setValue(Math.max(this.leftTf.getFixedValue(), this.rightTf.getFixedValue()));
-//    } else if (this.operator.equals(Operator.AS_TAUT_AS)) {
-//      if (this.leftTf.getFixedValue() == this.rightTf.getFixedValue()) {
-//        this.setValue(this.leftTf.getFixedValue());
-//      } else {
-//        this.setValue(MIN_TF);
-//      }
-//    } else if (this.operator.equals(Operator.TAUTER_THAN)) {
-//      if (this.leftTf.getFixedValue() < this.rightTf.getFixedValue()) {
-//        this.setValue(this.leftTf.getFixedValue());
-//      } else {
-//        this.setValue(MIN_TF);
-//      }
-//    }
-//    if (this.isNot()) this.setValue(-tf);
-//  }
-
-  /** */
+  /** 
+   *
+   * 
+   */
   public String toString() {
-      return (isNot() ? "!" : "") + "(" + left.toString() + " " + op + " " +  right.toString() + ")";
+      return (isNot() ? Operator.NOT : "") + "(" + left.toString() + op + right.toString() + ")";
   }
 
   /*
@@ -286,22 +217,14 @@ public class CompositeTf extends Tf {
 
   @Override
   public String getName() {
-    return isNot() ? "!" : "" + "(" + left.getName() + " " + op + " " +  right.getName() + ")";
+    String ret = super.getName();
+    return ret + "(" + left.getName() + op + right.getName() + ")";
   }
 
   @Override
   public boolean isEpsilon() {
     return false;
   }
-
-//  public Formula getFormula() {
-//    if (op.equals(Operator.AND))
-//      this.formula = left.getFormula().and(right.getFormula());
-//    if (op.equals(Operator.OR))
-//      this.formula = left.getFormula().or(right.getFormula());
-//    return this.formula;
-//  }
-
 
 public boolean in(TfI tf) {
 
@@ -366,7 +289,6 @@ public int hashCode() {
                 partitionR1 = partitionR1.and((TfI) o);
              else if (operator.equals(Operator.OR))
                 partitionR2 = partitionR1.or((TfI) o);
-             else if (operator.equals(Operator.AS_TAUT_AS))
 
              if (partitionR2 instanceof CompositeTf) {
                 CompositeTf ctfPartitionR2 = (CompositeTf) partitionR2;

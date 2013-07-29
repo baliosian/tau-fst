@@ -35,12 +35,9 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
   
   private TfI refersTo = null;
   
-  //protected Formula formula;
-  
   private int identityType = 0;
   
   private float weight;
-  
 
   public Tf() {
     this(false, "");
@@ -237,7 +234,9 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
   /**
    * @return Returns the slabel.
    */
-  abstract public String getName();
+  public String getName() {
+    return isNot() ? Operator.NOT : "" ;
+  }
 
   /**
    * @return Returns the isEpsilon.

@@ -14,7 +14,7 @@ import uy.edu.fing.mina.fsa.tf.SimpleTf;
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
 
-public class TestQuineMcCluskey {
+public class QuineMcCluskey {
 
 	/**
 	 * uy.edu.fing.mina.omega.tffst.test 5, is the very example of the

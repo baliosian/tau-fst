@@ -17,7 +17,7 @@ import uy.edu.fing.mina.fsa.utils.Utils;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class TestReverse {
+public class DeterminizeTFFSR {
 
   public static void main(String[] args) {
 
@@ -83,15 +83,12 @@ public class TestReverse {
     
     Tffsr tffsr = tffst1.toTffsr();
 
-    Utils.showDot(tffsr.toDot("proyeccion"));
-
-    tffsr.reverse();
-
-    Utils.showDot(tffsr.toDot("reverse"));
+    Utils.showDot(tffsr.toDot("totffsr"));
     
-    tffsr = tffsr.kleene();
-
-    Utils.showDot(tffsr.toDot("kleene"));
+    tffsr.setDeterministic(false);
+    tffsr.determinize(); 
+    
+    Utils.showDot(tffsr.toDot("determinized totffsr"));
 
   }
 

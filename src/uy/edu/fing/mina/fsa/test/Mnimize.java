@@ -17,7 +17,7 @@ import uy.edu.fing.mina.fsa.utils.Utils;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class TestMnimize {
+public class Mnimize {
 
   public static void main(String[] args) {
 

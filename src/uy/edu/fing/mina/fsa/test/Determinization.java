@@ -13,7 +13,7 @@ import uy.edu.fing.mina.fsa.tffst.*;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class TestDeterminization {
+public class Determinization {
 
    /**
     * uy.edu.fing.mina.omega.tffst.test 5, is the very example of the Policy 2004's paper. 
