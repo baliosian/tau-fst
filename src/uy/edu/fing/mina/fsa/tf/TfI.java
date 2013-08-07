@@ -7,6 +7,8 @@
 
 package uy.edu.fing.mina.fsa.tf;
 
+import java.util.Set;
+
 
 
 /**
@@ -39,10 +41,6 @@ public interface TfI extends java.io.Serializable {
 
   public int compareTo(Object arg0);
 
-  public TfI getIdentityTf();
-
-  public void setIdentityTf(TfI labelIn);
-
   public int getIdentityType();
 
   public void setIdentityType(int i);
@@ -73,8 +71,8 @@ public interface TfI extends java.io.Serializable {
   
   public int hashCode();
   
-  public float getWeight();
+  public Set<TfI> getWeight();
   
-  public void setWeight(float weight);
+  public void addWeight(TfI tf);
   
 }

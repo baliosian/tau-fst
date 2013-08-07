@@ -77,20 +77,22 @@ public class ProtoTransition {
                 Iterator<TfI> workingSEiter = workingSE.iterator();
                 Iterator<TfI> currentSEiter = currentSE.iterator();
                 while (currentSEiter.hasNext() || workingSEiter.hasNext()) {
-                  TfI currentOinSE = null;
-                  TfI workingOinSE = null;
+                  TfI currentTFinSE = null;
+                  TfI workingTFinSE = null;
 
-                  if (currentSEiter.hasNext()) currentOinSE = currentSEiter.next();
-                  if (workingSEiter.hasNext()) workingOinSE = workingSEiter.next();
+                  if (currentSEiter.hasNext()) currentTFinSE = currentSEiter.next();
+                  if (workingSEiter.hasNext()) workingTFinSE = workingSEiter.next();
 
-                  if (currentOinSE != null && workingOinSE != null) newSE.add(workingOinSE.or(currentOinSE));
-                  else if (currentOinSE != null) newSE.add(currentOinSE);
-                  else if (workingOinSE != null) newSE.add(workingOinSE);
+                  if (currentTFinSE != null && workingTFinSE != null && !currentTFinSE.isEpsilon() && !workingTFinSE.isEpsilon())
+                    newSE.add(workingTFinSE.orSimple(currentTFinSE));
+                  else if (currentTFinSE == null || currentTFinSE.isEpsilon()) newSE.add(workingTFinSE);
+                  else if (workingTFinSE == null || workingTFinSE.isEpsilon()) newSE.add(currentTFinSE);
                 }
                 toRemove.add(currentPair);
                 workingPair.arrivingTFs = newSE;
               }
     } while (toRemoveSize != toRemove.size());
+    
     unionOfTransP.removeAll(toRemove);
 
   }
@@ -114,7 +116,8 @@ public class ProtoTransition {
         while (iter.hasNext() && match) {
           ElementOfP pair = iter.next();
           if (pair.arrivingTFs.isEpsilon()) match = false;
-          else if (!firstPair.arrivingTFs.get(0).equals(pair.arrivingTFs.get(0))) match = false;
+          else 
+            if (!firstPair.arrivingTFs.get(0).equals(pair.arrivingTFs.get(0))) match = false;
         }
         if (match) {
           outSE.add(firstPair.arrivingTFs.get(0));

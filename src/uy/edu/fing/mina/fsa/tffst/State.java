@@ -53,6 +53,7 @@ public class State implements Serializable, Comparable<State> {
    */
   public void addTransition(Transition t) {
     transitions.add(t);
+    t.setFrom(this);
   }
 
   /**

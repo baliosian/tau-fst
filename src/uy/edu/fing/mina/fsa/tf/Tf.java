@@ -27,17 +27,15 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
    */
   private static final long serialVersionUID = 4216877592050045279L;
 
-  protected boolean not = false;
-
-  private TfI identityTf = null;
+  protected boolean not;
   
   private int id; //TODO check with lupa team if this can be removed
   
-  private TfI refersTo = null;
+  private TfI refersTo;
   
-  private int identityType = 0;
+  private int identityType;
   
-  private float weight;
+  private Set<TfI> weightTf;
 
   public Tf() {
     this(false, "");
@@ -56,8 +54,9 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
   public Tf(boolean not, String label) {
     super();
     this.not = not;
-    this.identityTf = null;
+    this.refersTo = null;
     this.identityType = 0;
+    this.weightTf = new HashSet<TfI>();
   }
 
   /**
@@ -95,10 +94,6 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
       SimpleTf stf = new SimpleTf();
       stf.setAcceptAll();
       outTf = stf;
-    } else if (this.isEpsilon()) {
-      outTf = tf;
-    } else if (tf.isEpsilon()) {
-      outTf = this;
     } else if (this.acceptsNone()) {
       outTf = tf;
     } else if (tf.acceptsNone()) {
@@ -158,7 +153,7 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
    *  
    */
   
-  public TfI and(TfI tf) { //FIXME arreglar lo de los epsilons
+  public TfI and(TfI tf) {
     TfI outTf;
 
     if (this.acceptsNone() || tf.acceptsNone()) {
@@ -216,15 +211,15 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
 
     return outTf;
   }
-
+  
+  
   /*
    * @see java.lang.Object#clone()
    */
   public Object clone() throws CloneNotSupportedException {
     Tf tf = (Tf) super.clone();
-//    tf.formula = this.formula;
     tf.id = this.id;
-    tf.identityTf = this.identityTf;
+    tf.refersTo = this.refersTo;
     tf.identityType = this.identityType;
     tf.not = this.not;
     tf.refersTo = this.refersTo;
@@ -274,13 +269,6 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
 
   public abstract String toString();
 
-  public void setIdentityTf(TfI labelIn) {
-    this.identityTf = labelIn;
-  }
-
-  public TfI getIdentityTf() {
-    return identityTf;
-  }
 
 public int getId() {
     return id;
@@ -326,10 +314,10 @@ public int hashCode() {
   final int prime = 31;
   int result = 1;
   result = prime * result + id;
-  result = prime * result + ((identityTf == null) ? 0 : identityTf.hashCode());
-  result = prime * result + identityType;
+  //result = prime * result + ((identityTf == null) ? 0 : identityTf.hashCode());
+  //result = prime * result + identityType;
   result = prime * result + (not ? 1231 : 1237);
-  result = prime * result + ((refersTo == null) ? 0 : refersTo.hashCode());
+  //result = prime * result + ((refersTo == null) ? 0 : refersTo.hashCode());
   return result;
 }
 
@@ -343,29 +331,29 @@ public boolean equals(Object obj) {
   if (!(obj instanceof Tf)) return false;
   Tf other = (Tf) obj;
   if (id != other.id) return false;
-  if (identityTf == null) {
-    if (other.identityTf != null) return false;
-  } else if (!identityTf.equals(other.identityTf)) return false;
-  if (identityType != other.identityType) return false;
+//  if (identityTf == null) {
+//    if (other.identityTf != null) return false;
+//  } else if (!identityTf.equals(other.identityTf)) return false;
+//  if (identityType != other.identityType) return false;
   if (not != other.not) return false;
-  if (refersTo == null) {
-    if (other.refersTo != null) return false;
-  } else if (!refersTo.equals(other.refersTo)) return false;
+//  if (refersTo == null) {
+//    if (other.refersTo != null) return false;
+//  } else if (!refersTo.equals(other.refersTo)) return false;
   return true;
 }
 
 /**
  * @return the weight
  */
-public float getWeight() {
-  return weight;
+public Set<TfI> getWeight() {
+  return weightTf;
 }
 
 /**
  * @param weight the weight to set
  */
-public void setWeight(float weight) {
-  this.weight = weight;
+public void addWeight(TfI weight) {
+  this.weightTf.add(weight);
 }
 
 }

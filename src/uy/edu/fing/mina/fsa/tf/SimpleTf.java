@@ -52,11 +52,11 @@ public class SimpleTf extends Tf {
     }
     
     public boolean acceptsAll() {
-        return getName().equals("All");
+        return getName().equals(SimpleTf.ALL);
     }
 
     public boolean acceptsNone() {
-        return getName().equals("None");
+        return getName().equals(SimpleTf.NONE);
     }
 
     public Object clone() throws CloneNotSupportedException {
@@ -116,8 +116,12 @@ public class SimpleTf extends Tf {
 
     public String toString() {
         String out = getName();
-        if (getIdentityTf() != null)
+        
+        if (getIdentityType() == 1 )
             out = "<" + out + ">";
+        else if (getIdentityType() == -1 )
+          out = "[" + out + "]";
+          
         return out;
     }
 

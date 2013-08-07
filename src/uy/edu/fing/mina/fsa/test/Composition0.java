@@ -7,9 +7,6 @@
 package uy.edu.fing.mina.fsa.test;
 
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
-import uy.edu.fing.mina.fsa.tf.TfI;
-import uy.edu.fing.mina.fsa.tf.TfString;
-import uy.edu.fing.mina.fsa.tffsr.Tffsr;
 import uy.edu.fing.mina.fsa.tffst.State;
 import uy.edu.fing.mina.fsa.tffst.Tffst;
 import uy.edu.fing.mina.fsa.tffst.Transition;
@@ -35,7 +32,7 @@ public class Composition0 {
 //                 !D/!D                
 //               ┌───────────┐              
 //               ▼           │              
-//             ┌───────────────┐  D/D   ╔═══╗
+//             ┌───────────────┐  D/C   ╔═══╗
 //initial  ──▶ │       0       │ ─────▶ ║ 1 ║
 //             └───────────────┘        ╚═══╝
 
@@ -58,7 +55,7 @@ public class Composition0 {
 //                       !C/!C             
 //                     ┌───────────┐           
 //                     ▼           │           
-//                   ┌───────────────┐  C/C  ╔═══╗
+//                   ┌───────────────┐  C/E  ╔═══╗
 //      initial  ──▶ │       20      │ ────▶ ║21 ║
 //                   └───────────────┘       ╚═══╝
       
@@ -77,6 +74,12 @@ public class Composition0 {
       Tffst tffstComposition = tffst1.composition(tffst2);
       
       Utils.showDot(tffstComposition.toDot("tffst1 o tffst2"));
+      
+      tffstComposition.setDeterministic(false);
+      tffstComposition.determinize();    //FIXME it does not halt 
+      
+      Utils.showDot(tffstComposition.toDot("determinized tffst1 o tffst2"));  
+      
       
 
    }

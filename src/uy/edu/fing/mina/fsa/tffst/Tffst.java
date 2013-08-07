@@ -14,14 +14,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import uy.edu.fing.mina.fsa.tf.CompositeTf;
 import uy.edu.fing.mina.fsa.tf.Partition;
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
 import uy.edu.fing.mina.fsa.tf.TfI;
 import uy.edu.fing.mina.fsa.tf.TfPair;
 import uy.edu.fing.mina.fsa.tf.TfString;
 import uy.edu.fing.mina.fsa.tffsr.Tffsr;
-import uy.edu.fing.mina.fsa.utils.Utils;
 
 /*
  * Class invariants: - An TFFST is represented explicitly (with State and
@@ -382,7 +380,7 @@ public class Tffst implements Serializable {
                   TfString lin = t1.labelIn.clone();
                   TfString lout = t2.labelOut.clone();
                   lout.get(0).setIdentityType(t2.labelOut.get(0).getIdentityType());
-                  if (lout.get(0).getIdentityType() != 0) lout.get(0).setIdentityTf(lin.get(0));
+                  if (lout.get(0).getIdentityType() != 0) lout.get(0).setRefersTo(lin.get(0));
                   
                   outStartState.transitions.add(new Transition(lin, lout, outToState));
                   
@@ -394,9 +392,10 @@ public class Tffst implements Serializable {
         }
       }
     }
+    
     out.inLabelEpsilonRemoval();
     out.removeDeadTransitions();
-//    out.checkMinimizeAlways();
+//   out.checkMinimizeAlways();  //TODO need this?
     //out.setDeterministic(false);
     //out.determinize();
     return out;
@@ -439,40 +438,6 @@ public class Tffst implements Serializable {
     determinize(initialset);
   }
 
-//  /**
-//   * EPSILON REMOVAL FOR TRANSDUCERS
-//   * 
-//   * tffst cannot contain epsilon cycles
-//   * 
-//   */
-//  public void domainEpsilonsRemoval() {
-//
-//    List<State> allLiveStates = new LinkedList<State>(getLiveStates());
-//
-//    while (allLiveStates.size() > 0) {
-//      State workingState = allLiveStates.remove(0);
-//      for (Transition outgoingT : new HashSet<Transition>(workingState.getTransitions())) {
-//        if (outgoingT.labelIn.isEpsilon()) {
-//          State stateToAdd = new State();
-//          allLiveStates.add(stateToAdd);
-//          for (Transition t : outgoingT.to.getTransitions()) {
-//            Transition newT;
-//            try {
-//              newT = t.clone();
-//              newT.labelOut = outgoingT.labelOut.clone();
-//              newT.labelOut.addAll(t.labelOut.clone());
-//              stateToAdd.addTransition(newT);
-//            } catch (CloneNotSupportedException e) {
-//              e.printStackTrace();
-//            }
-//          }
-//          workingState.removeTransition(outgoingT);
-//          workingState.addEpsilon(stateToAdd);
-//        }
-//      }
-//    }
-//  }
-
   /**
    * EPSILON REMOVAL FOR TRANSDUCERS 
    * 
@@ -492,7 +457,7 @@ public class Tffst implements Serializable {
       State state;
       boolean removeState = false;
 
-      //push all output labels of tansitions with epsilon input labels forward
+      //push all output labels of transitions with epsilon input labels forward
       while (!workingStates.isEmpty()) {
         removeState = true;
         state = workingStates.iterator().next();
@@ -518,10 +483,12 @@ public class Tffst implements Serializable {
               arriving = acceptStates.get(state); // this is fine because the tffst cannot recognize the empty language
               for (Transition arriTransition : arriving.keySet()){
                 State origin = arriving.get(arriTransition);
-                Transition arriTransitionClone = arriTransition.clone();
-                arriTransitionClone.labelOut.addAll(t.labelOut);
-                arriTransitionClone.to = t.to;
-                origin.addTransition(arriTransitionClone);
+                if (!state.equals(origin)) {
+                  Transition arriTransitionClone = arriTransition.clone();
+                  arriTransitionClone.labelOut.addAll(t.labelOut);
+                  arriTransitionClone.to = t.to;
+                  origin.addTransition(arriTransitionClone);
+                }
               }
             } else { 
               if (!t.to.equals(state)) {
@@ -542,82 +509,11 @@ public class Tffst implements Serializable {
         state.transitions.addAll(toAdd);
         if (removeState) workingStates.remove(state);
       }
-
-
     } catch (CloneNotSupportedException e) {
       e.printStackTrace();
     }
 
   }
-
-  
-//  /**
-//   * EPSILON REMOVAL FOR TRANSDUCERS cannot have epsilon loops!!!!! except for
-//   * epsilon/epsilon loops. removes epsilon-input labeled arcs. this is actually
-//   * changing the tffst semantics.
-//   * 
-//   */
-//  public void inLabelEpsilonRemoval() {
-//
-//    try {
-//      Set<State> workingStates = new HashSet<State>();
-//      workingStates.add(initial);
-//      State state;
-//      boolean removeState = false;
-//  
-//      while (!workingStates.isEmpty()) {
-//        removeState = true;
-//        state = workingStates.iterator().next();
-//        Set<Transition> toRemove = new HashSet<Transition>();
-//        Set<Transition> toAdd = new HashSet<Transition>();
-//        for (Transition t : state.transitions) {
-//          workingStates.add(t.to);
-//          for (Transition tNext : t.to.transitions) {
-//            if (tNext.labelIn.isEpsilon() && tNext.to.isAccept() && !tNext.to.equals(t.to)) {
-//              State newFinal = new State();
-//              newFinal.setAccept(true);
-//              Transition newT = t.clone();
-//              newT.to = newFinal;
-//              for (int i = 0; i < tNext.labelOut.size(); i++)
-//                newT.labelOut.add(tNext.labelOut.get(i));
-//              toAdd.add(newT);
-//              removeState = false;
-//            } else {
-//              if (t.labelIn.isEpsilon()) {
-//                if (t.to.isAccept()) {
-//                  toRemove.add(t);
-//                } else {
-//                  if (t.to.equals(state)) {
-//                    toRemove.add(t);
-//                  } else {
-//                    if (!(tNext.labelIn.isEpsilon() && tNext.to.equals(t.to))) {
-//                      Transition tNextClone = tNext.clone();
-//                      for (int i = 0; i < t.labelOut.size(); i++)
-//                        tNextClone.labelOut.add(i, t.labelOut.get(i));
-//                      toAdd.add(tNextClone);
-//                      removeState = false;
-//                    }
-//                    toRemove.add(t);
-//                  }
-//                }
-//              }
-//            }
-//          }
-//        }
-//        state.transitions.removeAll(toRemove);
-//        state.transitions.addAll(toAdd);
-//        if (removeState) workingStates.remove(state);
-//      }
-//    } catch (CloneNotSupportedException e) {
-//      e.printStackTrace();
-//    }
-//
-//  }
-//  
-  
-  
-  
-  
   
   /**
    * returns a Tffsr representing this tffst. it expands subEpochs in simpe
@@ -1027,6 +923,40 @@ public class Tffst implements Serializable {
   }
 
   /**
+   * Returns <a href="http://www.research.att.com/sw/tools/graphviz/"
+   * target="_top">Graphviz Dot </a> representation of this Tffst.
+   */
+  public String toDot(String label, int type) {
+
+    StringBuffer b = new StringBuffer("digraph Tffst {\n"); 
+    b.append("rankdir = \"LR\"\n;");
+    b.append("label = \"").append(label).append("\"\n;");
+    Iterator<State> i = getStates().iterator();
+    while (i.hasNext()) {
+      State s = i.next();
+      b.append("  ").append(s.getNumber()); 
+      if (s.accept) 
+        b.append(" [shape=doublecircle,label=\"").append(s.getNumber()).append("\"];\n"); 
+      else
+        b.append(" [shape=circle,label=\"").append(s.getNumber()).append("\"];\n"); 
+      if (s == initial) {
+        b.append("  initial [shape=plaintext,label=\"\"];\n"); 
+        b.append("  initial -> ").append(s.getNumber()).append("\n"); 
+      }
+      Iterator<Transition> j = s.transitions.iterator();
+      while (j.hasNext()) {
+        Transition t = j.next();
+        b.append("  ").append(s.getNumber()); 
+        t.appendDot(b,type);
+      }
+    }
+    return b.append("}\n").toString(); 
+  }
+
+
+  
+  
+  /**
    * returns a Tffsr representing this tffst. it expands subEpochs in the input
    * label
    * 
@@ -1204,7 +1134,7 @@ public class Tffst implements Serializable {
   /**
    * 
    * Implements the function TransP. It assumes that there is only one TF in the
-   * incomming TfString
+   * incomming TfString label
    * 
    * @param setOfPairsP
    *          is a set of PairP
@@ -1223,20 +1153,29 @@ public class Tffst implements Serializable {
     for (TfI tf : left) {
       if (!tf.isEpsilon()) {
         for (ElementOfP pairP : setOfelementsOfP) {
-          for (Transition t : pairP.state.transitions)
-            if (tf.equals(t.labelIn.get(0))) { // FIXME this needs the tfs to be
-                                               // simplified to have a chance of
-                                               // matching
+          for (Transition t : pairP.state.transitions) {
+            if (tf.equals(t.labelIn.get(0))) {
               TfString newSE = new TfString();
-              for (TfI tfpairp : pairP.arrivingTFs){
-                newSE.add(tfpairp);
-//              newSE.add(tfpairp.and(t.labelIn.get(0)));
+              for (TfI tfpairp : pairP.arrivingTFs) {
+                // TODO here is where the weights go
+                if (!t.labelIn.isEpsilon()) {
+                  if (!tfpairp.isEpsilon()) {
+                    tfpairp.addWeight(t.labelIn.get(0));
+                  }
+                  newSE.add(tfpairp); 
+                } 
               }
-//              newSE.add(t.labelOut.get(0).and(t.labelIn.get(0))); //TODO fix this to be more general
-              newSE.add(t.labelOut.get(0)); 
+              // TODO here is where the weights go, check if have to clone 
+              if (!t.labelIn.isEpsilon()) {
+                if (!t.labelOut.isEpsilon()) {
+                  t.labelOut.get(0).addWeight(t.labelIn.get(0));
+                }
+                newSE.add(t.labelOut.get(0)); 
+              }
               retPair = new ElementOfP(t.to, newSE);
               unionOfTransPelements.add(retPair);
             }
+          }
         }
       }
     }
@@ -1399,5 +1338,26 @@ public class Tffst implements Serializable {
     if (minimize_always) minimize();
   }
 
+  
+//
+//  /**
+//   * Returns new (deterministic) automaton that accepts the complement of the
+//   * language of this automaton.
+//   * <p>
+//   * Complexity: linear in number of states (if already deterministic).
+//   */
+//  public Automaton complement() {
+//      Automaton a = cloneExpanded();
+//      a.determinize();
+//      a.totalize();
+//      Iterator i = a.getStates().iterator();
+//      while (i.hasNext()) {
+//          State p = (State) i.next();
+//          p.accept = !p.accept;
+//      }
+//      a.removeDeadTransitions();
+//      return a;
+//  }
+  
   
 }

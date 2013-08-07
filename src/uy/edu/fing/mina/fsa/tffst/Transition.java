@@ -30,9 +30,24 @@ public class Transition implements Serializable {
 
   State to;
 
+  private State from;
+
+  /**
+   * @return the from
+   */
+  public State getFrom() {
+    return from;
+  }
+
+  /**
+   * 
+   * @param from the from to set
+   */
+  public void setFrom(State from) {
+    this.from = from;
+  }
+
   private Double weight;
-  
-  public boolean visited = false;
 
   /**
    * Constructs new transition with only one tf in the output.
@@ -59,21 +74,6 @@ public class Transition implements Serializable {
     this(new TfString(labelIn), new TfString(labelOut), to);
   }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Transition)
-			return labelIn.equals(((Transition) obj).labelIn) && labelOut.equals(((Transition) obj).labelOut)
-					&& to.equals(((Transition) obj).to);
-		else
-			return false;
-	}
-	
-	@Override
-	public int hashCode() {
-		return (labelIn.hashCode() + labelOut.hashCode() + to.hashCode())%Integer.MAX_VALUE;
-	}
-
-
   /**
    * Constructs new transition.
    * 
@@ -89,6 +89,60 @@ public class Transition implements Serializable {
     this.labelOut = labelOut;
   }
 
+  /**
+   * Constructs new transition.
+   * 
+   */
+    
+  public Transition(State from, TfString labelIn, TfString labelOut, State to) {
+    this.from = from;
+    this.to = to;
+    this.labelIn = labelIn;
+    this.labelOut = labelOut;
+  }
+
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((from == null) ? 0 : from.hashCode());
+    result = prime * result + ((labelIn == null) ? 0 : labelIn.hashCode());
+    result = prime * result + ((labelOut == null) ? 0 : labelOut.hashCode());
+    result = prime * result + ((to == null) ? 0 : to.hashCode());
+    result = prime * result + ((weight == null) ? 0 : weight.hashCode());
+    return result;
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (!(obj instanceof Transition)) return false;
+    Transition other = (Transition) obj;
+    if (from == null) {
+      if (other.from != null) return false;
+    } else if (!from.equals(other.from)) return false;
+    if (labelIn == null) {
+      if (other.labelIn != null) return false;
+    } else if (!labelIn.equals(other.labelIn)) return false;
+    if (labelOut == null) {
+      if (other.labelOut != null) return false;
+    } else if (!labelOut.equals(other.labelOut)) return false;
+    if (to == null) {
+      if (other.to != null) return false;
+    } else if (!to.equals(other.to)) return false;
+    if (weight == null) {
+      if (other.weight != null) return false;
+    } else if (!weight.equals(other.weight)) return false;
+    return true;
+  }
 
   /**
    * Constructs new transition.
@@ -105,8 +159,8 @@ public class Transition implements Serializable {
     this.labelIn = new TfString(labelIn);
     this.labelOut = new TfString(labelOut);
     if (identityType == 1 || identityType == -1 ) {
-      labelOut.setIdentityTf(labelIn);
-      labelIn.setIdentityTf(labelOut);
+      labelOut.setRefersTo(labelIn);
+      labelIn.setRefersTo(labelOut);
     }
     labelOut.setIdentityType(identityType);    
     labelIn.setIdentityType(identityType);    
@@ -118,6 +172,19 @@ public class Transition implements Serializable {
     b.append("\"]\n");
   }
 
+  void appendDot(StringBuffer b, int type) {
+    if (type == 0) {
+      b.append(" -> ").append(to.getNumber()).append(" [label=\"");
+      b.append(this.toString());
+      b.append("\"]\n");
+    }
+    if (type == 1) {
+      b.append(" -> ").append(to.getNumber()).append(" [label=\"");
+      b.append("");
+      b.append("\"]\n");
+    }
+  }
+
   /**
    * Clones this transition.
    * 
@@ -125,7 +192,7 @@ public class Transition implements Serializable {
    * @throws CloneNotSupportedException 
    */
   public Transition clone() throws CloneNotSupportedException {
-    return new Transition(this.labelIn.clone(), this.labelOut.clone(), to);
+    return new Transition(this.from, this.labelIn.clone(), this.labelOut.clone(), to);
   }
 
   /** Returns destination of this transition. */
