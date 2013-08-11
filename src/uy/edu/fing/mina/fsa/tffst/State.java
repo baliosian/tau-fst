@@ -192,6 +192,14 @@ public class State implements Serializable, Comparable<State> {
     return true;
   }
 
+  public void addAllTransitions(Set<Transition> toAdd) {
+    for (Transition transition : toAdd) {
+      addTransition(transition);
+    }
+    
+    
+  }
+
   
   
 }

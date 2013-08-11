@@ -16,7 +16,7 @@ import uy.edu.fing.mina.fsa.utils.Utils;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class DoNotHalts {
+public class loopandnotnot {
 
    /**
     * composition test 1  
@@ -34,23 +34,16 @@ public class DoNotHalts {
       tffst1.setInitialState(s0);
       State s1 = new State();
       State s2 = new State();
-      State s3 = new State();
-      s3.setAccept(true);
+      s1.setAccept(true);
 
 
 //      s0.addTransition(new Transition((new SimpleTf("D")).not(), (new SimpleTf("C")).not(), s0));
 //      s0.addTransition(new Transition((new SimpleTf("D")).not(), SimpleTf.Epsilon(), s0));
-      s0.addTransition(new Transition((new SimpleTf("D")).not(),(new SimpleTf("D")).not(), s0));
-
-      s0.addTransition(new Transition((new SimpleTf("D")).not(), new SimpleTf("D"), s1));
-      
-//      s1.addTransition(new Transition((new SimpleTf("D")).not(), SimpleTf.Epsilon(), s1));
-      s1.addTransition(new Transition((new SimpleTf("D")).not(),(new SimpleTf("D")).not(), s1, 1));
-      s1.addTransition(new Transition((new SimpleTf("D")).not(), SimpleTf.Epsilon(), s3));
+      s0.addTransition(new Transition(new SimpleTf("D"),new SimpleTf("A"), s0));
+      s0.addTransition(new Transition(new SimpleTf("D"),new SimpleTf("B"), s1));
       
       
       Utils.showDot(tffst1.toDot("tffst1"));
-      
       
       tffst1.setDeterministic(false);
       tffst1.determinize();    //FIXME  

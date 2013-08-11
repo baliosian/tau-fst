@@ -301,7 +301,7 @@ public class Tffst implements Serializable {
       State p = m.get(s);
       for (Transition t : s.transitions){
         Transition tclone = t.clone();
-        p.transitions.add(tclone);
+        p.addTransition(tclone);
         tclone.to = m.get(t.to);
       }
     }
@@ -382,7 +382,7 @@ public class Tffst implements Serializable {
                   lout.get(0).setIdentityType(t2.labelOut.get(0).getIdentityType());
                   if (lout.get(0).getIdentityType() != 0) lout.get(0).setRefersTo(lin.get(0));
                   
-                  outStartState.transitions.add(new Transition(lin, lout, outToState));
+                  outStartState.addTransition(new Transition(lin, lout, outToState));
                   
                 } catch (CloneNotSupportedException e) {
                   e.printStackTrace();
@@ -466,7 +466,7 @@ public class Tffst implements Serializable {
         Set<Transition> toAdd = new HashSet<Transition>();
 
         for (Transition t : state.transitions) {
-          //take the opportunity to build the set off final states
+
           Map<Transition,State> arriving = acceptStates.get(t.to);
           if (arriving == null){
             arriving =  new HashMap<Transition,State>();
@@ -506,7 +506,7 @@ public class Tffst implements Serializable {
           }
         }
         state.transitions.removeAll(toRemove);
-        state.transitions.addAll(toAdd);
+        state.addAllTransitions(toAdd);
         if (removeState) workingStates.remove(state);
       }
     } catch (CloneNotSupportedException e) {
@@ -514,6 +514,8 @@ public class Tffst implements Serializable {
     }
 
   }
+  
+  
   
   /**
    * returns a Tffsr representing this tffst. it expands subEpochs in simpe
@@ -981,10 +983,10 @@ public class Tffst implements Serializable {
           if (k == t.labelIn.size() - 1) to = m.get(t.to);
           else
             to = new State();
-          if (k == 0) last.transitions.add(new Transition(new TfString(t.labelIn.get(0)),
+          if (k == 0) last.addTransition(new Transition(new TfString(t.labelIn.get(0)),
               t.labelOut, to));
           else
-            last.transitions.add(new Transition(t.labelIn.get(k), SimpleTf.Epsilon(), to));
+            last.addTransition(new Transition(t.labelIn.get(k), SimpleTf.Epsilon(), to));
           last = to;
         }
       }
@@ -1049,7 +1051,7 @@ public class Tffst implements Serializable {
             m.put(ns, ns);
             newTr.to = ns;
           }
-          last.transitions.add(newTr);
+          last.addTransition(newTr);
           last = newTr.to;
         }
       }
@@ -1226,7 +1228,7 @@ public class Tffst implements Serializable {
     // removes all epsilon labels in the domain part
     inLabelEpsilonRemoval();
     toSimpleInLabels();
-    
+
     // stores new states
     Map<P, State> newStates = new HashMap<P, State>();
 
@@ -1247,30 +1249,46 @@ public class Tffst implements Serializable {
       P p = newStates.keySet().iterator().next();
       State pNewState = newStates.remove(p);
 
-      // if any of the old states was final, this is final
-      for (ElementOfP e : p)
-        if (pNewState.accept = e.state.accept) break;
-
       // for each possible partitions of the relevant tfs in two subsets
       for (Partition partition : Partition.getPartitions3(getRelevantTFs(p))) {
         // for each partition computes an exclusive TF
         TfI tfrelation = Partition.toTfrelation3(partition);
         if (!tfrelation.equals(SimpleTf.AcceptsNone())) {
           P transPset = unionOfTransP(p, partition.left);
-          ProtoTransition protoTransition = new ProtoTransition(pNewState, tfrelation, transPset);
-          protoTransition.simplifyTargetByState();
-          TfString prefix = protoTransition.longestPrefix();
-          
-          if (!protoTransition.unionOfTransP.isEmpty()) {
-            if (!visitedNewStates.keySet().contains(protoTransition.unionOfTransP)) {
-              newStates.put(protoTransition.unionOfTransP, new State());
-              visitedNewStates.put(protoTransition.unionOfTransP, newStates.get(protoTransition.unionOfTransP));
+          ProtoT pt = new ProtoT(pNewState, tfrelation, transPset);
+          pt.unionOfTransP.simplifyTargetByState();
+          TfString prefix = pt.unionOfTransP.longestPrefix();
+
+          if (!pt.unionOfTransP.isEmpty()) {
+            if (!visitedNewStates.keySet().contains(pt.unionOfTransP)) {
+              newStates.put(pt.unionOfTransP, new State());
+              visitedNewStates.put(pt.unionOfTransP, newStates.get(pt.unionOfTransP));
             }
-            pNewState.transitions.add(new Transition(new TfString(tfrelation), prefix, visitedNewStates.get(protoTransition.unionOfTransP)));
+            pNewState.addTransition(new Transition(new TfString(tfrelation), prefix, visitedNewStates.get(pt.unionOfTransP)));
           }
         }
       }
     }
+    // generates tail transitions (subsequential final states) 
+    for (P p : visitedNewStates.keySet()) {
+      boolean accept = false;
+      for (ElementOfP e : p)
+        if (accept = e.state.accept) break;
+      if (accept) {
+        State s = visitedNewStates.get(p);
+        p.tail();
+        TfString output = p.longestPrefix();
+        if (!output.isEpsilon()){
+          State tailState = new State();
+          tailState.setAccept(true);
+          s.addTransition(new Transition(new TfString(SimpleTf.Epsilon()), output, tailState));
+        } else {
+          s.setAccept(true);
+        }
+         
+      }
+    }
+
     inLabelEpsilonRemoval();
     removeDeadTransitions();
     deterministic = true;
@@ -1329,7 +1347,7 @@ public class Tffst implements Serializable {
       s.resetTransitions();
       while (j.hasNext()) {
         Transition t = (Transition) j.next();
-        if (live.contains(t.to)) s.transitions.add(t);
+        if (live.contains(t.to)) s.addTransition(t);
       }
     }
   }

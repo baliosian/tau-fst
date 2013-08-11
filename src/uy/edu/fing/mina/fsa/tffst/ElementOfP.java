@@ -109,5 +109,15 @@ public class ElementOfP {
       return "(" + state.toString() + "," + arrivingTFs.toString() + ")";
    }
 
+  /* (non-Javadoc)
+   * @see java.lang.Object#clone()
+   */
+  @Override
+  protected Object clone() throws CloneNotSupportedException {
+    return new ElementOfP(state, arrivingTFs.clone());
+  }
+
+   
+   
  
 }
