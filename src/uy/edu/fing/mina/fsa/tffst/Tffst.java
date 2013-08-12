@@ -576,7 +576,7 @@ public class Tffst implements Serializable {
           if (t.labelIn.isEpsilon()) {
             toRemove.add(t);
             if (!t.getTo().equals(state)) { // ignore in-epsilon loops
-              if (!t.labelOut.isEpsilon()) {
+//              if (!t.labelOut.isEpsilon()) {
                 if (state != initial) {
                   for (Transition inTrans : state.getArrivingTransitions()) {
                     State origin = inTrans.getFrom();
@@ -614,14 +614,14 @@ public class Tffst implements Serializable {
                   }
                 }
 
-              } else { // e/e transition
-                for (Transition t2 : t.getTo().getTransitions()) {
-                  if (t2.getTo().equals(t.getTo())) toAdd.add(new Transition(t2.labelIn,
-                      t2.labelOut, state));
-                  else
-                    toAdd.add(new Transition(t2.labelIn, t2.labelOut, t2.getTo()));
-                }
-              }
+//              } else { // e/e transition
+//                for (Transition t2 : t.getTo().getTransitions()) {
+//                  if (t2.getTo().equals(t.getTo())) toAdd.add(new Transition(t2.labelIn,
+//                      t2.labelOut, state));
+//                  else
+//                    toAdd.add(new Transition(t2.labelIn, t2.labelOut, t2.getTo()));
+//                }
+//              }
             }
           }
         }
