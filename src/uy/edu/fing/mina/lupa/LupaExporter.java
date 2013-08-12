@@ -625,7 +625,7 @@ public class LupaExporter {
 		while (stetesIt.hasNext()) {
 			State s = stetesIt.next();
 
-			Iterator<Transition> transitionsIt = s.getTransitions().iterator();
+			Iterator<Transition> transitionsIt = s.getTransitionsIterator();
 			while (transitionsIt.hasNext()) {
 				Transition t = transitionsIt.next();
 				State s2 = t.getDest();

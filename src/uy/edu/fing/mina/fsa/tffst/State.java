@@ -37,7 +37,16 @@ public class State implements Serializable, Comparable<State> {
   /**
    * @uml.property name="transitions"
    */
-  Set<Transition> transitions;
+  private Set<Transition> transitions = new HashSet<Transition>();
+
+  private Set<Transition> arrivingTransitions = new HashSet<Transition>();
+
+  /**
+   * @return the arrivingTransitions
+   */
+  public Set<Transition> getArrivingTransitions() {
+    return arrivingTransitions;
+  }
 
   /** Constructs new state. Initially, the new state is a reject state. */
   public State() {
@@ -52,8 +61,8 @@ public class State implements Serializable, Comparable<State> {
    *          transition
    */
   public void addTransition(Transition t) {
-    transitions.add(t);
     t.setFrom(this);
+    transitions.add(t);
   }
 
   /**
@@ -72,8 +81,8 @@ public class State implements Serializable, Comparable<State> {
    * 
    * @uml.property name="transitions"
    */
-  public Set<Transition> getTransitions() {
-    return transitions;
+  public Iterator<Transition> getTransitionsIterator() {
+    return transitions.iterator();
   }
 
   /**
@@ -92,6 +101,7 @@ public class State implements Serializable, Comparable<State> {
    */
   public void removeTransition(Transition transition) {
     transitions.remove(transition);
+    transition.setFrom(null);
   }
 
   /**
@@ -134,8 +144,7 @@ public class State implements Serializable, Comparable<State> {
   protected State clone() throws CloneNotSupportedException {
     State s = new State();
     s.resetTransitions();
-    // xop Set<Transition> ts = getTransitions();
-    for (Iterator<Transition> iter = transitions.iterator(); iter.hasNext();) {
+    for (Iterator<Transition> iter = getTransitionsIterator(); iter.hasNext();) {
       Transition t = (Transition) iter.next();
       s.transitions.add(t);
     }
@@ -145,25 +154,16 @@ public class State implements Serializable, Comparable<State> {
 
   void addEpsilon(State to) {
     if (to.accept) accept = true;
-    Iterator<Transition> i = to.transitions.iterator();
+    Iterator<Transition> i = to.getTransitionsIterator();
     while (i.hasNext()) {
       Transition t = (Transition) i.next();
       transitions.add(t);
     }
   }
 
-  /**
-   * Returns transitions
-   * 
-   */
-  Transition[] getTransitionArray() {
-    Transition[] e = (Transition[]) transitions.toArray(new Transition[0]);
-    return e;
-  }
-
   /** Resets transition set. */
   public void resetTransitions() {
-    transitions = new HashSet<Transition>();
+    setTransitions(new HashSet<Transition>());
   }
 
   public int getNumber() {
@@ -196,10 +196,30 @@ public class State implements Serializable, Comparable<State> {
     for (Transition transition : toAdd) {
       addTransition(transition);
     }
-    
-    
   }
 
   
+public void addArrivingTran(Transition t) {
+  arrivingTransitions.add(t);
+}
+  
+public void remArrivingTran(Transition t){
+  arrivingTransitions.remove(t);
+}
+
+/**
+ * @return the transitions
+ */
+public Set<Transition> getTransitions() {
+  return transitions;
+}
+
+public void removeAllTransitions(Set<Transition> toRemove) {
+  for (Transition transition : toRemove) {
+    removeTransition(transition);
+  }
+}
+
+
   
 }

@@ -185,7 +185,7 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
    * @return a simplified version of the formula. 
    */
   
-  public TfI andSimple(TfI tf) {  //FIXME look at the (epsilon and *) case 
+  public TfI andSimple(TfI tf) {  
     TfI outTf;
 
     if (this.acceptsNone() || tf.acceptsNone()) {

@@ -20,6 +20,7 @@ import uy.edu.fing.mina.fsa.tf.TfI;
 import uy.edu.fing.mina.fsa.tf.TfPair;
 import uy.edu.fing.mina.fsa.tf.TfString;
 import uy.edu.fing.mina.fsa.tffsr.Tffsr;
+import uy.edu.fing.mina.fsa.utils.Utils;
 
 /*
  * Class invariants: - An TFFST is represented explicitly (with State and
@@ -299,10 +300,10 @@ public class Tffst implements Serializable {
     }
     for ( State s : states) {
       State p = m.get(s);
-      for (Transition t : s.transitions){
+      for (Transition t : s.getTransitions()){
         Transition tclone = t.clone();
         p.addTransition(tclone);
-        tclone.to = m.get(t.to);
+        tclone.setTo(m.get(t.getTo()));
       }
     }
     a.deterministic = deterministic;
@@ -368,13 +369,13 @@ public class Tffst implements Serializable {
 //              if (t1.labelOut.get(0).equals(t2.labelIn.get(0))){
 
                 // get the new state that is equivalent to this pair, create it. 
-                State outToState = newstates.get(new StatePair(t1.to, t2.to));
+                State outToState = newstates.get(new StatePair(t1.getTo(), t2.getTo()));
                 if (outToState == null){
                   outToState = new State();
-                  newstates.put(new StatePair(t1.to, t2.to), outToState );
-                  if (t1.to.equals(thisSimple.initial) && t2.to.equals(theOtherSimple.initial))
+                  newstates.put(new StatePair(t1.getTo(), t2.getTo()), outToState );
+                  if (t1.getTo().equals(thisSimple.initial) && t2.getTo().equals(theOtherSimple.initial))
                     out.initial = outToState;
-                  outToState.setAccept(t1.to.isAccept() && t2.to.isAccept());
+                  outToState.setAccept(t1.getTo().isAccept() && t2.getTo().isAccept());
                 }
                 try {
                   TfString lin = t1.labelIn.clone();
@@ -438,83 +439,206 @@ public class Tffst implements Serializable {
     determinize(initialset);
   }
 
-  /**
-   * EPSILON REMOVAL FOR TRANSDUCERS 
-   * 
-   * cannot have epsilon loops!!!!! except for
-   * epsilon/epsilon loops. the method removes epsilon-input labeled arcs. this is actually
-   * changing the tffst semantics.
-   * 
-   * the tffst cannot recognize the empty language
-   * 
-   */
+//  /**
+//   * EPSILON REMOVAL FOR TRANSDUCERS 
+//   * 
+//   * cannot have epsilon loops!!!!! except for
+//   * epsilon/epsilon loops. the method removes epsilon-input labeled arcs. this is actually
+//   * changing the tffst semantics.
+//   * 
+//   * the tffst cannot recognize the empty language
+//   * 
+//   */
+//  public void inLabelEpsilonRemoval() {
+//    int f = 0;
+//    
+//    try {
+//      Set<State> workingStates = new HashSet<State>();
+//      Set<State> visitedStates = new HashSet<State>();
+//      workingStates.add(initial);
+//      State state;
+//      boolean removeState = false;
+//      
+//      //push all output labels of transitions with epsilon input labels forward
+//      while (!workingStates.isEmpty()) {
+//        removeState = true;
+//        state = workingStates.iterator().next();
+//        visitedStates.add(state);
+//
+//        Set<Transition> toRemove = new HashSet<Transition>();
+//        Set<Transition> toAdd = new HashSet<Transition>();
+//
+//        for (Transition t : state.getTransitions()) {
+//          
+//          if (!visitedStates.contains(t.getTo())) workingStates.add(t.getTo());
+//
+//          if (t.labelIn.isEpsilon()) {
+//            toRemove.add(t);
+//            if (!t.getTo().equals(state)) { // ignore in-epsilon loops
+//              if (!t.labelOut.isEpsilon()) {
+//                if (t.getTo().isAccept()) {
+//                  for (Transition arriTransition : state.getArrivingTransitions()) {
+//                    State origin = arriTransition.getFrom();
+//                    if (origin != null) {
+//                      if (!state.equals(origin)) {
+//                        Transition arriTransitionClone = new Transition(arriTransition.labelIn,
+//                            arriTransition.labelOut, t.getTo());
+//                        arriTransitionClone.labelOut.addAll(t.labelOut);
+//                        origin.addTransition(arriTransitionClone);
+//                      } else {
+//                        if (!arriTransition.labelIn.isEpsilon()) {
+//                          State n = new State();
+//                          n.addTransition(new Transition(arriTransition.labelIn,
+//                              arriTransition.labelOut, n));
+//                          for (Transition arriTransition2 : state.getArrivingTransitions()) {
+//                            State origin2 = arriTransition2.getFrom();
+//                            if (!state.equals(origin2)) {
+//                              origin2.addTransition(new Transition(arriTransition2.labelIn,
+//                                  arriTransition.labelOut, n));
+//                            }
+//                          }
+//                          n.addTransition(new Transition(arriTransition.labelIn, t.labelOut, t
+//                              .getTo()));
+//                        }
+//                      }
+//                    }
+//                  }
+//                } else {
+//                  for (Transition tNext : t.getTo().getTransitions()) {
+//                    if (!(tNext.labelIn.isEpsilon() && tNext.getTo().equals(t.getTo()) && tNext
+//                        .getTo().isAccept())) {
+//                      Transition tNextClone = tNext.clone();
+//                      for (int i = 0; i < t.labelOut.size(); i++)
+//                        tNextClone.labelOut.add(i, t.labelOut.get(i));
+//                      toAdd.add(tNextClone);
+//                      removeState = false;
+//                    }
+//                  }
+//                }
+//              } else { // e/e transition
+//                for (Transition t2 : t.getTo().getTransitions()) {
+//                  if (t2.getTo().equals(t.getTo())) toAdd.add(new Transition(t2.labelIn,
+//                      t2.labelOut, state));
+//                  else
+//                    toAdd.add(new Transition(t2.labelIn, t2.labelOut, t2.getTo()));
+//                }
+//              }
+//            }
+//          }
+//        }
+//        
+//        Utils.showDot(this.toDot("" + f++));
+//        
+//        state.removeAllTransitions(toRemove);
+//        state.addAllTransitions(toAdd);
+//        if (removeState) workingStates.remove(state);
+//                
+//      }
+//    } catch (CloneNotSupportedException e) {
+//      e.printStackTrace();
+//    }
+//
+//  }
+  
+/**
+* EPSILON REMOVAL FOR TRANSDUCERS 
+* 
+* cannot have epsilon loops!!!!! except for
+* epsilon/epsilon loops. the method removes epsilon-input labeled arcs. this is actually
+* changing the tffst semantics.
+* 
+* the tffst cannot recognize the empty language
+* 
+*/
   public void inLabelEpsilonRemoval() {
+    int f = 0;
 
     try {
-      Set<State> workingStates = new HashSet<State>();
-      Map<State,Map<Transition,State>> acceptStates = new HashMap<State,Map<Transition,State>>();
-      workingStates.add(initial);
-      State state;
-      boolean removeState = false;
+    Set<State> workingStates = new HashSet<State>();
+    Set<State> visitedStates = new HashSet<State>();
+    workingStates.add(initial);
+    State state;
+    boolean removeState = false;
 
-      //push all output labels of transitions with epsilon input labels forward
+    // push all output labels of transitions with epsilon input labels forward
       while (!workingStates.isEmpty()) {
         removeState = true;
         state = workingStates.iterator().next();
+        visitedStates.add(state);
 
         Set<Transition> toRemove = new HashSet<Transition>();
         Set<Transition> toAdd = new HashSet<Transition>();
 
-        for (Transition t : state.transitions) {
+        for (Transition t : state.getTransitions()) {
 
-          Map<Transition,State> arriving = acceptStates.get(t.to);
-          if (arriving == null){
-            arriving =  new HashMap<Transition,State>();
-            arriving.put(t, state);
-            acceptStates.put(t.to, arriving);
-          } else
-            arriving.put(t, state);
-
-          workingStates.add(t.to);
+          if (!visitedStates.contains(t.getTo())) workingStates.add(t.getTo());
 
           if (t.labelIn.isEpsilon()) {
             toRemove.add(t);
-            if (t.to.isAccept()) {
-              arriving = acceptStates.get(state); // this is fine because the tffst cannot recognize the empty language
-              for (Transition arriTransition : arriving.keySet()){
-                State origin = arriving.get(arriTransition);
-                if (!state.equals(origin)) {
-                  Transition arriTransitionClone = arriTransition.clone();
-                  arriTransitionClone.labelOut.addAll(t.labelOut);
-                  arriTransitionClone.to = t.to;
-                  origin.addTransition(arriTransitionClone);
-                }
-              }
-            } else { 
-              if (!t.to.equals(state)) {
-                for (Transition tNext : t.to.transitions) {
-                  if (!(tNext.labelIn.isEpsilon() && tNext.to.equals(t.to))) {
-                    Transition tNextClone = tNext.clone();
-                    for (int i = 0; i < t.labelOut.size(); i++)
-                      tNextClone.labelOut.add(i, t.labelOut.get(i));
-                    toAdd.add(tNextClone);
-                    removeState = false;
+            if (!t.getTo().equals(state)) { // ignore in-epsilon loops
+              if (!t.labelOut.isEpsilon()) {
+                if (state != initial) {
+                  for (Transition inTrans : state.getArrivingTransitions()) {
+                    State origin = inTrans.getFrom();
+                    if (origin != null) {
+                      if (!state.equals(origin)) {
+                        Transition inTransClon = new Transition(inTrans.labelIn.clone(),
+                            inTrans.labelOut.clone(), t.getTo());
+                        inTransClon.labelOut.addAll(t.labelOut);
+                        origin.addTransition(inTransClon);
+                      } else {
+                        if (!inTrans.labelIn.isEpsilon()) {
+                          State n = new State();
+                          n.addTransition(new Transition(inTrans.labelIn, inTrans.labelOut, n));
+                          for (Transition arriTransition2 : state.getArrivingTransitions()) {
+                            State origin2 = arriTransition2.getFrom();
+                            if (!state.equals(origin2)) {
+                              origin2.addTransition(new Transition(arriTransition2.labelIn,
+                                  inTrans.labelOut, n));
+                            }
+                          }
+                          n.addTransition(new Transition(inTrans.labelIn, t.labelOut, t.getTo()));
+                        }
+                      }
+                    }
                   }
+                } else {
+                  for (Transition tNext : t.getTo().getTransitions()) {
+                    if (!(tNext.labelIn.isEpsilon() && tNext.getTo().equals(t.getTo()))) {
+                      Transition tNextClone = tNext.clone();
+                      for (int i = 0; i < t.labelOut.size(); i++)
+                        tNextClone.labelOut.add(i, t.labelOut.get(i));
+                      toAdd.add(tNextClone);
+                      removeState = false;
+                    }
+                  }
+                }
+
+              } else { // e/e transition
+                for (Transition t2 : t.getTo().getTransitions()) {
+                  if (t2.getTo().equals(t.getTo())) toAdd.add(new Transition(t2.labelIn,
+                      t2.labelOut, state));
+                  else
+                    toAdd.add(new Transition(t2.labelIn, t2.labelOut, t2.getTo()));
                 }
               }
             }
           }
         }
-        state.transitions.removeAll(toRemove);
+
+        state.removeAllTransitions(toRemove);
         state.addAllTransitions(toAdd);
         if (removeState) workingStates.remove(state);
+
       }
     } catch (CloneNotSupportedException e) {
       e.printStackTrace();
     }
+    
+    removeDeadTransitions();
 
   }
-  
+
   
   
   /**
@@ -542,7 +666,7 @@ public class Tffst implements Serializable {
       for (Transition fstTransition :fstState.getTransitions()) {
         // can do this because  simpleTffst = toSimpleTransitions() 
         fsrState.addTransition(new uy.edu.fing.mina.fsa.tffsr.Transition(
-            fstTransition.labelIn.get(0), stateMap.get(fstTransition.to)));
+            fstTransition.labelIn.get(0), stateMap.get(fstTransition.getTo())));
       }
     }
     return outTffsr;
@@ -563,12 +687,12 @@ public class Tffst implements Serializable {
     while (worklist.size() > 0) {
       State s = worklist.removeFirst();
       if (s.accept) accepts.add(s);
-      Iterator<Transition> i = s.transitions.iterator();
+      Iterator<Transition> i = s.getTransitionsIterator();
       while (i.hasNext()) {
         Transition t = i.next();
-        if (!visited.contains(t.to)) {
-          visited.add(t.to);
-          worklist.add(t.to);
+        if (!visited.contains(t.getTo())) {
+          visited.add(t.getTo());
+          worklist.add(t.getTo());
         }
       }
     }
@@ -612,8 +736,8 @@ public class Tffst implements Serializable {
       map.put(s, new HashSet<State>());
 
     for (State s : states)
-      for (Transition t : s.transitions)
-        map.get(t.to).add(s);
+      for (Transition t : s.getTransitions())
+        map.get(t.getTo()).add(s);
 
     Set<State> live = new HashSet<State>(getAcceptStates());
     LinkedList<State> worklist = new LinkedList<State>(live);
@@ -637,34 +761,6 @@ public class Tffst implements Serializable {
   }
 
   /**
-   * Returns number of transitions in this Tffst. This number is counted as the
-   * total number of edges, where one edge may be a character interval.
-   */
-  public int getNumberOfTransitions() {
-    int c = 0;
-    Iterator<State> i = getStates().iterator();
-    while (i.hasNext()) {
-      State s = i.next();
-      c += s.transitions.size();
-    }
-    return c;
-  }
-
-  /**
-   * Returns sorted array of transitions for each state (and sets state
-   * numbers).
-   */
-  public Transition[][] getSortedTransitions() {
-    Transition[][] transitions = new Transition[getStates().size()][];
-    Iterator<State> i = getStates().iterator();
-    while (i.hasNext()) {
-      State s = i.next();
-      transitions[s.getNumber()] = s.getTransitionArray();
-    }
-    return transitions;
-  }
-
-  /**
    * Returns the set states that are reachable from the initial state.
    * 
    * @return set of {@link State}objects
@@ -676,12 +772,12 @@ public class Tffst implements Serializable {
     visited.add(initial);
     while (worklist.size() > 0) {
       State s = worklist.removeFirst();
-      Iterator<Transition> i = s.transitions.iterator();
+      Iterator<Transition> i = s.getTransitionsIterator();
       while (i.hasNext()) {
         Transition t = i.next();
-        if (!visited.contains(t.to)) {
-          visited.add(t.to);
-          worklist.add(t.to);
+        if (!visited.contains(t.getTo())) {
+          visited.add(t.getTo());
+          worklist.add(t.getTo());
         }
       }
     }
@@ -701,10 +797,10 @@ public class Tffst implements Serializable {
       State s = worklist.removeFirst();
       if (!visited.contains(s)) {
         visited.add(s);
-        Iterator<Transition> i = s.transitions.iterator();
+        Iterator<Transition> i = s.getTransitionsIterator();
         while (i.hasNext()) {
           Transition t = (Transition) i.next();
-          worklist.add(t.to);
+          worklist.add(t.getTo());
           allTrans.add(t);
         }
       }
@@ -734,7 +830,7 @@ public class Tffst implements Serializable {
 
   /** Returns true if this Tffst accepts no strings. */
   public boolean isEmpty() {
-    return initial.accept == false && initial.transitions.size() == 0;
+    return initial.accept == false && initial.getTransitions().size() == 0;
   }
 
   /** Returns true if the language of this Tffst is finite. */
@@ -914,7 +1010,7 @@ public class Tffst implements Serializable {
         b.append("  initial [shape=plaintext,label=\"\"];\n"); //$NON-NLS-1$
         b.append("  initial -> ").append(s.getNumber()).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
       }
-      Iterator<Transition> j = s.transitions.iterator();
+      Iterator<Transition> j = s.getTransitionsIterator();
       while (j.hasNext()) {
         Transition t = j.next();
         b.append("  ").append(s.getNumber()); //$NON-NLS-1$
@@ -945,7 +1041,7 @@ public class Tffst implements Serializable {
         b.append("  initial [shape=plaintext,label=\"\"];\n"); 
         b.append("  initial -> ").append(s.getNumber()).append("\n"); 
       }
-      Iterator<Transition> j = s.transitions.iterator();
+      Iterator<Transition> j = s.getTransitionsIterator();
       while (j.hasNext()) {
         Transition t = j.next();
         b.append("  ").append(s.getNumber()); 
@@ -976,11 +1072,11 @@ public class Tffst implements Serializable {
     }
 
     for (State s : states) {
-      for (Transition t : s.transitions) {
+      for (Transition t : s.getTransitions()) {
         State last = m.get(s);
         for (int k = 0; k < t.labelIn.size(); k++) {
           State to;
-          if (k == t.labelIn.size() - 1) to = m.get(t.to);
+          if (k == t.labelIn.size() - 1) to = m.get(t.getTo());
           else
             to = new State();
           if (k == 0) last.addTransition(new Transition(new TfString(t.labelIn.get(0)),
@@ -1019,7 +1115,7 @@ public class Tffst implements Serializable {
         if (s == initial) simpleTffst.initial = last;
       } 
       
-      for (Transition t : s.transitions) {
+      for (Transition t : s.getTransitions()) {
         
         last = m.get(s);
 
@@ -1034,25 +1130,25 @@ public class Tffst implements Serializable {
           if (tOutiter.hasNext()) newTr.setLabelOut(new TfString(tOutiter.next()));
 
           if (!tIniter.hasNext() && !tOutiter.hasNext()){
-            if (m.get(t.to) == null) {
+            if (m.get(t.getTo()) == null) {
               
               State newTo = new State();
-              m.put(t.to, newTo);
-              newTo.accept = t.to.accept;
-              if (t.to == initial) simpleTffst.initial = newTo;
+              m.put(t.getTo(), newTo);
+              newTo.accept = t.getTo().accept;
+              if (t.getTo() == initial) simpleTffst.initial = newTo;
 
-              newTr.to = newTo;
+              newTr.setTo(newTo);
             } else {
-              newTr.to = m.get(t.to);
+              newTr.setTo(m.get(t.getTo()));
             }
           } else {
             // creates a new intermediate state
             State ns = new State();
             m.put(ns, ns);
-            newTr.to = ns;
+            newTr.setTo(ns);
           }
           last.addTransition(newTr);
-          last = newTr.to;
+          last = newTr.getTo();
         }
       }
     }
@@ -1087,7 +1183,7 @@ public class Tffst implements Serializable {
       for (Transition fstTransition :fstState.getTransitions()) {
         // can do this because  simpleTffst = toSimpleTransitions() 
         fsrState.addTransition(new uy.edu.fing.mina.fsa.tffsr.Transition(
-            new TfPair(fstTransition.labelIn.get(0),fstTransition.labelOut.get(0)), stateMap.get(fstTransition.to)));
+            new TfPair(fstTransition.labelIn.get(0),fstTransition.labelOut.get(0)), stateMap.get(fstTransition.getTo())));
       }
     }
     return outTffsr;
@@ -1155,7 +1251,7 @@ public class Tffst implements Serializable {
     for (TfI tf : left) {
       if (!tf.isEpsilon()) {
         for (ElementOfP pairP : setOfelementsOfP) {
-          for (Transition t : pairP.state.transitions) {
+          for (Transition t : pairP.state.getTransitions()) {
             if (tf.equals(t.labelIn.get(0))) {
               TfString newSE = new TfString();
               for (TfI tfpairp : pairP.arrivingTFs) {
@@ -1174,7 +1270,7 @@ public class Tffst implements Serializable {
                 }
                 newSE.add(t.labelOut.get(0)); 
               }
-              retPair = new ElementOfP(t.to, newSE);
+              retPair = new ElementOfP(t.getTo(), newSE);
               unionOfTransPelements.add(retPair);
             }
           }
@@ -1190,10 +1286,10 @@ public class Tffst implements Serializable {
    */
   private boolean isFinite(State s, HashSet<State> path) {
     path.add(s);
-    Iterator<Transition> i = s.transitions.iterator();
+    Iterator<Transition> i = s.getTransitionsIterator();
     while (i.hasNext()) {
       Transition t = i.next();
-      if (path.contains(t.to) || !isFinite(t.to, path)) return false;
+      if (path.contains(t.getTo()) || !isFinite(t.getTo(), path)) return false;
     }
     path.remove(s);
     return true;
@@ -1211,7 +1307,7 @@ public class Tffst implements Serializable {
   private Set<TfI> getRelevantTFs(P p) {
     Set<TfI> relevantTFs = new HashSet<TfI>();
     for (ElementOfP pp : p)
-      for (Transition t : pp.state.transitions)
+      for (Transition t : pp.state.getTransitions())
         for (TfI tf : t.labelIn)
           relevantTFs.add(tf);
 
@@ -1294,45 +1390,6 @@ public class Tffst implements Serializable {
     deterministic = true;
   }
 
-//  /**
-//   * Recursive method to compute all posible relations of tauterthan and
-//   * astautas of a given permutation
-//   * 
-//   * @param permutation
-//   *          each permutation is given by a ComposiiteTF tree
-//   * @return a set of TfIs
-//   */
-//  private Set<TfI> getAllOrderedRelations(TfI permutation) {
-//    Set<TfI> returnSet = new HashSet<TfI>();
-//
-//    if (permutation instanceof TfPair) {
-//      TfPair tfpPermutation = (TfPair) permutation;
-//      Set<TfI> tfpreturnSet = new HashSet<TfI>();
-//      tfpreturnSet.addAll(getAllOrderedRelations(tfpPermutation.getTfIn()));
-//      for (Iterator<TfI> iter = tfpreturnSet.iterator(); iter.hasNext();) {
-//        TfI relation = iter.next();
-//        returnSet.add(new TfPair(relation, tfpPermutation.getTfOut()));
-//      }
-//    } else if (permutation instanceof SimpleTf) {
-//      returnSet.add(permutation);
-//    } else if (permutation instanceof CompositeTf) {
-//      CompositeTf cpermutation = (CompositeTf) permutation;
-//      Set<TfI> left = getAllOrderedRelations(cpermutation.leftTf);
-//      Set<TfI> right = getAllOrderedRelations(cpermutation.rightTf);
-//      for (Iterator<TfI> iter = left.iterator(); iter.hasNext();) {
-//        TfI lRelation = (TfI) iter.next();
-//        for (Iterator<TfI> iterator = right.iterator(); iterator.hasNext();) {
-//          TfI rRelation = (TfI) iterator.next();
-//          returnSet.add(lRelation.tauterThan(rRelation));
-//          returnSet.add(lRelation.asTautas(rRelation));
-//        }
-//      }
-//    } else {
-//      System.err.println("ERROR: bad permutation structure.");
-//    }
-//    return returnSet;
-//  }
-
   /**
    * Removes transitions to dead states and calls {@link #reduce()}(a state is
    * "dead" if no accept state is reachable from it).
@@ -1343,11 +1400,11 @@ public class Tffst implements Serializable {
     Iterator<State> i = states.iterator();
     while (i.hasNext()) {
       State s = i.next();
-      Iterator<Transition> j = s.transitions.iterator();
+      Iterator<Transition> j = s.getTransitionsIterator();
       s.resetTransitions();
       while (j.hasNext()) {
         Transition t = (Transition) j.next();
-        if (live.contains(t.to)) s.addTransition(t);
+        if (live.contains(t.getTo())) s.addTransition(t);
       }
     }
   }

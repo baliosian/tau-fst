@@ -28,7 +28,7 @@ public class Transition implements Serializable {
 
   TfString labelOut;
 
-  State to;
+  private State to;
 
   private State from;
 
@@ -44,7 +44,12 @@ public class Transition implements Serializable {
    * @param from the from to set
    */
   public void setFrom(State from) {
-    this.from = from;
+    if (this.from != from) {
+      this.from = from;
+      if (from != null) {
+        from.addTransition(this);
+      }
+    }
   }
 
   private Double weight;
@@ -58,8 +63,7 @@ public class Transition implements Serializable {
    *          destination state
    */
   public Transition() {
-    labelIn = new TfString(SimpleTf.Epsilon()); 
-    labelOut = new TfString(SimpleTf.Epsilon());
+    this(null, new TfString(SimpleTf.Epsilon()), new TfString(SimpleTf.Epsilon()), null);
   }
 
   /**
@@ -71,7 +75,7 @@ public class Transition implements Serializable {
    *          destination state
    */
   public Transition(TfI labelIn, TfI labelOut, State to) {
-    this(new TfString(labelIn), new TfString(labelOut), to);
+    this(null, new TfString(labelIn), new TfString(labelOut), to);
   }
 
   /**
@@ -84,9 +88,7 @@ public class Transition implements Serializable {
    */
 	
   public Transition(TfString labelIn, TfString labelOut, State to) {
-    this.to = to;
-    this.labelIn = labelIn;
-    this.labelOut = labelOut;
+    this(null, labelIn, labelOut, to);
   }
 
   /**
@@ -96,7 +98,7 @@ public class Transition implements Serializable {
     
   public Transition(State from, TfString labelIn, TfString labelOut, State to) {
     this.from = from;
-    this.to = to;
+    this.setTo(to);
     this.labelIn = labelIn;
     this.labelOut = labelOut;
   }
@@ -112,7 +114,7 @@ public class Transition implements Serializable {
     result = prime * result + ((from == null) ? 0 : from.hashCode());
     result = prime * result + ((labelIn == null) ? 0 : labelIn.hashCode());
     result = prime * result + ((labelOut == null) ? 0 : labelOut.hashCode());
-    result = prime * result + ((to == null) ? 0 : to.hashCode());
+    result = prime * result + ((getTo() == null) ? 0 : getTo().hashCode());
     result = prime * result + ((weight == null) ? 0 : weight.hashCode());
     return result;
   }
@@ -135,9 +137,9 @@ public class Transition implements Serializable {
     if (labelOut == null) {
       if (other.labelOut != null) return false;
     } else if (!labelOut.equals(other.labelOut)) return false;
-    if (to == null) {
-      if (other.to != null) return false;
-    } else if (!to.equals(other.to)) return false;
+    if (getTo() == null) {
+      if (other.getTo() != null) return false;
+    } else if (!getTo().equals(other.getTo())) return false;
     if (weight == null) {
       if (other.weight != null) return false;
     } else if (!weight.equals(other.weight)) return false;
@@ -155,7 +157,7 @@ public class Transition implements Serializable {
    */
   
   public Transition(TfI labelIn, TfI labelOut, State to, int identityType) {
-    this.to = to;
+    this.setTo(to);
     this.labelIn = new TfString(labelIn);
     this.labelOut = new TfString(labelOut);
     if (identityType == 1 || identityType == -1 ) {
@@ -167,19 +169,19 @@ public class Transition implements Serializable {
   }
   
   void appendDot(StringBuffer b) {
-    b.append(" -> ").append(to.getNumber()).append(" [label=\"");
+    b.append(" -> ").append(getTo().getNumber()).append(" [label=\"");
     b.append(this.toString());
     b.append("\"]\n");
   }
 
   void appendDot(StringBuffer b, int type) {
     if (type == 0) {
-      b.append(" -> ").append(to.getNumber()).append(" [label=\"");
+      b.append(" -> ").append(getTo().getNumber()).append(" [label=\"");
       b.append(this.toString());
       b.append("\"]\n");
     }
     if (type == 1) {
-      b.append(" -> ").append(to.getNumber()).append(" [label=\"");
+      b.append(" -> ").append(getTo().getNumber()).append(" [label=\"");
       b.append("");
       b.append("\"]\n");
     }
@@ -192,12 +194,12 @@ public class Transition implements Serializable {
    * @throws CloneNotSupportedException 
    */
   public Transition clone() throws CloneNotSupportedException {
-    return new Transition(this.from, this.labelIn.clone(), this.labelOut.clone(), to);
+    return new Transition(this.from, this.labelIn.clone(), this.labelOut.clone(), getTo());
   }
 
   /** Returns destination of this transition. */
   public State getDest() {
-    return to;
+    return getTo();
   }
 
   /**
@@ -253,6 +255,18 @@ public class Transition implements Serializable {
 
   public void setWeight(Double weight) {
     this.weight = weight;
+  }
+
+  State getTo() {
+    return to;
+  }
+
+  void setTo(State to) {
+    if (this.to != null)
+      this.to.remArrivingTran(this);
+    this.to = to;
+    if (to != null)
+      to.addArrivingTran(this);
   }
 
 }

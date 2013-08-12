@@ -72,7 +72,7 @@ public class DeterminizationBucleBeforeAndAfter {
 
     tffstkleene.setDeterministic(false);
     tffstkleene.determinize();
-    Utils.showDot(tffstkleene.toDot("determinized kleene tffst2"));
+    Utils.showDot(tffstkleene.toDot("determinized kleene tffst2")); 
 
   }
 
