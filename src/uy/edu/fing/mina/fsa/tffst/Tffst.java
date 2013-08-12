@@ -625,11 +625,9 @@ public class Tffst implements Serializable {
             }
           }
         }
-
         state.removeAllTransitions(toRemove);
         state.addAllTransitions(toAdd);
         if (removeState) workingStates.remove(state);
-
       }
     } catch (CloneNotSupportedException e) {
       e.printStackTrace();
