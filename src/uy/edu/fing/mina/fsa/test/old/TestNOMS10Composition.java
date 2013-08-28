@@ -38,9 +38,9 @@ public static Tffst ruletypeA(TfI ev1, TfI ev2, TfI act1, TfI act2) {
 		Transition trans1 = new Transition(ev2.not(), act1, s1);
 		Transition trans2 = new Transition(ev2, act2, s2);
 
-		s0.addTransition(trans0);
-		s1.addTransition(trans1);
-		s1.addTransition(trans2);
+		s0.addOutTran(trans0);
+		s1.addOutTran(trans1);
+		s1.addOutTran(trans2);
 
 		Tffst rule1b = new Tffst();
 		
@@ -54,9 +54,9 @@ public static Tffst ruletypeA(TfI ev1, TfI ev2, TfI act1, TfI act2) {
 		Transition trans1b = new Transition(ev1.not(), act1, s1b);
 		Transition trans2b = new Transition(ev1, act2, s2b);
 
-		s0b.addTransition(trans0b);
-		s1b.addTransition(trans1b);
-		s1b.addTransition(trans2b);
+		s0b.addOutTran(trans0b);
+		s1b.addOutTran(trans1b);
+		s1b.addOutTran(trans2b);
 
 		//return rule1a.union(rule1b);
 		
@@ -80,10 +80,10 @@ public static Tffst ruletypeB(TfI ev1, TfI ev2, TfI act1) {
 	Transition trans2 = new Transition(ev2, ev2, s2, 1);
 	Transition trans3 = new Transition(SimpleTf.Epsilon(), act1, s3);
 
-	s0.addTransition(trans0);
-	s1.addTransition(trans1);
-	s1.addTransition(trans2);
-	s2.addTransition(trans3);
+	s0.addOutTran(trans0);
+	s1.addOutTran(trans1);
+	s1.addOutTran(trans2);
+	s2.addOutTran(trans3);
 	
 	return rule1a.kleene();
 	

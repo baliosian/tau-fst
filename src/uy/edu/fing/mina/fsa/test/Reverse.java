@@ -46,9 +46,9 @@ public class Reverse {
 
     Transition trans2 = new Transition(tf3, tf4, s1);
 
-    s0.addTransition(trans1);
+    s0.addOutTran(trans1);
 
-    s0.addTransition(trans2);
+    s0.addOutTran(trans2);
 
     Tffst tffst2 = new Tffst();
     State s20 = new State();
@@ -73,9 +73,9 @@ public class Reverse {
 
     Transition trans22 = new Transition(tf23, tf24, s21);
 
-    s20.addTransition(trans21);
+    s20.addOutTran(trans21);
 
-    s20.addTransition(trans22);
+    s20.addOutTran(trans22);
 
     tffst1 = tffst1.union(tffst2);
 

@@ -42,7 +42,7 @@ public class ElementOfP {
    public ElementOfP(State state, TfString arriving) {
       super();
       this.state = state;
-      this.arrivingTFs = arriving;
+      this.setArrivingTFs(arriving);
    }
 
 //   /**
@@ -75,7 +75,7 @@ public class ElementOfP {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((arrivingTFs == null) ? 0 : arrivingTFs.hashCode());
+    result = prime * result + ((getArrivingTFs() == null) ? 0 : getArrivingTFs().hashCode());
     result = prime * result + ((state == null) ? 0 : state.hashCode());
     //result = prime * result + ((usedTrans == null) ? 0 : usedTrans.hashCode());
     return result;
@@ -91,9 +91,9 @@ public class ElementOfP {
     if (obj == null) ret = false;
     if (!(obj instanceof ElementOfP)) ret = false;
     ElementOfP other = (ElementOfP) obj;
-    if (arrivingTFs == null) {
-      if (other.arrivingTFs != null) ret = false;
-    } else if (!arrivingTFs.equals(other.arrivingTFs)) ret = false;
+    if (getArrivingTFs() == null) {
+      if (other.getArrivingTFs() != null) ret = false;
+    } else if (!getArrivingTFs().equals(other.getArrivingTFs())) ret = false;
     if (state == null) {
       if (other.state != null) ret = false;
     } else if (!state.equals(other.state)) ret = false;
@@ -106,7 +106,7 @@ public class ElementOfP {
     * @see java.lang.Object#toString()
     */
    public String toString() {
-      return "(" + state.toString() + "," + arrivingTFs.toString() + ")";
+      return "(" + state.toString() + "," + getArrivingTFs().toString() + ")";
    }
 
   /* (non-Javadoc)
@@ -114,7 +114,15 @@ public class ElementOfP {
    */
   @Override
   protected Object clone() throws CloneNotSupportedException {
-    return new ElementOfP(state, arrivingTFs.clone());
+    return new ElementOfP(state, getArrivingTFs().clone());
+  }
+
+  TfString getArrivingTFs() {
+    return arrivingTFs;
+  }
+
+  void setArrivingTFs(TfString arrivingTFs) {
+    this.arrivingTFs = arrivingTFs;
   }
 
    

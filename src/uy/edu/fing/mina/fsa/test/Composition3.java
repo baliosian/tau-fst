@@ -45,10 +45,10 @@ public class Composition3 {
       State s4 = new State();
       s4.setAccept(true);
 
-      s0.addTransition(new Transition(new SimpleTf("A"), new SimpleTf("A"), s1));
-      s1.addTransition(new Transition(new SimpleTf("B"), SimpleTf.Epsilon(), s2));
-      s2.addTransition(new Transition(new SimpleTf("C"), SimpleTf.Epsilon(), s3));
-      s3.addTransition(new Transition(new SimpleTf("D"), new SimpleTf("D"), s4));
+      s0.addOutTran(new Transition(new SimpleTf("A"), new SimpleTf("A"), s1));
+      s1.addOutTran(new Transition(new SimpleTf("B"), SimpleTf.Epsilon(), s2));
+      s2.addOutTran(new Transition(new SimpleTf("C"), SimpleTf.Epsilon(), s3));
+      s3.addOutTran(new Transition(new SimpleTf("D"), new SimpleTf("D"), s4));
       
       Utils.showDot(tffst1.toDot("tffst1"));
 
@@ -67,9 +67,9 @@ public class Composition3 {
   State s23 = new State();
   s23.setAccept(true);
 
-  s20.addTransition(new Transition(new SimpleTf("A"), new SimpleTf("D"), s21));
-  s21.addTransition(new Transition(SimpleTf.Epsilon(), new SimpleTf("E"), s22));
-  s22.addTransition(new Transition(new SimpleTf("D"), new SimpleTf("A"), s23));
+  s20.addOutTran(new Transition(new SimpleTf("A"), new SimpleTf("D"), s21));
+  s21.addOutTran(new Transition(SimpleTf.Epsilon(), new SimpleTf("E"), s22));
+  s22.addOutTran(new Transition(new SimpleTf("D"), new SimpleTf("A"), s23));
 
       Utils.showDot(tffst2.toDot("tffst2"));
       

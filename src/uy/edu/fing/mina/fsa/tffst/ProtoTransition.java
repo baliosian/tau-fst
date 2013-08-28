@@ -70,8 +70,8 @@ public class ProtoTransition {
             if (!toRemove.contains(currentPair))
               if ((currentPair.state.equals(workingPair.state) || workingPair.state.isAccept())
                   && workingPair != currentPair) {
-                TfString currentSE = currentPair.arrivingTFs;
-                TfString workingSE = workingPair.arrivingTFs;
+                TfString currentSE = currentPair.getArrivingTFs();
+                TfString workingSE = workingPair.getArrivingTFs();
                 TfString newSE = new TfString();
 
                 Iterator<TfI> workingSEiter = workingSE.iterator();
@@ -89,7 +89,7 @@ public class ProtoTransition {
                   else if (workingTFinSE == null || workingTFinSE.isEpsilon()) newSE.add(currentTFinSE);
                 }
                 toRemove.add(currentPair);
-                workingPair.arrivingTFs = newSE;
+                workingPair.setArrivingTFs(newSE);
               }
     } while (toRemoveSize != toRemove.size());
     
@@ -112,19 +112,19 @@ public class ProtoTransition {
       while (match) {
         Iterator<ElementOfP> iter = unionOfTransP.iterator();
         ElementOfP firstPair = iter.next();
-        if (firstPair.arrivingTFs.isEpsilon()) match = false;
+        if (firstPair.getArrivingTFs().isEpsilon()) match = false;
         while (iter.hasNext() && match) {
           ElementOfP pair = iter.next();
-          if (pair.arrivingTFs.isEpsilon()) match = false;
+          if (pair.getArrivingTFs().isEpsilon()) match = false;
           else 
-            if (!firstPair.arrivingTFs.get(0).equals(pair.arrivingTFs.get(0))) match = false;
+            if (!firstPair.getArrivingTFs().get(0).equals(pair.getArrivingTFs().get(0))) match = false;
         }
         if (match) {
-          outSE.add(firstPair.arrivingTFs.get(0));
+          outSE.add(firstPair.getArrivingTFs().get(0));
           Iterator<ElementOfP> iter2 = unionOfTransP.iterator();
           while (iter2.hasNext()) {
             ElementOfP pair2 = iter2.next();
-            pair2.arrivingTFs.remove(0);
+            pair2.getArrivingTFs().remove(0);
           }
         }
       }

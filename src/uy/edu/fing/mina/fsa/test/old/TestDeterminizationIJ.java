@@ -49,8 +49,8 @@ public class TestDeterminizationIJ {
       Transition trans1 = new Transition(tf1, tf2, s4);
       Transition trans5 = new Transition(tf7, tf8, s4);
       
-      s0.addTransition(trans1);
-      s4.addTransition(trans5);
+      s0.addOutTran(trans1);
+      s4.addOutTran(trans5);
 
       Utils.showDot(tffst1.toDot(""));
 

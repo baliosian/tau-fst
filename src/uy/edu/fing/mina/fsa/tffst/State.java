@@ -41,28 +41,10 @@ public class State implements Serializable, Comparable<State> {
 
   private Set<Transition> arrivingTransitions = new HashSet<Transition>();
 
-  /**
-   * @return the arrivingTransitions
-   */
-  public Set<Transition> getArrivingTransitions() {
-    return arrivingTransitions;
-  }
-
   /** Constructs new state. Initially, the new state is a reject state. */
   public State() {
     resetTransitions();
     number = next_number++;
-  }
-
-  /**
-   * Adds outgoing transition.
-   * 
-   * @param t
-   *          transition
-   */
-  public void addTransition(Transition t) {
-    t.setFrom(this);
-    transitions.add(t);
   }
 
   /**
@@ -71,18 +53,6 @@ public class State implements Serializable, Comparable<State> {
    */
   public int compareTo(State o) {
     return o.number - number;
-  }
-
-  /**
-   * Returns set of outgoing transitions. Subsequent changes are reflected in
-   * the automaton.
-   * 
-   * @return transition set
-   * 
-   * @uml.property name="transitions"
-   */
-  public Iterator<Transition> getTransitionsIterator() {
-    return transitions.iterator();
   }
 
   /**
@@ -97,14 +67,6 @@ public class State implements Serializable, Comparable<State> {
   }
 
   /**
-   * @param transition
-   */
-  public void removeTransition(Transition transition) {
-    transitions.remove(transition);
-    transition.setFrom(null);
-  }
-
-  /**
    * Sets acceptance for this state.
    * 
    * @param accept
@@ -114,16 +76,6 @@ public class State implements Serializable, Comparable<State> {
    */
   public void setAccept(boolean accept) {
     this.accept = accept;
-  }
-
-  /**
-   * @param transitions
-   *          The transitions to set.
-   * 
-   * @uml.property name="transitions"
-   */
-  public void setTransitions(HashSet<Transition> transitions) {
-    this.transitions = transitions;
   }
 
   /**
@@ -143,7 +95,6 @@ public class State implements Serializable, Comparable<State> {
    */
   protected State clone() throws CloneNotSupportedException {
     State s = new State();
-    s.resetTransitions();
     for (Iterator<Transition> iter = getTransitionsIterator(); iter.hasNext();) {
       Transition t = (Transition) iter.next();
       s.transitions.add(t);
@@ -161,11 +112,6 @@ public class State implements Serializable, Comparable<State> {
     }
   }
 
-  /** Resets transition set. */
-  public void resetTransitions() {
-    setTransitions(new HashSet<Transition>());
-  }
-
   public int getNumber() {
     return number;
   }
@@ -174,6 +120,97 @@ public class State implements Serializable, Comparable<State> {
     number = n;
   }
 
+  /**
+   * @param transitions
+   *          The transitions to set.
+   * 
+   * @uml.property name="transitions"
+   */
+  public void setTransitions(HashSet<Transition> transitions) {
+    this.transitions = transitions;
+  }
+
+  /** Resets transition set. */
+  public void resetTransitions() {
+    setTransitions(new HashSet<Transition>());
+  }
+
+  /**
+   * Adds outgoing transition.
+   * 
+   * @param t
+   *          transition
+   */
+  public void addOutTran(Transition t) {
+    if (!transitions.contains(t)) {
+      t.setFrom(this);
+      transitions.add(t);
+    }
+  }
+
+  /**
+   * @param transition
+   */
+  public void remOutTran(Transition transition) {
+    if (transitions.contains(transition)) {
+      transitions.remove(transition);
+      transition.setFrom(null);
+    }
+  }
+
+  public void addAllTransitions(Set<Transition> toAdd) {
+    for (Transition transition : toAdd) {
+      addOutTran(transition);
+    }
+  }
+
+  public void removeAllTransitions(Set<Transition> toRemove) {
+    for (Transition transition : toRemove) {
+      remOutTran(transition);
+    }
+  }
+
+  /**
+   * @return the arrivingTransitions
+   */
+  public Set<Transition> getArrivingTransitions() {
+    return arrivingTransitions;
+  }
+  
+  public void addInTran(Transition t) {
+    if (!arrivingTransitions.contains(t)) {
+      t.setTo(this);
+      arrivingTransitions.add(t);
+    }
+  }
+
+  public void remInTran(Transition t) {
+    if (arrivingTransitions.contains(t)) {
+      arrivingTransitions.remove(t);
+      t.setTo(null);
+    }
+  }
+
+  /**
+   * @return the transitions
+   */
+  public Set<Transition> getTransitions() {
+    return transitions;
+  }
+
+  /**
+   * Returns set of outgoing transitions. Subsequent changes are reflected in
+   * the automaton.
+   * 
+   * @return transition set
+   * 
+   * @uml.property name="transitions"
+   */
+  public Iterator<Transition> getTransitionsIterator() {
+    return transitions.iterator();
+  }
+
+  
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -192,34 +229,4 @@ public class State implements Serializable, Comparable<State> {
     return true;
   }
 
-  public void addAllTransitions(Set<Transition> toAdd) {
-    for (Transition transition : toAdd) {
-      addTransition(transition);
-    }
-  }
-
-  
-public void addArrivingTran(Transition t) {
-  arrivingTransitions.add(t);
-}
-  
-public void remArrivingTran(Transition t){
-  arrivingTransitions.remove(t);
-}
-
-/**
- * @return the transitions
- */
-public Set<Transition> getTransitions() {
-  return transitions;
-}
-
-public void removeAllTransitions(Set<Transition> toRemove) {
-  for (Transition transition : toRemove) {
-    removeTransition(transition);
-  }
-}
-
-
-  
 }

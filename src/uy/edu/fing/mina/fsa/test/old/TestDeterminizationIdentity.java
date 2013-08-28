@@ -51,8 +51,8 @@ public class TestDeterminizationIdentity {
       Transition trans1 = new Transition(tf1, tf1, s4,1);
       Transition trans2 = new Transition(tf3, tf4, s4);
      
-      s0.addTransition(trans1);
-      s0.addTransition(trans2);
+      s0.addOutTran(trans1);
+      s0.addOutTran(trans2);
 
       Utils.showDot(tffst1.toDot(""));
 

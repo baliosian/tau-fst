@@ -43,8 +43,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("fu"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("uif"), new SimpleTf("ipf"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("fu"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("uif"), new SimpleTf("ipf"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -56,8 +56,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("fu"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("uis"), new SimpleTf("ips"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("fu"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("uis"), new SimpleTf("ips"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -69,8 +69,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("fu"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("us"), new SimpleTf("dps"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("fu"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("us"), new SimpleTf("dps"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -82,8 +82,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("fu"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("uds"), new SimpleTf("dps"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("fu"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("uds"), new SimpleTf("dps"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -95,8 +95,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("fu"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("udf"), new SimpleTf("dpf"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("fu"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("udf"), new SimpleTf("dpf"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -112,8 +112,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("mu"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("uif"), new SimpleTf("ips"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("mu"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("uif"), new SimpleTf("ips"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -125,8 +125,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("mu"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("uis"), new SimpleTf("kp"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("mu"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("uis"), new SimpleTf("kp"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -138,8 +138,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("mu"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("us"), new SimpleTf("ips"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("mu"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("us"), new SimpleTf("ips"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -151,8 +151,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("mu"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("uds"), new SimpleTf("dps"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("mu"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("uds"), new SimpleTf("dps"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -164,8 +164,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("mu"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("udf"), new SimpleTf("dpf"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("mu"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("udf"), new SimpleTf("dpf"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -181,8 +181,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("lu"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("uif"), new SimpleTf("ips"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("lu"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("uif"), new SimpleTf("ips"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -194,8 +194,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("lu"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("uis"), new SimpleTf("ips"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("lu"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("uis"), new SimpleTf("ips"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -207,8 +207,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("lu"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("us"), new SimpleTf("kp"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("lu"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("us"), new SimpleTf("kp"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -220,8 +220,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("lu"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("uds"), new SimpleTf("dps"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("lu"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("uds"), new SimpleTf("dps"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -233,8 +233,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("lu"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("udf"), new SimpleTf("dpf"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("lu"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("udf"), new SimpleTf("dpf"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -254,8 +254,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("cph"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("cpif"), new SimpleTf("ipf"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("cph"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("cpif"), new SimpleTf("ipf"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -267,8 +267,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("cph"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("cpis"), new SimpleTf("ipf"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("cph"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("cpis"), new SimpleTf("ipf"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -280,8 +280,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("cph"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("cps"), new SimpleTf("ips"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("cph"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("cps"), new SimpleTf("ips"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -293,8 +293,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("cph"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("cpdf"), new SimpleTf("dps"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("cph"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("cpdf"), new SimpleTf("dps"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -310,8 +310,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("cpl"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("cpif"), new SimpleTf("dpf"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("cpl"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("cpif"), new SimpleTf("dpf"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -323,8 +323,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("cpl"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("cpis"), new SimpleTf("dps"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("cpl"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("cpis"), new SimpleTf("dps"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -336,8 +336,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("cpl"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("cps"), new SimpleTf("dpf"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("cpl"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("cps"), new SimpleTf("dpf"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -349,8 +349,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("cpl"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("cpds"), new SimpleTf("dps"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("cpl"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("cpds"), new SimpleTf("dps"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);
@@ -362,8 +362,8 @@ public class ReglasPricing {
         estado3 = new State();
         estado3.setAccept(true);
         
-        estado1.addTransition(new Transition(new SimpleTf("cpl"), epsilon, estado2));
-        estado2.addTransition(new Transition(new SimpleTf("cpdf"), new SimpleTf("dpf"), estado3));
+        estado1.addOutTran(new Transition(new SimpleTf("cpl"), epsilon, estado2));
+        estado2.addOutTran(new Transition(new SimpleTf("cpdf"), new SimpleTf("dpf"), estado3));
         
         iterador = new Tffst();
         iterador.setInitialState(estado1);

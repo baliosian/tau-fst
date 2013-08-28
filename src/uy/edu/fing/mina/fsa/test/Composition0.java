@@ -44,8 +44,8 @@ public class Composition0 {
       State s1 = new State();
       s1.setAccept(true);
 
-      s0.addTransition(new Transition(new SimpleTf("D"), new SimpleTf("C"), s1));
-      s0.addTransition(new Transition((new SimpleTf("D")).not(), (new SimpleTf("D")).not(), s0));
+      s0.addOutTran(new Transition(new SimpleTf("D"), new SimpleTf("C"), s1));
+      s0.addOutTran(new Transition((new SimpleTf("D")).not(), (new SimpleTf("D")).not(), s0));
       
       Utils.showDot(tffst1.toDot("tffst1"));
       
@@ -66,8 +66,8 @@ public class Composition0 {
       State s21 = new State();
       s21.setAccept(true);
 
-      s20.addTransition(new Transition((new SimpleTf("C")).not(), (new SimpleTf("C")).not(), s20));
-      s20.addTransition(new Transition(new SimpleTf("C"),new SimpleTf("E") , s21));
+      s20.addOutTran(new Transition((new SimpleTf("C")).not(), (new SimpleTf("C")).not(), s20));
+      s20.addOutTran(new Transition(new SimpleTf("C"),new SimpleTf("E") , s21));
       
       Utils.showDot(tffst2.toDot("tffst2"));
       

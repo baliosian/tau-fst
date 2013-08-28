@@ -47,8 +47,8 @@ public class Reglas {
 		estado3 = estados.nuevoEstado();
 		estado3.setAccept(true);
 		
-		estado1.addTransition(new Transition(eventos.getEvento("fewUsers"), epsilon, estado2));
-		estado2.addTransition(new Transition(eventos.getEvento("usersIncreasingFast"), acciones.getAccion("increasePriceFast"), estado3));
+		estado1.addOutTran(new Transition(eventos.getEvento("fewUsers"), epsilon, estado2));
+		estado2.addOutTran(new Transition(eventos.getEvento("usersIncreasingFast"), acciones.getAccion("increasePriceFast"), estado3));
 		
 		iterador = new Tffst();
 		iterador.setInitialState(estado1);
@@ -60,8 +60,8 @@ public class Reglas {
 		estado3 = estados.nuevoEstado();
 		estado3.setAccept(true);
 		
-		estado1.addTransition(new Transition(eventos.getEvento("fewUsers"), epsilon, estado2));
-		estado2.addTransition(new Transition(eventos.getEvento("usersIncreasingSlow"), acciones.getAccion("increasePriceSlow"), estado3));
+		estado1.addOutTran(new Transition(eventos.getEvento("fewUsers"), epsilon, estado2));
+		estado2.addOutTran(new Transition(eventos.getEvento("usersIncreasingSlow"), acciones.getAccion("increasePriceSlow"), estado3));
 		
 		iterador = new Tffst();
 		iterador.setInitialState(estado1);
@@ -73,8 +73,8 @@ public class Reglas {
 		estado3 = estados.nuevoEstado();
 		estado3.setAccept(true);
 		
-		estado1.addTransition(new Transition(eventos.getEvento("fewUsers"), epsilon, estado2));
-		estado2.addTransition(new Transition(eventos.getEvento("usersSteady"), acciones.getAccion("decreasePriceSlow"), estado3));
+		estado1.addOutTran(new Transition(eventos.getEvento("fewUsers"), epsilon, estado2));
+		estado2.addOutTran(new Transition(eventos.getEvento("usersSteady"), acciones.getAccion("decreasePriceSlow"), estado3));
 		
 		iterador = new Tffst();
 		iterador.setInitialState(estado1);
@@ -86,8 +86,8 @@ public class Reglas {
 		estado3 = estados.nuevoEstado();
 		estado3.setAccept(true);
 		
-		estado1.addTransition(new Transition(eventos.getEvento("fewUsers"), epsilon, estado2));
-		estado2.addTransition(new Transition(eventos.getEvento("usersDecreasingSlow"), acciones.getAccion("decreasePriceSlow"), estado3));
+		estado1.addOutTran(new Transition(eventos.getEvento("fewUsers"), epsilon, estado2));
+		estado2.addOutTran(new Transition(eventos.getEvento("usersDecreasingSlow"), acciones.getAccion("decreasePriceSlow"), estado3));
 		
 		iterador = new Tffst();
 		iterador.setInitialState(estado1);
@@ -99,8 +99,8 @@ public class Reglas {
 		estado3 = estados.nuevoEstado();
 		estado3.setAccept(true);
 		
-		estado1.addTransition(new Transition(eventos.getEvento("fewUsers"), epsilon, estado2));
-		estado2.addTransition(new Transition(eventos.getEvento("usersDecreasingFast"), acciones.getAccion("decreasePriceFast"), estado3));
+		estado1.addOutTran(new Transition(eventos.getEvento("fewUsers"), epsilon, estado2));
+		estado2.addOutTran(new Transition(eventos.getEvento("usersDecreasingFast"), acciones.getAccion("decreasePriceFast"), estado3));
 		
 		iterador = new Tffst();
 		iterador.setInitialState(estado1);
@@ -116,8 +116,8 @@ public class Reglas {
 		estado3 = estados.nuevoEstado();
 		estado3.setAccept(true);
 		
-		estado1.addTransition(new Transition(eventos.getEvento("midUsers"), epsilon, estado2));
-		estado2.addTransition(new Transition(eventos.getEvento("usersIncreasingFast"), acciones.getAccion("increasePriceSlow"), estado3));
+		estado1.addOutTran(new Transition(eventos.getEvento("midUsers"), epsilon, estado2));
+		estado2.addOutTran(new Transition(eventos.getEvento("usersIncreasingFast"), acciones.getAccion("increasePriceSlow"), estado3));
 		
 		iterador = new Tffst();
 		iterador.setInitialState(estado1);
@@ -129,8 +129,8 @@ public class Reglas {
 		estado3 = estados.nuevoEstado();
 		estado3.setAccept(true);
 		
-		estado1.addTransition(new Transition(eventos.getEvento("midUsers"), epsilon, estado2));
-		estado2.addTransition(new Transition(eventos.getEvento("usersIncreasingSlow"), acciones.getAccion("keepPrice"), estado3));
+		estado1.addOutTran(new Transition(eventos.getEvento("midUsers"), epsilon, estado2));
+		estado2.addOutTran(new Transition(eventos.getEvento("usersIncreasingSlow"), acciones.getAccion("keepPrice"), estado3));
 		
 		iterador = new Tffst();
 		iterador.setInitialState(estado1);
@@ -142,8 +142,8 @@ public class Reglas {
 		estado3 = estados.nuevoEstado();
 		estado3.setAccept(true);
 		
-		estado1.addTransition(new Transition(eventos.getEvento("midUsers"), epsilon, estado2));
-		estado2.addTransition(new Transition(eventos.getEvento("usersSteady"), acciones.getAccion("increasePriceSlow"), estado3));
+		estado1.addOutTran(new Transition(eventos.getEvento("midUsers"), epsilon, estado2));
+		estado2.addOutTran(new Transition(eventos.getEvento("usersSteady"), acciones.getAccion("increasePriceSlow"), estado3));
 		
 		iterador = new Tffst();
 		iterador.setInitialState(estado1);
@@ -155,8 +155,8 @@ public class Reglas {
 		estado3 = estados.nuevoEstado();
 		estado3.setAccept(true);
 		
-		estado1.addTransition(new Transition(eventos.getEvento("midUsers"), epsilon, estado2));
-		estado2.addTransition(new Transition(eventos.getEvento("usersDecreasingSlow"), acciones.getAccion("decreasePriceSlow"), estado3));
+		estado1.addOutTran(new Transition(eventos.getEvento("midUsers"), epsilon, estado2));
+		estado2.addOutTran(new Transition(eventos.getEvento("usersDecreasingSlow"), acciones.getAccion("decreasePriceSlow"), estado3));
 		
 		iterador = new Tffst();
 		iterador.setInitialState(estado1);
@@ -168,8 +168,8 @@ public class Reglas {
 		estado3 = estados.nuevoEstado();
 		estado3.setAccept(true);
 		
-		estado1.addTransition(new Transition(eventos.getEvento("midUsers"), epsilon, estado2));
-		estado2.addTransition(new Transition(eventos.getEvento("usersDecreasingFast"), acciones.getAccion("decreasePriceFast"), estado3));
+		estado1.addOutTran(new Transition(eventos.getEvento("midUsers"), epsilon, estado2));
+		estado2.addOutTran(new Transition(eventos.getEvento("usersDecreasingFast"), acciones.getAccion("decreasePriceFast"), estado3));
 		
 		iterador = new Tffst();
 		iterador.setInitialState(estado1);
@@ -185,8 +185,8 @@ public class Reglas {
 		estado3 = estados.nuevoEstado();
 		estado3.setAccept(true);
 		
-		estado1.addTransition(new Transition(eventos.getEvento("lotsUsers"), epsilon, estado2));
-		estado2.addTransition(new Transition(eventos.getEvento("usersIncreasingFast"), acciones.getAccion("increasePriceSlow"), estado3));
+		estado1.addOutTran(new Transition(eventos.getEvento("lotsUsers"), epsilon, estado2));
+		estado2.addOutTran(new Transition(eventos.getEvento("usersIncreasingFast"), acciones.getAccion("increasePriceSlow"), estado3));
 		
 		iterador = new Tffst();
 		iterador.setInitialState(estado1);
@@ -198,8 +198,8 @@ public class Reglas {
 		estado3 = estados.nuevoEstado();
 		estado3.setAccept(true);
 		
-		estado1.addTransition(new Transition(eventos.getEvento("lotsUsers"), epsilon, estado2));
-		estado2.addTransition(new Transition(eventos.getEvento("usersIncreasingSlow"), acciones.getAccion("increasePriceSlow"), estado3));
+		estado1.addOutTran(new Transition(eventos.getEvento("lotsUsers"), epsilon, estado2));
+		estado2.addOutTran(new Transition(eventos.getEvento("usersIncreasingSlow"), acciones.getAccion("increasePriceSlow"), estado3));
 		
 		iterador = new Tffst();
 		iterador.setInitialState(estado1);
@@ -211,8 +211,8 @@ public class Reglas {
 		estado3 = estados.nuevoEstado();
 		estado3.setAccept(true);
 		
-		estado1.addTransition(new Transition(eventos.getEvento("lotsUsers"), epsilon, estado2));
-		estado2.addTransition(new Transition(eventos.getEvento("usersSteady"), acciones.getAccion("keepPrice"), estado3));
+		estado1.addOutTran(new Transition(eventos.getEvento("lotsUsers"), epsilon, estado2));
+		estado2.addOutTran(new Transition(eventos.getEvento("usersSteady"), acciones.getAccion("keepPrice"), estado3));
 		
 		iterador = new Tffst();
 		iterador.setInitialState(estado1);
@@ -224,8 +224,8 @@ public class Reglas {
 		estado3 = estados.nuevoEstado();
 		estado3.setAccept(true);
 		
-		estado1.addTransition(new Transition(eventos.getEvento("lotsUsers"), epsilon, estado2));
-		estado2.addTransition(new Transition(eventos.getEvento("usersDecreasingSlow"), acciones.getAccion("decreasePriceSlow"), estado3));
+		estado1.addOutTran(new Transition(eventos.getEvento("lotsUsers"), epsilon, estado2));
+		estado2.addOutTran(new Transition(eventos.getEvento("usersDecreasingSlow"), acciones.getAccion("decreasePriceSlow"), estado3));
 		
 		iterador = new Tffst();
 		iterador.setInitialState(estado1);
@@ -237,8 +237,8 @@ public class Reglas {
 		estado3 = estados.nuevoEstado();
 		estado3.setAccept(true);
 		
-		estado1.addTransition(new Transition(eventos.getEvento("lotsUsers"), epsilon, estado2));
-		estado2.addTransition(new Transition(eventos.getEvento("usersDecreasingFast"), acciones.getAccion("decreasePriceFast"), estado3));
+		estado1.addOutTran(new Transition(eventos.getEvento("lotsUsers"), epsilon, estado2));
+		estado2.addOutTran(new Transition(eventos.getEvento("usersDecreasingFast"), acciones.getAccion("decreasePriceFast"), estado3));
 		
 		iterador = new Tffst();
 		iterador.setInitialState(estado1);

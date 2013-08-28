@@ -90,23 +90,25 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
   public TfI or(TfI tf) {
     TfI outTf;
 
-    if (this.acceptsAll() || tf.acceptsAll()) {
-      SimpleTf stf = new SimpleTf();
-      stf.setAcceptAll();
-      outTf = stf;
-    } else if (this.acceptsNone()) {
-      outTf = tf;
-    } else if (tf.acceptsNone()) {
-      outTf = this;
-    } else if (this.equals(tf)) {
-      outTf = this;
-    } else if (this.equals(tf.not())) {
-      SimpleTf stf = new SimpleTf();
-      stf.setAcceptAll();
-      outTf = stf;
-    } else {
-      outTf = new CompositeTf(Operator.OR, this, tf);
-    }
+//    if (this.acceptsAll() || tf.acceptsAll()) {
+//      SimpleTf stf = new SimpleTf();
+//      stf.setAcceptAll();
+//      outTf = stf;
+//    } else if (this.acceptsNone()) {
+//      outTf = tf;
+//    } else if (tf.acceptsNone()) {
+//      outTf = this;
+//    } else if (this.equals(tf)) {
+//      outTf = this;
+//    } else if (this.equals(tf.not())) {
+//      SimpleTf stf = new SimpleTf();
+//      stf.setAcceptAll();
+//      outTf = stf;
+//    } else {
+//      outTf = new CompositeTf(Operator.OR, this, tf);
+//    }
+
+     outTf = new CompositeTf(Operator.OR, this, tf);
 
     return outTf;
   }
@@ -247,23 +249,22 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
 
   public TfI not() {
     TfI r;
+    
     try {
       r = (TfI) clone();
-      
       if (acceptsAll())
         ((SimpleTf) r).setAcceptNone();
       else if (acceptsNone())
         ((SimpleTf) r).setAcceptAll();
-      else {
+      else if (!isEpsilon())
         r.setNot(!isNot());
-        //r.setFormula(getFormula().not());
-      }
-      
+
       return r;
-      
+    
     } catch (CloneNotSupportedException e) {
       e.printStackTrace();
     }
+    
     return null;
   }
 

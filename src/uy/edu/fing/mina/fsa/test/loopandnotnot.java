@@ -39,8 +39,8 @@ public class loopandnotnot {
 
 //      s0.addTransition(new Transition((new SimpleTf("D")).not(), (new SimpleTf("C")).not(), s0));
 //      s0.addTransition(new Transition((new SimpleTf("D")).not(), SimpleTf.Epsilon(), s0));
-      s0.addTransition(new Transition(new SimpleTf("D"),new SimpleTf("A"), s0));
-      s0.addTransition(new Transition(new SimpleTf("D"),new SimpleTf("B"), s1));
+      s0.addOutTran(new Transition(new SimpleTf("D"),new SimpleTf("A"), s0));
+      s0.addOutTran(new Transition(new SimpleTf("D"),new SimpleTf("B"), s1));
       
       
       Utils.showDot(tffst1.toDot("tffst1"));

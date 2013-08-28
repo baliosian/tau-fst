@@ -41,7 +41,7 @@ public class TestEpsilonRem {
       SimpleTf tfd = new SimpleTf();
       tfd.setName("D");
       Transition trans1 = new Transition(tfd, tfd, s1, 1);
-      s0.addTransition(trans1);
+      s0.addOutTran(trans1);
       
       SimpleTf tfall = new SimpleTf();
       tfall.setAcceptAll();
@@ -50,7 +50,7 @@ public class TestEpsilonRem {
       TfI tfall_c = tfall.and(tfc.not());
       
       Transition trans2 = new Transition(tfall_c, tfall_c, s1, 1);
-      s1.addTransition(trans2);
+      s1.addOutTran(trans2);
       
       SimpleTf tfk = new SimpleTf();
       tfk.setName("K");
@@ -58,12 +58,14 @@ public class TestEpsilonRem {
       TfString seck = new TfString(tfc);
       seck.add(tfk);
       Transition trans3 = new Transition(sec, seck, s2);
-      s1.addTransition(trans3);
-  
-      tffst1 = tffst1.toSimpleTransitions();
+      s1.addOutTran(trans3);
+
       Utils.showDot(tffst1.toDot("tffst1"));
+  
+      tffst1 = tffst1.toSimpleTransitions(); //FIXME
+      Utils.showDot(tffst1.toDot("tffst1 simple"));
       
-      tffst1.inLabelEpsilonRemoval();
+      tffst1.inLabelEpsilonRemoval(); //FIXME
       Utils.showDot(tffst1.toDot("tffst1 without epsilons"));
 
 //      tffst1.removeDeadTransitions();

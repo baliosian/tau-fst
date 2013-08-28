@@ -28,9 +28,9 @@ public class Transition implements Serializable {
 
   TfString labelOut;
 
-  private State to;
+  private State to = null;
 
-  private State from;
+  private State from = null;
 
   /**
    * @return the from
@@ -45,26 +45,45 @@ public class Transition implements Serializable {
    */
   public void setFrom(State from) {
     if (this.from != from) {
+      State toBak = to;
+      if (this.to != null)   this.to.remInTran(this);
+      if (this.from != null) this.from.remOutTran(this);
       this.from = from;
-      if (from != null) {
-        from.addTransition(this);
-      }
+      this.to = toBak;
+      if (this.from != null) this.from.addOutTran(this);
+      if (this.to != null) this.to.addInTran(this);
+    }
+  }
+  
+  State getTo() {
+    return to;
+  }
+
+  void setTo(State to) {
+    if (this.to != to) {
+      State fromBak = from;
+      if (this.to != null)   this.to.remInTran(this);
+      if (this.from != null) this.from.remOutTran(this);
+      this.to = to;
+      this.from = fromBak;
+      if (this.from != null) this.from.addOutTran(this);
+      if (this.to != null) this.to.addInTran(this);
     }
   }
 
   private Double weight;
 
-  /**
-   * Constructs new transition with only one tf in the output.
-   * 
-   * @param labelIn
-   * @param labelOut
-   * @param to
-   *          destination state
-   */
-  public Transition() {
-    this(null, new TfString(SimpleTf.Epsilon()), new TfString(SimpleTf.Epsilon()), null);
-  }
+//  /**
+//   * Constructs new transition with only one tf in the output.
+//   * 
+//   * @param labelIn
+//   * @param labelOut
+//   * @param to
+//   *          destination state
+//   */
+//  public Transition() {
+//    this(null, new TfString(SimpleTf.Epsilon()), new TfString(SimpleTf.Epsilon()), null);
+//  }
 
   /**
    * Constructs new transition with only one tf in the output.
@@ -97,10 +116,10 @@ public class Transition implements Serializable {
    */
     
   public Transition(State from, TfString labelIn, TfString labelOut, State to) {
-    this.from = from;
-    this.setTo(to);
     this.labelIn = labelIn;
     this.labelOut = labelOut;
+    this.setFrom(from);
+    this.setTo(to);
   }
 
 
@@ -246,7 +265,7 @@ public class Transition implements Serializable {
    * @see java.lang.Object#toString()
    */
   public String toString() {
-    return labelIn.toString() + "/" + labelOut.toString();
+    return labelIn.toString() + ":" + labelOut.toString();
   }
 
   public Double getWeight() {
@@ -255,18 +274,6 @@ public class Transition implements Serializable {
 
   public void setWeight(Double weight) {
     this.weight = weight;
-  }
-
-  State getTo() {
-    return to;
-  }
-
-  void setTo(State to) {
-    if (this.to != null)
-      this.to.remArrivingTran(this);
-    this.to = to;
-    if (to != null)
-      to.addArrivingTran(this);
   }
 
 }

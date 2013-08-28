@@ -86,11 +86,11 @@ public class TestLupa {
         Transition trans3 = new Transition(etf_E2, atf_Eps, s2);
         Transition trans4 = new Transition(etf_E1, atf_Eps, s1);
 
-        s0.addTransition(trans0);
-        s1.addTransition(trans1);
-        s1.addTransition(trans2);
-        s2.addTransition(trans3);
-        s2.addTransition(trans4);
+        s0.addOutTran(trans0);
+        s1.addOutTran(trans1);
+        s1.addOutTran(trans2);
+        s2.addOutTran(trans3);
+        s2.addOutTran(trans4);
 
 
     try {

@@ -44,20 +44,20 @@ public class TestDeterminization2 {
       SimpleTf tfe = new SimpleTf();
       tfe.setName("E");
       Transition trans12 = new Transition(tfe, tfe, s12, 1);
-      s02.addTransition(trans12);
+      s02.addOutTran(trans12);
       
       Transition trans22 = new Transition(tfc, SimpleTf.Epsilon(), s22, 1);
-      s12.addTransition(trans22);
+      s12.addOutTran(trans22);
 
       //primer lazo 
       Transition trans42 = new Transition(SimpleTf.AcceptsAll(),SimpleTf.AcceptsAll(), s02, 1);
-      s02.addTransition(trans42);
+      s02.addOutTran(trans42);
       //segundo lazo 
       Transition trans52 = new Transition(SimpleTf.AcceptsAll(),SimpleTf.AcceptsAll(), s12, 1);
-      s12.addTransition(trans52);
+      s12.addOutTran(trans52);
       //tercer lazo
       Transition trans62 = new Transition(SimpleTf.AcceptsAll(),SimpleTf.AcceptsAll(), s22, 1);
-      s22.addTransition(trans62);
+      s22.addOutTran(trans62);
 
     Utils.showDot(tffst2.toDot("tffst2"));
       

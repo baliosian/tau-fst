@@ -46,10 +46,10 @@ public class DoubleLoop {
       State s2 = new State();
       s2.setAccept(true);
 
-      s0.addTransition(new Transition(new SimpleTf("D"), SimpleTf.Epsilon(), s1));
-      s1.addTransition(new Transition(SimpleTf.Epsilon(), new SimpleTf("E"), s2));
+      s0.addOutTran(new Transition(new SimpleTf("D"), SimpleTf.Epsilon(), s1));
+      s1.addOutTran(new Transition(SimpleTf.Epsilon(), new SimpleTf("E"), s2));
       
-      s0.addTransition(new Transition((new SimpleTf("D")).not(), SimpleTf.Epsilon(), s0));
+      s0.addOutTran(new Transition((new SimpleTf("D")).not(), SimpleTf.Epsilon(), s0));
       
       Utils.showDot(tffst1.toDot("tffst1"));
       

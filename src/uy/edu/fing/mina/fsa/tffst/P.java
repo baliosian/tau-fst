@@ -3,6 +3,7 @@ package uy.edu.fing.mina.fsa.tffst;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import uy.edu.fing.mina.fsa.tf.TfI;
@@ -123,40 +124,45 @@ public class P implements Set<ElementOfP> {
    */
   public void simplifyTargetByState() {
 
-    Set<ElementOfP> toRemove = new HashSet<ElementOfP>();
-    int toRemoveSize;
+	Set<ElementOfP> toRemove = new HashSet<ElementOfP>();
+	int toRemoveSize;
 
-    do {
-      toRemoveSize = toRemove.size();
-      for (ElementOfP workingPair : this)
-        if (!toRemove.contains(workingPair))
-          for (ElementOfP currentPair : this)
-            if (!toRemove.contains(currentPair))
-              if ((currentPair.state.equals(workingPair.state)) && workingPair != currentPair) {
-                TfString currentSE = currentPair.arrivingTFs;
-                TfString workingSE = workingPair.arrivingTFs;
-                TfString newSE = new TfString();
+	do {
+	  toRemoveSize = toRemove.size();
+	  for (ElementOfP workingPair : this)
+		if (!toRemove.contains(workingPair))
+		  for (ElementOfP currentPair : this)
+			if (!toRemove.contains(currentPair))
+			  if ((currentPair.state.equals(workingPair.state)) && workingPair != currentPair) {
+				TfString newSE = new TfString();
 
-                Iterator<TfI> workingSEiter = workingSE.iterator();
-                Iterator<TfI> currentSEiter = currentSE.iterator();
-                while (currentSEiter.hasNext() || workingSEiter.hasNext()) {
-                  TfI currentTFinSE = null;
-                  TfI workingTFinSE = null;
+				TfString currentSE = currentPair.getArrivingTFs();
+				TfString workingSE = workingPair.getArrivingTFs();
 
-                  if (currentSEiter.hasNext()) currentTFinSE = currentSEiter.next();
-                  if (workingSEiter.hasNext()) workingTFinSE = workingSEiter.next();
+				Iterator<TfI> workingSEiter = workingSE.iterator();
+				Iterator<TfI> currentSEiter = currentSE.iterator();
+				while (currentSEiter.hasNext() || workingSEiter.hasNext()) {
+				  TfI currentTFinSE = null;
+				  TfI workingTFinSE = null;
 
-                  if (currentTFinSE != null && workingTFinSE != null && !currentTFinSE.isEpsilon() && !workingTFinSE.isEpsilon())
-                    newSE.add(workingTFinSE.orSimple(currentTFinSE));
-                  else if (currentTFinSE == null || currentTFinSE.isEpsilon()) newSE.add(workingTFinSE);
-                  else if (workingTFinSE == null || workingTFinSE.isEpsilon()) newSE.add(currentTFinSE);
-                }
-                toRemove.add(currentPair);
-                workingPair.arrivingTFs = newSE;
-              }
-    } while (toRemoveSize != toRemove.size());
-    
-    this.removeAll(toRemove);
+				  if (currentSEiter.hasNext())
+					currentTFinSE = currentSEiter.next();
+				  if (workingSEiter.hasNext())
+					workingTFinSE = workingSEiter.next();
+
+				  if (currentTFinSE != null && workingTFinSE != null)
+					newSE.add(workingTFinSE.orSimple(currentTFinSE));
+				  else if (currentTFinSE == null)
+					newSE.add(workingTFinSE);
+				  else if (workingTFinSE == null)
+					newSE.add(currentTFinSE);
+				}
+				toRemove.add(currentPair);
+				workingPair.setArrivingTFs(newSE);
+			  }
+	} while (toRemoveSize != toRemove.size());
+
+	this.removeAll(toRemove);
 
   }
 
@@ -175,9 +181,10 @@ public class P implements Set<ElementOfP> {
         if (!toRemove.contains(workingPair))
           for (ElementOfP currentPair : this)
             if (!toRemove.contains(currentPair))
-              if ((workingPair.state.isAccept()||currentPair.state.isAccept()) && workingPair != currentPair) {
-                TfString currentSE = currentPair.arrivingTFs;
-                TfString workingSE = workingPair.arrivingTFs;
+              if ((workingPair.state.isAccept() || currentPair.state.isAccept())
+                  && workingPair != currentPair) {
+                TfString currentSE = currentPair.getArrivingTFs();
+                TfString workingSE = workingPair.getArrivingTFs();
                 TfString newSE = new TfString();
 
                 Iterator<TfI> workingSEiter = workingSE.iterator();
@@ -189,13 +196,14 @@ public class P implements Set<ElementOfP> {
                   if (currentSEiter.hasNext()) currentTFinSE = currentSEiter.next();
                   if (workingSEiter.hasNext()) workingTFinSE = workingSEiter.next();
 
-                  if (currentTFinSE != null && workingTFinSE != null && !currentTFinSE.isEpsilon() && !workingTFinSE.isEpsilon())
+                  if (currentTFinSE != null && workingTFinSE != null) 
                     newSE.add(workingTFinSE.orSimple(currentTFinSE));
-                  else if (currentTFinSE == null || currentTFinSE.isEpsilon()) newSE.add(workingTFinSE);
-                  else if (workingTFinSE == null || workingTFinSE.isEpsilon()) newSE.add(currentTFinSE);
+                  
+                  else if (currentTFinSE == null) newSE.add(workingTFinSE);
+                  else if (workingTFinSE == null) newSE.add(currentTFinSE);
                 }
                 toRemove.add(currentPair);
-                workingPair.arrivingTFs = newSE;
+                workingPair.setArrivingTFs(newSE);
               }
     } while (toRemoveSize != toRemove.size());
     
@@ -218,19 +226,19 @@ public class P implements Set<ElementOfP> {
       while (match) {
         Iterator<ElementOfP> iter = this.iterator();
         ElementOfP firstPair = iter.next();
-        if (firstPair.arrivingTFs.isEpsilon()) match = false;
+        if (firstPair.getArrivingTFs().isEpsilon()) match = false;
         while (iter.hasNext() && match) {
           ElementOfP pair = iter.next();
-          if (pair.arrivingTFs.isEpsilon()) match = false;
+          if (pair.getArrivingTFs().isEpsilon()) match = false;
           else 
-            if (!firstPair.arrivingTFs.get(0).equals(pair.arrivingTFs.get(0))) match = false;
+            if (!firstPair.getArrivingTFs().get(0).equals(pair.getArrivingTFs().get(0))) match = false;
         }
         if (match) {
-          outSE.add(firstPair.arrivingTFs.get(0));
+          outSE.add(firstPair.getArrivingTFs().get(0));
           Iterator<ElementOfP> iter2 = this.iterator();
           while (iter2.hasNext()) {
             ElementOfP pair2 = iter2.next();
-            pair2.arrivingTFs.remove(0);
+            pair2.getArrivingTFs().remove(0);
           }
         }
       }
@@ -244,6 +252,94 @@ public class P implements Set<ElementOfP> {
     
     this.p = newP; 
     return outSE;
+  }
+
+  public P simplifyTargetByPosfixState(P longestPosfixState) { // FIXME
+	P prep = new P();
+	P outp = new P();
+
+	for (ElementOfP eovp : longestPosfixState)
+	  for (ElementOfP eop : p)
+		if (eop.state.equals(eovp.state))
+		  prep.add(new ElementOfP(eop.state, new TfString(eop.arrivingTFs.subList(0, eop.arrivingTFs.size()-eovp.arrivingTFs.size()))));
+
+	if (prep.iterator().hasNext()) {
+	  ElementOfP workingPair = prep.iterator().next();
+
+	  for (ElementOfP currentPair : prep) {
+		TfString newSE = new TfString();
+		Iterator<TfI> wSEiter = workingPair.getArrivingTFs().iterator();
+		Iterator<TfI> cSEiter = currentPair.getArrivingTFs().iterator();
+
+		while (cSEiter.hasNext() || wSEiter.hasNext()) {
+		  TfI currentTFinSE = null;
+		  if (cSEiter.hasNext())
+			currentTFinSE = cSEiter.next();
+		  TfI workingTFinSE = null;
+		  if (wSEiter.hasNext())
+			workingTFinSE = wSEiter.next();
+		  if (currentTFinSE != null && workingTFinSE != null)
+			newSE.add(workingTFinSE.orSimple(currentTFinSE));
+		  else if (currentTFinSE == null)
+			newSE.add(workingTFinSE);
+		  else if (workingTFinSE == null)
+			newSE.add(currentTFinSE);
+		}
+		outp.add(new ElementOfP(workingPair.state, newSE));
+	  }
+	}
+
+	for (ElementOfP eoup : outp)
+	  for (ElementOfP eovp : longestPosfixState)
+		if (eoup.state.equals(eovp.state))
+		  eoup.arrivingTFs.addAll(eovp.arrivingTFs);
+
+	this.p = outp;
+
+	return outp;
+  }
+
+  /**
+   * retrieves the P state with the longest common arrivingTf tail. 
+   * it assumes that this.p and p in the visited states has been simplified beforehand by simplifyTargetByState(). 
+   * this means that there is no two target pair with same state.    
+   * 
+   * @param visitedNewStates
+   * @return
+   */
+  
+  
+  P longestPosfixState(Map<P, State> visitedNewStates) {
+    P candidate = new P();
+    int candidateMaxLen = 0;
+
+    for (P visitedP : visitedNewStates.keySet()) {
+      boolean vpmatch = true;
+      if (visitedP.size() == p.size()) {
+        int eovpMaxLen = 0;
+		for (ElementOfP eop : p) {
+		  boolean eovpmatch = false;
+		  for (ElementOfP eovp : visitedP) {
+			if (eop.state.equals(eovp.state)) {
+			  if (eovp.arrivingTFs.size() <= eop.arrivingTFs.size()) {
+				if (eop.arrivingTFs.subList(eop.arrivingTFs.size() - eovp.arrivingTFs.size(), eop.arrivingTFs.size()).equals(
+					eovp.arrivingTFs)) {
+				  eovpmatch = true;
+				  eovpMaxLen = Math.max(eovpMaxLen, eovp.arrivingTFs.size());
+				}
+			  }
+			}
+		  }
+		  vpmatch = vpmatch && eovpmatch;
+		}
+        if (vpmatch && candidateMaxLen < eovpMaxLen) { 
+          candidate = visitedP;
+          candidateMaxLen = eovpMaxLen; 
+        }
+      }
+    }
+
+    return candidate;
   }
 
 

@@ -76,12 +76,12 @@ public class TestDeterminizationTwice {
 //      
 //      System.out.println("transition size: " + size);
       
-      s0.addTransition(trans1);
-      s0.addTransition(trans2);
-      s1.addTransition(trans3);
-      s2.addTransition(trans4);
-      s3.addTransition(trans5);
-      s4.addTransition(trans5);
+      s0.addOutTran(trans1);
+      s0.addOutTran(trans2);
+      s1.addOutTran(trans3);
+      s2.addOutTran(trans4);
+      s3.addOutTran(trans5);
+      s4.addOutTran(trans5);
 
       Utils.showDot(tffst1.toDot("1"));
 

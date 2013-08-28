@@ -47,7 +47,7 @@ public class Reglas {
 		
 		TfI accion = acciones.getAccion("generateCompetitorPriceEvents");
 		
-		estado1.addTransition(new Transition(eventos.getEvento("localPriceInformation"), accion, estado2));
+		estado1.addOutTran(new Transition(eventos.getEvento("localPriceInformation"), accion, estado2));
 		
 		iterador = new Tffst();
 		iterador.setInitialState(estado1);
@@ -61,7 +61,7 @@ public class Reglas {
 		
 		accion = acciones.getAccion("generateNumberOfClientsEvents");
 		
-		estado1.addTransition(new Transition(eventos.getEvento("localClientsInformation"), accion, estado2));
+		estado1.addOutTran(new Transition(eventos.getEvento("localClientsInformation"), accion, estado2));
 		
 		iterador = new Tffst();
 		iterador.setInitialState(estado1);

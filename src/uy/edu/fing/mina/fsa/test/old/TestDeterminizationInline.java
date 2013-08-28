@@ -44,10 +44,10 @@ public class TestDeterminizationInline {
       SimpleTf tfe = new SimpleTf();
       tfe.setName("E");
       Transition trans12 = new Transition(tfe, tfe, s12, 1);
-      s02.addTransition(trans12);
+      s02.addOutTran(trans12);
       
       Transition trans22 = new Transition(tfc, SimpleTf.Epsilon(), s22, 1);
-      s12.addTransition(trans22);
+      s12.addOutTran(trans22);
 
     Utils.showDot(tffst2.toDot("tffst2"));
       

@@ -69,13 +69,14 @@ public class Determinization {
       Transition trans3 = new Transition(tf4, tf5, s3);
       Transition trans4 = new Transition(tf6, tf5, s3);
       Transition trans5 = new Transition(tf7, tf8, s4);
+      Transition trans6 = new Transition(tf7, tf8, s4);
       
-      s0.addTransition(trans1);
-      s0.addTransition(trans2);
-      s1.addTransition(trans3);
-      s2.addTransition(trans4);
-      s3.addTransition(trans5);
-      s4.addTransition(trans5);
+      s0.addOutTran(trans1);
+      s0.addOutTran(trans2);
+      s1.addOutTran(trans3);
+      s2.addOutTran(trans4);
+      s3.addOutTran(trans5);
+      s4.addOutTran(trans6);
 
       Utils.showDot(tffst1.toDot(""));
 

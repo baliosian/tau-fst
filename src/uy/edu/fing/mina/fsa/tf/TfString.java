@@ -39,6 +39,11 @@ public class TfString implements List<TfI> {// extends Tf implements List {
     this.addAll(se.getListOfTfs());
   }
 
+  public TfString(List<TfI> subList) {
+    this();
+    this.addAll(subList);
+  }
+
   public void add(int index, TfI element) {
     if (listOfTfs.get(0).isEpsilon()) listOfTfs.remove(0);
     listOfTfs.add(index, element);

@@ -86,10 +86,14 @@ public class CompositeTf extends Tf {
   public boolean equals(Object o) {
         if (o instanceof CompositeTf) {
             CompositeTf ctf = (CompositeTf) o;
-            if (ctf.op == op
-                    && ctf.isEpsilon() == isEpsilon()
-                    && ctf.isNot() == isNot()
-                    && ctf.left.equals(left) && ctf.right.equals(right))
+            
+            CompositeTf simpleThis = (CompositeTf) Utils.simplify(this);
+            CompositeTf simpleThat = (CompositeTf) Utils.simplify(ctf);
+            
+            if (simpleThis.op == simpleThat.op
+                    && simpleThis.isEpsilon() == simpleThat.isEpsilon()
+                    && simpleThis.isNot() == simpleThat.isNot()
+                    && simpleThis.left.equals(simpleThat.left) && simpleThis.right.equals(simpleThat.right))
                 return true;
         }
         return false;

@@ -42,7 +42,7 @@ public class TestComposition1 {
       SimpleTf tfd = new SimpleTf();
       tfd.setName("D");
       Transition trans1 = new Transition(tfd, tfd, s1, 1);
-      s0.addTransition(trans1);
+      s0.addOutTran(trans1);
       
       SimpleTf tfall = new SimpleTf();
       tfall.setAcceptAll();
@@ -51,7 +51,7 @@ public class TestComposition1 {
       TfI tfall_c = tfall.and(tfc.not());
       
       Transition trans2 = new Transition(tfall_c, tfall_c, s1, 1);
-      s1.addTransition(trans2);
+      s1.addOutTran(trans2);
       
       SimpleTf tfk = new SimpleTf();
       tfk.setName("K");
@@ -59,7 +59,7 @@ public class TestComposition1 {
       TfString seck = new TfString(tfc);
       seck.add(tfk);
       Transition trans3 = new Transition(sec, seck, s2);
-      s1.addTransition(trans3);
+      s1.addOutTran(trans3);
       tffst1 = tffst1.toSimpleTransitions();
 
       Tffst tffst2 = new Tffst();
@@ -73,20 +73,20 @@ public class TestComposition1 {
       SimpleTf tfe = new SimpleTf();
       tfe.setName("E");
       Transition trans12 = new Transition(tfe, tfe, s12, 1);
-      s02.addTransition(trans12);
+      s02.addOutTran(trans12);
       
       Transition trans22 = new Transition(tfall_c, tfall_c, s12, 1);
-      s12.addTransition(trans22);
+      s12.addOutTran(trans22);
       
       TfI tfepsilon = SimpleTf.Epsilon();
       Transition trans32 = new Transition(tfc, tfepsilon, s22, 0);
-      s12.addTransition(trans32);
+      s12.addOutTran(trans32);
 
       Transition trans42 = new Transition(SimpleTf.AcceptsAll().and(tfe.not()) ,SimpleTf.AcceptsAll().and(tfe.not()), s02, 1);
-      s02.addTransition(trans42);
+      s02.addOutTran(trans42);
 
       Transition trans52 = new Transition(SimpleTf.AcceptsAll(),SimpleTf.AcceptsAll(), s22, 1);
-      s22.addTransition(trans52);
+      s22.addOutTran(trans52);
       
       Tffsr tffsr2 = tffst2.firstProjection();
       Tffsr tffsr2total = (Tffsr) tffsr2.clone();

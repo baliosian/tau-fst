@@ -69,8 +69,7 @@ public class ProtoT {
     return new ProtoT(s,  (TfI) exclTFs.clone(), (P) unionOfTransP.clone());
     
   }
-  
-  
+
   
 
 }
