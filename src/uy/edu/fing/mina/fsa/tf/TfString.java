@@ -45,8 +45,8 @@ public class TfString implements List<TfI> {// extends Tf implements List {
   }
 
   public void add(int index, TfI element) {
-    if (listOfTfs.get(0).isEpsilon()) listOfTfs.remove(0);
-    listOfTfs.add(index, element);
+	if (element != null)
+	  listOfTfs.add(index, element);
   }
 
   /**
@@ -54,16 +54,8 @@ public class TfString implements List<TfI> {// extends Tf implements List {
    * @see java.util.Collection#add(java.lang.Object)
    */
   public boolean add(TfI tf) {
-    if (tf != null) {
-      if (!tf.isEpsilon()) {
-        if (listOfTfs.get(0).isEpsilon()) {
-          listOfTfs.remove(0);
-          return listOfTfs.add(tf);
-        } else {
-          return listOfTfs.add(tf);
-        }
-      }
-    }
+	if (tf != null && !tf.isEpsilon()) 
+		return listOfTfs.add(tf);
     return true;
   }
 
@@ -88,7 +80,6 @@ public class TfString implements List<TfI> {// extends Tf implements List {
    * @see java.util.List#addAll(int, java.util.Collection) it must not be used!
    */
   public boolean addAll(int arg0, Collection<? extends TfI> c) {
-    if (listOfTfs.get(0).isEpsilon() && c != null) listOfTfs.remove(0);
     return listOfTfs.addAll(arg0, c);
   }
 
@@ -113,26 +104,6 @@ public class TfString implements List<TfI> {// extends Tf implements List {
   }
 
   /**
-   * @see java.lang.Comparable#compareTo(java.lang.Object)
-   */
-  public int compareTo(TfString arg0) {
-    int ret = 0;
-    TfString se = arg0;
-    Iterator<TfI> seiter = se.iterator();
-    Iterator<TfI> thisiter = this.iterator();
-
-    while (seiter.hasNext() && thisiter.hasNext()) {
-      TfI ose = seiter.next();
-      TfI othis = thisiter.next();
-      ret = ose.compareTo(othis);
-      if (ret != 0) return ret;
-    }
-    if (seiter.hasNext()) return -1;
-    else
-      return 1;
-  }
-
-  /**
    * @see java.util.Collection#contains(java.lang.Object)
    */
   public boolean contains(Object arg0) {
@@ -146,27 +117,6 @@ public class TfString implements List<TfI> {// extends Tf implements List {
     return listOfTfs.containsAll(arg0);
   }
 
-//  /**
-//   * @see java.lang.Object#equals(java.lang.Object)
-//   */
-//  public boolean equals(Object o) {
-//
-//    if (o instanceof TfString) {
-//      TfString se = (TfString) o;
-//      if (this.size() == se.size()) {
-//        Iterator<TfI> itThis = this.listOfTfs.iterator();
-//        for (Iterator<TfI> itThat = se.listOfTfs.iterator(); itThat.hasNext();) {
-//          TfI thatElem = itThat.next();
-//          TfI thisElem = itThis.next();
-//          if (!thatElem.equals(thisElem)) return false;
-//        }
-//        return true;
-//      }
-//    } else if (size() == 1 && o instanceof TfI) {
-//      if (get(0).equals(o)) return true;
-//    }
-//    return false;
-//  }
 
   public TfI get(int index) {
     return this.listOfTfs.get(index);
@@ -183,42 +133,14 @@ public class TfString implements List<TfI> {// extends Tf implements List {
    * @see uy.edu.fing.mina.omega.tffst.utils.tf.TfI#getSlabel()
    */
   public String toString() {
-    String seString = "";
-    for (TfI tf : listOfTfs) {
-      seString += tf.toString();
-    }
-    return seString;
-  }
-
-  public boolean in(TfI tf) {
-    boolean out = false;
-
-    if (tf instanceof TfString) {
-      TfString se = (TfString) tf;
-
-      if (this.size() == se.size()) {
-
-        Iterator<TfI> itThis = this.listOfTfs.iterator();
-        Iterator<TfI> itThat = se.listOfTfs.iterator();
-
-        while (itThat.hasNext()) {
-          // TODO Object??
-          Object thatElem = itThat.next();
-          Object thisElem = itThis.next();
-
-          if (thatElem instanceof TfI && thisElem instanceof TfI) {
-            TfI tfthat = (TfI) thatElem;
-            TfI tfthis = (TfI) thisElem;
-
-            if (!tfthis.in(tfthat)) return false;
-
-          } else if (!thisElem.equals(thatElem)) return false;
-        }
-
-        return true;
-      }
-    }
-    return out;
+	if (isEpsilon()) {
+	  return SimpleTf.EPSILON;
+	} else {
+	  String seString = "";
+	  for (TfI tf : listOfTfs)
+		seString += tf.toString();
+	  return seString;
+	}
   }
 
   /**
@@ -236,7 +158,7 @@ public class TfString implements List<TfI> {// extends Tf implements List {
   }
 
   public boolean isEpsilon() {
-    return listOfTfs.get(0).isEpsilon();
+    return listOfTfs.isEmpty();
   }
 
   /**
@@ -285,12 +207,9 @@ public class TfString implements List<TfI> {// extends Tf implements List {
    * @see java.util.List#remove(int)
    */
   public TfI remove(int arg0) {
-    TfI o = null;
-    if (!listOfTfs.get(0).isEpsilon()) {
-      o = listOfTfs.remove(arg0);
-      if (listOfTfs.isEmpty()) listOfTfs.add(SimpleTf.Epsilon());
-    }
-    return o;
+	TfI o = null;
+	o = listOfTfs.remove(arg0);
+	return o;
   }
 
   /**
@@ -322,7 +241,6 @@ public class TfString implements List<TfI> {// extends Tf implements List {
 
   public void setEpsilon(boolean b) {
     listOfTfs = new LinkedList<TfI>();
-    listOfTfs.add(SimpleTf.Epsilon());
   }
 
   /**
