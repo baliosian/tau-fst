@@ -78,12 +78,12 @@ public class Determinization {
       s3.addOutTran(trans5);
       s4.addOutTran(trans6);
 
-      Utils.showDot(tffst1.toDot(""));
+      Utils.showDot(tffst1.toDot("START"));
 
       tffst1.setDeterministic(false);
       tffst1.determinize(); 
 
-      Utils.showDot(tffst1.toDot(""));
+      Utils.showDot(tffst1.toDot("FIN"));
 
       
    }

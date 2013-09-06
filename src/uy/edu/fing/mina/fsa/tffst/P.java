@@ -258,43 +258,53 @@ public class P implements Set<ElementOfP> {
 	P prep = new P();
 	P outp = new P();
 
-	for (ElementOfP eovp : longestPosfixState)
-	  for (ElementOfP eop : p)
-		if (eop.state.equals(eovp.state))
-		  prep.add(new ElementOfP(eop.state, new TfString(eop.arrivingTFs.subList(0, eop.arrivingTFs.size()-eovp.arrivingTFs.size()))));
+	try {
 
-	if (prep.iterator().hasNext()) {
-	  ElementOfP workingPair = prep.iterator().next();
-
-	  for (ElementOfP currentPair : prep) {
-		TfString newSE = new TfString();
-		Iterator<TfI> wSEiter = workingPair.getArrivingTFs().iterator();
-		Iterator<TfI> cSEiter = currentPair.getArrivingTFs().iterator();
-
-		while (cSEiter.hasNext() || wSEiter.hasNext()) {
-		  TfI currentTFinSE = null;
-		  if (cSEiter.hasNext())
-			currentTFinSE = cSEiter.next();
-		  TfI workingTFinSE = null;
-		  if (wSEiter.hasNext())
-			workingTFinSE = wSEiter.next();
-		  if (currentTFinSE != null && workingTFinSE != null)
-			newSE.add(workingTFinSE.orSimple(currentTFinSE));
-		  else if (currentTFinSE == null)
-			newSE.add(workingTFinSE);
-		  else if (workingTFinSE == null)
-			newSE.add(currentTFinSE);
-		}
-		outp.add(new ElementOfP(workingPair.state, newSE));
-	  }
-	}
-
-	for (ElementOfP eoup : outp)
 	  for (ElementOfP eovp : longestPosfixState)
-		if (eoup.state.equals(eovp.state))
-		  eoup.arrivingTFs.addAll(eovp.arrivingTFs);
+		for (ElementOfP eop : p)
+		  if (eop.state.equals(eovp.state))
+			prep.add(new ElementOfP(eop.state, new TfString(eop.arrivingTFs.subList(0, eop.arrivingTFs.size() - eovp.arrivingTFs.size()))));
 
-	this.p = outp;
+	  if (prep.iterator().hasNext()) {
+		ElementOfP workingPair = prep.iterator().next();
+
+		for (ElementOfP currentPair : prep) {
+		  if (!currentPair.equals(workingPair)) {
+
+			TfString newSE = new TfString();
+			Iterator<TfI> wSEiter = workingPair.getArrivingTFs().iterator();
+			Iterator<TfI> cSEiter = currentPair.getArrivingTFs().iterator();
+
+			while (cSEiter.hasNext() || wSEiter.hasNext()) {
+			  TfI currentTFinSE = null;
+			  if (cSEiter.hasNext())
+				currentTFinSE = cSEiter.next();
+			  TfI workingTFinSE = null;
+			  if (wSEiter.hasNext())
+				workingTFinSE = wSEiter.next();
+			  if (currentTFinSE != null && workingTFinSE != null)
+				newSE.add(workingTFinSE.orSimple(currentTFinSE));
+			  else if (currentTFinSE == null)
+				newSE.add(workingTFinSE);
+			  else if (workingTFinSE == null)
+				newSE.add(currentTFinSE);
+			}
+			outp.add(new ElementOfP(workingPair.state, newSE.clone()));
+			outp.add(new ElementOfP(currentPair.state, newSE.clone()));
+		  }
+		}
+	  }
+
+	  for (ElementOfP eoup : outp)
+		for (ElementOfP eovp : longestPosfixState)
+		  if (eoup.state.equals(eovp.state))
+			eoup.arrivingTFs.addAll(eovp.arrivingTFs);
+
+	  this.p = outp;
+	} catch (CloneNotSupportedException e) {
+	  // TODO Auto-generated catch block
+	  e.printStackTrace();
+	}
 
 	return outp;
   }
@@ -311,7 +321,7 @@ public class P implements Set<ElementOfP> {
   
   P longestPosfixState(Map<P, State> visitedNewStates) {
     P candidate = new P();
-    int candidateMaxLen = 0;
+    int candidateMaxLen = -1;
 
     for (P visitedP : visitedNewStates.keySet()) {
       boolean vpmatch = true;
@@ -322,10 +332,15 @@ public class P implements Set<ElementOfP> {
 		  for (ElementOfP eovp : visitedP) {
 			if (eop.state.equals(eovp.state)) {
 			  if (eovp.arrivingTFs.size() <= eop.arrivingTFs.size()) {
-				if (eop.arrivingTFs.subList(eop.arrivingTFs.size() - eovp.arrivingTFs.size(), eop.arrivingTFs.size()).equals(
-					eovp.arrivingTFs)) {
+				if (eovp.arrivingTFs.isEpsilon()) {
 				  eovpmatch = true;
-				  eovpMaxLen = Math.max(eovpMaxLen, eovp.arrivingTFs.size());
+				  eovpMaxLen = Math.max(eovpMaxLen, 0);
+				} else if (!eop.arrivingTFs.isEpsilon()) {
+				  if (eop.arrivingTFs.subList(eop.arrivingTFs.size() - eovp.arrivingTFs.size(), eop.arrivingTFs.size()).equals(
+					  eovp.arrivingTFs)) {
+					eovpmatch = true;
+					eovpMaxLen = Math.max(eovpMaxLen, eovp.arrivingTFs.size());
+				  }
 				}
 			  }
 			}

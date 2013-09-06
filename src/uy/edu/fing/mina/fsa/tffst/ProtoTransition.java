@@ -97,48 +97,6 @@ public class ProtoTransition {
 
   }
 
-  /**
-   * Returns the longest prefix in the list of PairsP. At the same time it
-   * prunes the list of that prefix.
-   * 
-   * @return a TfString containing the longest prefix.
-   */
-  public TfString longestPrefix() {
-
-    TfString outSE = new TfString();
-    boolean match = true;
-
-    if (unionOfTransP.size() != 0) {
-      while (match) {
-        Iterator<ElementOfP> iter = unionOfTransP.iterator();
-        ElementOfP firstPair = iter.next();
-        if (firstPair.getArrivingTFs().isEpsilon()) match = false;
-        while (iter.hasNext() && match) {
-          ElementOfP pair = iter.next();
-          if (pair.getArrivingTFs().isEpsilon()) match = false;
-          else 
-            if (!firstPair.getArrivingTFs().get(0).equals(pair.getArrivingTFs().get(0))) match = false;
-        }
-        if (match) {
-          outSE.add(firstPair.getArrivingTFs().get(0));
-          Iterator<ElementOfP> iter2 = unionOfTransP.iterator();
-          while (iter2.hasNext()) {
-            ElementOfP pair2 = iter2.next();
-            pair2.getArrivingTFs().remove(0);
-          }
-        }
-      }
-    }
-    
-    // I need to create a new P because comparison between sets does not tolerate changes in their elements.
-    P newP = new P(); 
-    for (ElementOfP elementOfP : unionOfTransP) {
-      newP.add(elementOfP);
-    } 
-    
-    this.unionOfTransP = newP; 
-    return outSE;
-  }
 
   @Override
   public String toString() {
