@@ -1330,6 +1330,7 @@ public class Tffst implements Serializable {
 		}
 	  }
 
+	  
 	  // for each possible partitions of the relevant tfs in two subsets
       for (Partition partition : Partition.getPartitions3(getRelevantTFs(p))) {
         // for each partition computes an exclusive TF
