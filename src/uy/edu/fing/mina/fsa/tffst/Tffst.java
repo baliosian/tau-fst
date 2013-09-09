@@ -1322,7 +1322,7 @@ public class Tffst implements Serializable {
       // the first partition
       P p = newStates.keySet().iterator().next();
       State pNewState = newStates.remove(p);
-
+      
 	  for (ElementOfP e : p) {
 		if (e.state.accept) {
 		  pNewState.setAccept(true);
