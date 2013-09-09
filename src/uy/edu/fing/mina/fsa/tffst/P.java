@@ -11,7 +11,7 @@ import uy.edu.fing.mina.fsa.tf.TfString;
 
 public class P implements Set<ElementOfP> {
   
-  private Set<ElementOfP> p;
+  private Set<ElementOfP> p = null;
   
   public P() {
     super();
@@ -49,7 +49,10 @@ public class P implements Set<ElementOfP> {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((p == null) ? 0 : p.hashCode());
+    if ( p == null )
+      result = prime * result;
+    else 
+      result = prime * result + p.hashCode();
     return result;
   }
 
@@ -167,47 +170,118 @@ public class P implements Set<ElementOfP> {
   }
 
   /**
-   * computes the tail of final states. 
+   * simplifies the union of transP sets
    * 
    */
-  public void tail() {
+  public P simplifyPendingByState() {
 
-    Set<ElementOfP> toRemove = new HashSet<ElementOfP>();
-    int toRemoveSize;
+	P outp = new P();
+	try {
+	  outp = (P) this.clone();
 
-    do {
-      toRemoveSize = toRemove.size();
-      for (ElementOfP workingPair : this)
-        if (!toRemove.contains(workingPair))
-          for (ElementOfP currentPair : this)
-            if (!toRemove.contains(currentPair))
-              if ((workingPair.state.isAccept() || currentPair.state.isAccept())
-                  && workingPair != currentPair) {
-                TfString currentSE = currentPair.getArrivingTFs();
-                TfString workingSE = workingPair.getArrivingTFs();
-                TfString newSE = new TfString();
+	  Set<ElementOfP> toRemove = new HashSet<ElementOfP>();
+	  int toRemoveSize;
 
-                Iterator<TfI> workingSEiter = workingSE.iterator();
-                Iterator<TfI> currentSEiter = currentSE.iterator();
-                while (currentSEiter.hasNext() || workingSEiter.hasNext()) {
-                  TfI currentTFinSE = null;
-                  TfI workingTFinSE = null;
+	  do {
+		toRemoveSize = toRemove.size();
+		for (ElementOfP workingPair : outp)
+		  if (!toRemove.contains(workingPair))
+			for (ElementOfP currentPair : outp)
+			  if (!toRemove.contains(currentPair))
+				if ((currentPair.state.equals(workingPair.state)) && workingPair != currentPair) {
+				  TfString newSE = new TfString();
 
-                  if (currentSEiter.hasNext()) currentTFinSE = currentSEiter.next();
-                  if (workingSEiter.hasNext()) workingTFinSE = workingSEiter.next();
+				  TfString currentSE = currentPair.getArrivingTFs();
+				  TfString workingSE = workingPair.getArrivingTFs();
 
-                  if (currentTFinSE != null && workingTFinSE != null) 
-                    newSE.add(workingTFinSE.orSimple(currentTFinSE));
-                  
-                  else if (currentTFinSE == null) newSE.add(workingTFinSE);
-                  else if (workingTFinSE == null) newSE.add(currentTFinSE);
-                }
-                toRemove.add(currentPair);
-                workingPair.setArrivingTFs(newSE);
-              }
-    } while (toRemoveSize != toRemove.size());
-    
-    this.removeAll(toRemove);
+				  Iterator<TfI> workingSEiter = workingSE.iterator();
+				  Iterator<TfI> currentSEiter = currentSE.iterator();
+				  while (currentSEiter.hasNext() || workingSEiter.hasNext()) {
+					TfI currentTFinSE = null;
+					TfI workingTFinSE = null;
+
+					if (currentSEiter.hasNext())
+					  currentTFinSE = currentSEiter.next();
+					if (workingSEiter.hasNext())
+					  workingTFinSE = workingSEiter.next();
+
+					if (currentTFinSE != null && workingTFinSE != null)
+					  newSE.add(workingTFinSE.orSimple(currentTFinSE));
+					else if (currentTFinSE == null)
+					  newSE.add(workingTFinSE);
+					else if (workingTFinSE == null)
+					  newSE.add(currentTFinSE);
+				  }
+				  toRemove.add(currentPair);
+				  workingPair.setArrivingTFs(newSE);
+				}
+	  } while (toRemoveSize != toRemove.size());
+
+	  outp.removeAll(toRemove);
+
+	} catch (CloneNotSupportedException e) {
+	  e.printStackTrace();
+	}
+
+	return outp;
+
+  }
+
+  /**
+   * computes the tail of final states.
+   * 
+   */
+  public P tail() {
+
+	P outp = new P();
+	try {
+	  outp = (P) this.clone();
+
+	  Set<ElementOfP> toRemove = new HashSet<ElementOfP>();
+	  int toRemoveSize;
+
+	  do {
+		toRemoveSize = toRemove.size();
+		for (ElementOfP workingPair : outp)
+		  if (!toRemove.contains(workingPair))
+			for (ElementOfP currentPair : outp)
+			  if (!toRemove.contains(currentPair))
+				if ((workingPair.state.isAccept() || currentPair.state.isAccept()) && workingPair != currentPair) {
+				  TfString currentSE = currentPair.getArrivingTFs();
+				  TfString workingSE = workingPair.getArrivingTFs();
+				  TfString newSE = new TfString();
+
+				  Iterator<TfI> workingSEiter = workingSE.iterator();
+				  Iterator<TfI> currentSEiter = currentSE.iterator();
+				  while (currentSEiter.hasNext() || workingSEiter.hasNext()) {
+					TfI currentTFinSE = null;
+					TfI workingTFinSE = null;
+
+					if (currentSEiter.hasNext())
+					  currentTFinSE = currentSEiter.next();
+					if (workingSEiter.hasNext())
+					  workingTFinSE = workingSEiter.next();
+
+					if (currentTFinSE != null && workingTFinSE != null)
+					  newSE.add(workingTFinSE.orSimple(currentTFinSE));
+
+					else if (currentTFinSE == null)
+					  newSE.add(workingTFinSE);
+					else if (workingTFinSE == null)
+					  newSE.add(currentTFinSE);
+				  }
+				  toRemove.add(currentPair);
+				  workingPair.setArrivingTFs(newSE);
+				}
+	  } while (toRemoveSize != toRemove.size());
+
+	  outp.removeAll(toRemove);
+
+	} catch (CloneNotSupportedException e) {
+	  e.printStackTrace();
+	}
+
+	return outp;
 
   }
 
@@ -250,7 +324,7 @@ public class P implements Set<ElementOfP> {
       newP.add(elementOfP);
     } 
     
-    this.p = newP; 
+    this.p = newP.p; 
     return outSE;
   }
 
@@ -260,19 +334,20 @@ public class P implements Set<ElementOfP> {
 
 	try {
 
-	  for (ElementOfP eovp : longestPosfixState)
-		for (ElementOfP eop : p)
-		  if (eop.state.equals(eovp.state))
-			prep.add(new ElementOfP(eop.state, new TfString(eop.arrivingTFs.subList(0, eop.arrivingTFs.size() - eovp.arrivingTFs.size()))));
+	  if (!longestPosfixState.isEmpty()) {
+		for (ElementOfP eovp : longestPosfixState)
+		  for (ElementOfP eop : p)
+			if (eop.state.equals(eovp.state))
+			  prep.add(new ElementOfP(eop.state, new TfString(eop.arrivingTFs.subList(0, eop.arrivingTFs.size() - eovp.arrivingTFs.size()))));
 
-	  if (prep.iterator().hasNext()) {
 		ElementOfP workingPair = prep.iterator().next();
+		ElementOfP outWP = (ElementOfP) workingPair.clone();
 
 		for (ElementOfP currentPair : prep) {
 		  if (!currentPair.equals(workingPair)) {
 
 			TfString newSE = new TfString();
-			Iterator<TfI> wSEiter = workingPair.getArrivingTFs().iterator();
+			Iterator<TfI> wSEiter = outWP.getArrivingTFs().iterator();
 			Iterator<TfI> cSEiter = currentPair.getArrivingTFs().iterator();
 
 			while (cSEiter.hasNext() || wSEiter.hasNext()) {
@@ -289,20 +364,20 @@ public class P implements Set<ElementOfP> {
 			  else if (workingTFinSE == null)
 				newSE.add(currentTFinSE);
 			}
-			outp.add(new ElementOfP(workingPair.state, newSE.clone()));
-			outp.add(new ElementOfP(currentPair.state, newSE.clone()));
+			outWP.arrivingTFs = newSE.clone();
 		  }
 		}
+
+		for (ElementOfP eoup : prep)
+		  for (ElementOfP eovp : longestPosfixState)
+			if (eoup.state.equals(eovp.state)) {
+			  TfString atf = outWP.arrivingTFs.clone();
+			  atf.addAll(eovp.arrivingTFs);
+			  outp.add(new ElementOfP(eoup.state, atf));
+			}
+		this.p = outp.p;
 	  }
-
-	  for (ElementOfP eoup : outp)
-		for (ElementOfP eovp : longestPosfixState)
-		  if (eoup.state.equals(eovp.state))
-			eoup.arrivingTFs.addAll(eovp.arrivingTFs);
-
-	  this.p = outp;
 	} catch (CloneNotSupportedException e) {
-	  // TODO Auto-generated catch block
 	  e.printStackTrace();
 	}
 

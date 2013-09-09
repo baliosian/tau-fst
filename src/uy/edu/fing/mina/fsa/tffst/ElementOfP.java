@@ -75,7 +75,7 @@ public class ElementOfP {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((getArrivingTFs() == null) ? 0 : getArrivingTFs().hashCode());
+    result = prime * result + ((getArrivingTFs().isEpsilon()) ? 0 : getArrivingTFs().hashCode());
     result = prime * result + ((state == null) ? 0 : state.hashCode());
     //result = prime * result + ((usedTrans == null) ? 0 : usedTrans.hashCode());
     return result;
