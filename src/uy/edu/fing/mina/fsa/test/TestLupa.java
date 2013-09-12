@@ -61,7 +61,7 @@ public class TestLupa {
       dAction.setSLabel("actionD");
 
       s0.addTransition(new Transition(d, cAction2, s1));
-      s0.addTransition(new Transition(d.not(), dAction.not(), s0));
+      s0.addTransition(new Transition(d.not(), cAction2.not(), s0));
       
       Utils.showDot(tffst1.toDot("tffst1"));
       
@@ -82,24 +82,24 @@ public class TestLupa {
       State s21 = new State();
       s21.setAccept(true);
       
-      EventTf c = new EventTf();
-      c.setSLabel("C");
+      EventTf cEvent = new EventTf();
+      cEvent.setSLabel("eventC");
       
       ActionTf cAction = new ActionTf();
-      cAction.setSLabel("C");
+      cAction.setSLabel("actionC");
       
       ActionTf eAction = new ActionTf();
-      eAction.setSLabel("E");
+      eAction.setSLabel("actionE");
 
-      s20.addTransition(new Transition(c.not(), cAction.not(), s20));
-      s20.addTransition(new Transition(c,eAction , s21));
+      s20.addTransition(new Transition(cEvent.not(), cAction.not(), s20));
+      s20.addTransition(new Transition(cEvent,eAction , s21));
       
       Utils.showDot(tffst2.toDot("tffst2"));
       
       Tffst tffstComposition = tffst1.composition(tffst2);
       
       try {
-		LupaExporter.generateLupaFiles(tffst1, "fsm_template.lua", "out_test_pdp_aux");
+		LupaExporter.generateLupaFiles(tffstComposition, "fsm_template.lua", "out_test_pdp_aux");
 	} catch (UnsupportedTFFSTException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
