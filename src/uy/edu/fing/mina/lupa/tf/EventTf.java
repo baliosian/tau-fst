@@ -34,7 +34,7 @@ public class EventTf extends SimpleTf {
 		init_notif_strings.add(newString);
 	}
 
-	public Set<String> getInitSubsfStrings() {
+	public Set<String> getInitSubsStrings() {
 		return init_subs_strings;
 	}
 	

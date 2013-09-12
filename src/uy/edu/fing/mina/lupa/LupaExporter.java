@@ -213,7 +213,7 @@ public class LupaExporter {
 				loadEvents(t.getLabelIn().get(0));
 			}
 			else{
-				throw new UnsupportedTFFSTException("A problematic Transition (" + t.toString() +") was detected. Not an eveny or composite TF when uploading events.");
+				throw new UnsupportedTFFSTException("A problematic Transition (" + t.getFrom() + t.toString() +") was detected. Not an eveny or composite TF when uploading events.");
 			}
 			
 			if(!t.getLabelOut().isEpsilon()){
@@ -271,7 +271,7 @@ public class LupaExporter {
 							out_notifs.append("  ").append(init).append(",\n");
 						}
 					}
-					Iterator<String> inits_subs = e.getInitSubsfStrings().iterator();
+					Iterator<String> inits_subs = e.getInitSubsStrings().iterator();
 					while (inits_subs.hasNext()) {
 						String init = inits_subs.next();
 						if (!init_subs_generated.contains(init)) {

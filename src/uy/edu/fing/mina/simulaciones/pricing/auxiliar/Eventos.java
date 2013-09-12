@@ -29,11 +29,11 @@ public class Eventos {
 //		Just for demonstration.
 //		One subscription to local price:
 		
-		nuevo.addInitString("{target_service=\"/lupa/rmoon\", target_host=\"127.0.0.1\", command=\"watch_mib\", mib=\"price\", op=\">\", value=\"0\", notification_id=\"localPrice\", watcher_id=\"localPrice\", timeout=\"10\"}");
+		nuevo.addInitNotifString("{target_service=\"/lupa/rmoon\", target_host=\"127.0.0.1\", command=\"watch_mib\", mib=\"price\", op=\">\", value=\"0\", notification_id=\"localPrice\", watcher_id=\"localPrice\", timeout=\"10\"}");
 //		Add 6 subscription per competitor:
 //		- price value
-		nuevo.addInitString("{target_service=\"COMP0/lupa/rmoon\", target_host=\"127.0.0.1\", command=\"watch_mib\", mib=\"price\", op=\">\", value=\"0\", notification_id=\"COMP0-Price\", watcher_id=\"COMP0Price\", timeout=\"10\"}");
-		nuevo.addInitString("{target_service=\"COMP1/lupa/rmoon\", target_host=\"127.0.0.1\", command=\"watch_mib\", mib=\"price\", op=\">\", value=\"0\", notification_id=\"COMP1-Price\", watcher_id=\"COMP1Price\", timeout=\"10\"}");
+		nuevo.addInitNotifString("{target_service=\"COMP0/lupa/rmoon\", target_host=\"127.0.0.1\", command=\"watch_mib\", mib=\"price\", op=\">\", value=\"0\", notification_id=\"COMP0-Price\", watcher_id=\"COMP0Price\", timeout=\"10\"}");
+		nuevo.addInitNotifString("{target_service=\"COMP1/lupa/rmoon\", target_host=\"127.0.0.1\", command=\"watch_mib\", mib=\"price\", op=\">\", value=\"0\", notification_id=\"COMP1-Price\", watcher_id=\"COMP1Price\", timeout=\"10\"}");
 		
 //		- price delta_e steady
 //		- price delta_e is
