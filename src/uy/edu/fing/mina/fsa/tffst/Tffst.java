@@ -1318,7 +1318,7 @@ public class Tffst implements Serializable {
 
     while (newStates.keySet().iterator().hasNext()) {
       
-      //Utils.showDot(toDot(""));
+      Utils.showDot(toDot(""));
       // the first partition
       P p = newStates.keySet().iterator().next();
       State pNewState = newStates.remove(p);
@@ -1343,7 +1343,7 @@ public class Tffst implements Serializable {
 
           if (!pt.unionOfTransP.isEmpty()) {
             if (!visitedNewStates.keySet().contains(pt.unionOfTransP)) {
-              P lngstPosfxState = pt.unionOfTransP.longestPosfixState(visitedNewStates);  
+              P lngstPosfxState = pt.unionOfTransP.longestPosfixState(visitedNewStates);  //FIXME
               if (!lngstPosfxState.isEmpty()) {
                 pt.unionOfTransP.simplifyTargetByPosfixState(lngstPosfxState);  
                 prefix.addAll(pt.unionOfTransP.longestPrefix()); 
@@ -1353,6 +1353,8 @@ public class Tffst implements Serializable {
               }
             } 
             pNewState.addOutTran(new Transition(new TfString(tfrelation), prefix, visitedNewStates.get(pt.unionOfTransP)));
+            
+            System.out.println(pt.unionOfTransP);
           }
         }
       }

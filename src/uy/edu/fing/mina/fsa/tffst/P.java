@@ -1,6 +1,7 @@
 package uy.edu.fing.mina.fsa.tffst;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -399,6 +400,7 @@ public class P implements Set<ElementOfP> {
     int candidateMaxLen = -1;
 
     for (P visitedP : visitedNewStates.keySet()) {
+      Map<State, TfString> lastCandidate = new HashMap<State, TfString>();
       boolean vpmatch = true;
       if (visitedP.size() == p.size()) {
         int eovpMaxLen = 0;
@@ -411,10 +413,16 @@ public class P implements Set<ElementOfP> {
 				  eovpmatch = true;
 				  eovpMaxLen = Math.max(eovpMaxLen, 0);
 				} else if (!eop.arrivingTFs.isEpsilon()) {
-				  if (eop.arrivingTFs.subList(eop.arrivingTFs.size() - eovp.arrivingTFs.size(), eop.arrivingTFs.size()).equals(
-					  eovp.arrivingTFs)) {
+				  for (int i = 1 ; 
+					  (i <= eovp.arrivingTFs.size() && 
+					  eop.arrivingTFs.subList(eop.arrivingTFs.size()-i, eop.arrivingTFs.size())
+					  .equals(eovp.arrivingTFs.subList(eovp.arrivingTFs.size() - i, eovp.arrivingTFs.size())));
+					  i++) {
+					if (lastCandidate.get(eop.state) != null )
+					  if (lastCandidate.get(eop.state).size() < i-1)
+						lastCandidate.put(eop.state, (TfString) eop.arrivingTFs.subList(eop.arrivingTFs.size()-i, eop.arrivingTFs.size()));
 					eovpmatch = true;
-					eovpMaxLen = Math.max(eovpMaxLen, eovp.arrivingTFs.size());
+					eovpMaxLen = Math.max(eovpMaxLen, i-1);
 				  }
 				}
 			  }
@@ -422,8 +430,10 @@ public class P implements Set<ElementOfP> {
 		  }
 		  vpmatch = vpmatch && eovpmatch;
 		}
-        if (vpmatch && candidateMaxLen < eovpMaxLen) { 
-          candidate = visitedP;
+        if (vpmatch && candidateMaxLen < eovpMaxLen) {
+          for (State s : lastCandidate.keySet()) {
+			candidate.add(new ElementOfP(s, lastCandidate.get(s)));
+		  }
           candidateMaxLen = eovpMaxLen; 
         }
       }

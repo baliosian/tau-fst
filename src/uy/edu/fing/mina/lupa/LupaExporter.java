@@ -783,21 +783,27 @@ public class LupaExporter {
 	 * @param filename The prefix for the destination files.
 	 * @throws UnsupportedTFFSTException 
 	 */
-	public static void generateLupaFiles(Tffst fst, String templateFilename, String filename) throws UnsupportedTFFSTException{
-		functionsCounter = new Integer(0);
-		functionNames = new HashMap<TfI, String>();
-		mainEvents = new HashMap<String, TfI>();
-		mainActions = new HashMap<String, TfI>();
-		compositeEvents = new HashMap<String, TfI>();
-		compositeActions = new HashMap<String, TfI>();
-		Tffst proctffst = fst.toSimpleTransitions();
-		loadActionsAndEvents(proctffst);
-		
-		String manualFunctions = updateManualLupa(proctffst, filename);
-		
-		writeGeneratedLupa(proctffst, templateFilename, filename, manualFunctions);
-		
+  public static void generateLupaFiles(Tffst fst, String templateFilename, String filename) throws UnsupportedTFFSTException {
+	try {
+	  functionsCounter = new Integer(0);
+	  functionNames = new HashMap<TfI, String>();
+	  mainEvents = new HashMap<String, TfI>();
+	  mainActions = new HashMap<String, TfI>();
+	  compositeEvents = new HashMap<String, TfI>();
+	  compositeActions = new HashMap<String, TfI>();
+	  // Tffst proctffst = fst.toSimpleTransitions();
+	  Tffst proctffst;
+	  proctffst = fst.clone();
+
+	  loadActionsAndEvents(proctffst);
+
+	  String manualFunctions = updateManualLupa(proctffst, filename);
+
+	  writeGeneratedLupa(proctffst, templateFilename, filename, manualFunctions);
+	} catch (CloneNotSupportedException e) {
+	  e.printStackTrace();
 	}
+  }
 
 }
 

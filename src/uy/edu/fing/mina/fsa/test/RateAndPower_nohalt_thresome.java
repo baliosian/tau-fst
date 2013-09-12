@@ -37,13 +37,13 @@ public class RateAndPower_nohalt_thresome {
 //    s2.addOutTran(new Transition((new SimpleTf("ml")).not(), (new SimpleTf("ml")).not(), s2));
 //    s3.addOutTran(new Transition((new SimpleTf("hl")).not(), (new SimpleTf("hl")).not(), s3));
 
-    s0.addOutTran(new Transition((new SimpleTf("hl")), SimpleTf.Epsilon(), s4));
+  //  s0.addOutTran(new Transition((new SimpleTf("hl")), SimpleTf.Epsilon(), s4));
     s0.addOutTran(new Transition((new SimpleTf("ml")), SimpleTf.Epsilon(), s5));
-    s0.addOutTran(new Transition((new SimpleTf("hl")), SimpleTf.Epsilon(), s6));
+//    s0.addOutTran(new Transition((new SimpleTf("hl")), SimpleTf.Epsilon(), s6));
 
-    s4.addOutTran(new Transition((new SimpleTf("lp")).not(), (new SimpleTf("lp")).not(), s4));
+//    s4.addOutTran(new Transition((new SimpleTf("lp")).not(), (new SimpleTf("lp")).not(), s4));
     s5.addOutTran(new Transition((new SimpleTf("mp")).not(), (new SimpleTf("mp")).not(), s5));
-    s6.addOutTran(new Transition((new SimpleTf("lp")).not(), (new SimpleTf("lp")).not(), s6));
+//    s6.addOutTran(new Transition((new SimpleTf("lp")).not(), (new SimpleTf("lp")).not(), s6));
     
     Utils.showDot(tffst.toDot("before"));
 
