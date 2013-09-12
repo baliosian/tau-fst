@@ -50,7 +50,7 @@ public class TestLupa {
         etf_E1.getFilter().add(new Sentence("watcher_id", "==", "\"e1\""));
         etf_E1.getFilter().add(new Sentence("source", "==", "\"127.0.0.1/lupa/rmoon\""));
         etf_E1.getLuaPredicate().luaText = "return 1";
-        etf_E1.getInitStrings().add(init_e1_string);
+        etf_E1.getInitSubsStrings().add(init_e1_string);
 
         EventTf etf_E2 = new EventTf();
         etf_E2.setName("E2");
@@ -58,7 +58,7 @@ public class TestLupa {
         etf_E2.getFilter().add(new Sentence("watcher_id", "==", "\"e2\""));
         etf_E2.getFilter().add(new Sentence("source", "==", "\"127.0.0.1/lupa/rmoon\""));
         etf_E2.getLuaPredicate().luaText = "return 1";
-        etf_E2.getInitStrings().add(init_e2_string);
+        etf_E2.getInitSubsStrings().add(init_e2_string);
 
         ActionTf atf_S = new ActionTf();
         atf_S.setName("S");
