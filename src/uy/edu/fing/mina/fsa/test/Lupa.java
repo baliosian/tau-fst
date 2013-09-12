@@ -6,6 +6,8 @@
  * */
 package uy.edu.fing.mina.fsa.test;
 
+import java.util.LinkedList;
+
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
 import uy.edu.fing.mina.fsa.tf.TfI;
 import uy.edu.fing.mina.fsa.tf.TfString;
@@ -53,20 +55,26 @@ public class Lupa {
       s1.setAccept(true);
       
       EventTf eventD = new EventTf();
-      eventD.setName("eventD");
+      eventD.setName("D");
       
       EventTf notEventD = new EventTf();
-      notEventD.setName("eventD");
-      notEventD.not();
+      notEventD.setName("D");
       
       ActionTf actionC = new ActionTf();
-      actionC.setName("actionC");
+      actionC.setName("C");
       
       ActionTf actionD = new ActionTf();
-      actionD.setName("actionD");
+      actionD.setName("D");
+      
+      LinkedList<TfI> list = new LinkedList<TfI>();
+      list.add(actionD);
+      list.add(actionC);
+      TfString tfString = new TfString (list);
 
       s0.addOutTran(new Transition(eventD, actionC, s1));
-      s0.addOutTran(new Transition(notEventD, actionD.not(), s0));
+      Transition t = new Transition(notEventD.not(), actionD.not(), s0);
+      t.setLabelOut(tfString);
+      s0.addOutTran(t);
       
       Utils.showDot(tffst1.toDot("tffst1"));
       
@@ -88,29 +96,29 @@ public class Lupa {
       s21.setAccept(true);
       
       EventTf eventC = new EventTf();
-      eventC.setName("eventC");
+      eventC.setName("C");
       
       ActionTf actionC2 = new ActionTf();
-      actionC2.setName("actionC");
+      actionC2.setName("C");
       
       ActionTf actionE = new ActionTf();
-      actionE.setName("actionE");
+      actionE.setName("E");
 
       s20.addOutTran(new Transition(eventC.not(), actionC2.not(), s20));
       s20.addOutTran(new Transition(eventC,actionE , s21));
       
       Utils.showDot(tffst2.toDot("tffst2"));
       
-      //Tffst tffstComposition = tffst1.composition(tffst2);
+      Tffst tffstComposition = tffst1.composition(tffst2);
       
       try {
-		LupaExporter.generateLupaFiles(tffst1, "fsm_template.lua", "out_test_pdp_aux");
+		LupaExporter.generateLupaFiles(tffst1, "src/fsm_template.lua", "out_test_pdp_aux");
 	} catch (UnsupportedTFFSTException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
       
-      //Utils.showDot(tffstComposition.toDot("tffst1 o tffst2"));
+      Utils.showDot(tffstComposition.toDot("tffst1 o tffst2"));
       
 
    }
