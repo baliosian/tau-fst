@@ -556,7 +556,7 @@ public class Tffst implements Serializable {
    * 
    */
   public void inLabelEpsilonRemoval() {
-   
+	
     try {
       Set<State> workingStates = new HashSet<State>();
       Set<State> visitedStates = new HashSet<State>();
@@ -626,6 +626,7 @@ public class Tffst implements Serializable {
     } catch (CloneNotSupportedException e) {
       e.printStackTrace();
     }
+    
     removeDeadTransitions();
   }
 
@@ -1318,7 +1319,6 @@ public class Tffst implements Serializable {
 
     while (newStates.keySet().iterator().hasNext()) {
       
-      Utils.showDot(toDot(""));
       // the first partition
       P p = newStates.keySet().iterator().next();
       State pNewState = newStates.remove(p);
@@ -1353,8 +1353,6 @@ public class Tffst implements Serializable {
               }
             } 
             pNewState.addOutTran(new Transition(new TfString(tfrelation), prefix, visitedNewStates.get(pt.unionOfTransP)));
-            
-            System.out.println(pt.unionOfTransP);
           }
         }
       }
