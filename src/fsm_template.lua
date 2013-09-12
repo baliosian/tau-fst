@@ -3,9 +3,7 @@ print ("FSM loading...")
 local function FSM(t)
 	local a = {}
 	for _,v in ipairs(t) do
-		local old, t_function, new = v[1], v[2], v[3]
-    local actions = {}
-    for i=4, #v do actions[#actions+1] = v[i] end
+		local old, t_function, new, actions = v[1], v[2], v[3], v[4]
     
     if a[old] == nil then a[old] = {} end
     table.insert(a[old],{new = new, actions = actions, t_function = t_function})
