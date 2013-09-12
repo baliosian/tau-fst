@@ -3,11 +3,14 @@ print ("FSM loading...")
 local function FSM(t)
 	local a = {}
 	for _,v in ipairs(t) do
-		local old, t_function, new, action = v[1], v[2], v[3], v[4]
-			if a[old] == nil then a[old] = {} end
-			table.insert(a[old],{new = new, action = action, t_function = t_function})
-	  	end
-  	return a
+		local old, t_function, new = v[1], v[2], v[3]
+    local actions = {}
+    for i=4, #v do actions[#actions+1] = v[i] end
+    
+    if a[old] == nil then a[old] = {} end
+    table.insert(a[old],{new = new, actions = actions, t_function = t_function})
+  end
+  return a
 end
 
 
@@ -87,11 +90,13 @@ local function fst_step()
   assert(transition)
 	
 	local ret_call
-	local action=transition.action
-	if action then ret_call=action(event) end
+  for _, action in ipairs(transition.actions) do
+    local ret_action = action(event) end
+    for _, v in ipairs(ret_action) do ret_call[#ret_call+1] = v end
+  end
+  
 	i_event=i_event+1
 	current_state = transition.new
-  
   return ret_call	or {}, is_accept(current_state), #fsm[current_state]==0
 end
 
