@@ -117,7 +117,7 @@ public class LupaExporter {
 	/**
 	 * Returns the function name to use in LUA.
 	 * If it is composite, a number as a name will be assigned.
-	 * Otherwise, the laber will be included.
+	 * Otherwise, the label will be included.
 	 * @param function The Tautness Function to translate. 
 	 * @return The function name in LUA code.
 	 */
@@ -151,7 +151,7 @@ public class LupaExporter {
 	
 	/**
 	 * Returns the header for the LUA function.
-	 * Weather it is a local function or a function inside a table, such must be append at the header's begining. 
+	 * Weather it is a local function or a function inside a table, such must be append at the header's beginning. 
 	 * @param function Function's name
 	 * @return The complete header.
 	 */
@@ -231,12 +231,15 @@ public class LupaExporter {
 	}
 
 	private static String initToLupa(Tffst tffst) {
+		//TODO replicar para setear init_subs
 		Iterator<Transition> transIt = tffst.getTransitions().iterator();
-		StringBuffer out = new StringBuffer("local initialization_subs= {\n");
+		StringBuffer out_notifs = new StringBuffer("local initialization_notifs = {\n");
+		StringBuffer out_subs = new StringBuffer("local initialization_subs = {\n");
 
 		LinkedList<TfI> workingList = new LinkedList<TfI>();
 		Set<String> ev_generated = new HashSet<String>();
-		Set<String> init_generated = new HashSet<String>();
+		Set<String> init_notifs_generated = new HashSet<String>();
+		Set<String> init_subs_generated = new HashSet<String>();
 
 		// tfi from all the transitions
 		while (transIt.hasNext()) {
@@ -260,14 +263,23 @@ public class LupaExporter {
 				if (tfi instanceof EventTf) {
 					// creating code for a new event
 					EventTf e = (EventTf) tfi;
-					Iterator<String> inits = e.getInitStrings().iterator();
-					while (inits.hasNext()) {
-						String init = inits.next();
-						if (!init_generated.contains(init)) {
-							init_generated.add(init);
-							out.append("  ").append(init).append(",\n");
+					Iterator<String> inits_notifs = e.getInitNotifStrings().iterator();
+					while (inits_notifs.hasNext()) {
+						String init = inits_notifs.next();
+						if (!init_notifs_generated.contains(init)) {
+							init_notifs_generated.add(init);
+							out_notifs.append("  ").append(init).append(",\n");
 						}
 					}
+					Iterator<String> inits_subs = e.getInitSubsfStrings().iterator();
+					while (inits_subs.hasNext()) {
+						String init = inits_subs.next();
+						if (!init_subs_generated.contains(init)) {
+							init_subs_generated.add(init);
+							out_subs.append("  ").append(init).append(",\n");
+						}
+					}
+				
 				}
 				if (tfi instanceof CompositeTf) {
 					CompositeTf c = (CompositeTf) tfi;
@@ -279,8 +291,9 @@ public class LupaExporter {
 			}
 
 		}
-		out.append("}\n");
-		return out.toString();
+		out_notifs.append("}\n");
+		out_subs.append("}\n");
+		return out_notifs.toString() + out_subs.toString();
 	}
 	
 	/**
@@ -318,7 +331,7 @@ public class LupaExporter {
 				out = out.concat("\t-- " + functionHeader + "\n");
 				out = out.concat("events." + functionName + " = function(e) \n");
 //				TODO Mejorar!!
-				out = out.concat("\tshared[\"incomming_event\"] = nil\n");
+				//out = out.concat("\tshared[\"incomming_event\"] = nil\n");
 				out = out.concat("\tshared[\"incomming_event\"] = e\n"); 
 				out = out.concat("\t-----------------------------------------------\n");
 				out = out.concat("\t-- TODO: Complete this with your event code. --\n");
@@ -416,7 +429,7 @@ public class LupaExporter {
 				out = out.concat("events." + functionName + " = function(e) \n");
 				TfI nonneg = function.not();
 				out = out.concat("\tlocal nonneg = events." + functionName(nonneg) + "(e)\n");
-				out = out.concat("\treturn -nonneg\n");
+				out = out.concat("\treturn 1-nonneg\n");
 				out = out.concat("end\n");
 			}
 			else{
@@ -431,7 +444,7 @@ public class LupaExporter {
 		
 		return out;
 	}
-	
+
   /**
    * Creates a String with actions functions that are CompositeTf or Nots.
    * 
@@ -591,7 +604,7 @@ public class LupaExporter {
 			}
 		}
 
-		// iterate all the tfs, in dept
+		// iterate all the tfs, in depth
 		ev_generated.clear();
 		while (!workingList.isEmpty()) {
 			TfI tfi = workingList.removeFirst();
@@ -654,6 +667,25 @@ public class LupaExporter {
 		return out.toString();
 	}
 
+	private static String finalsToLupa(Tffst tffst) {
+
+		Set<State> states = tffst.getStates();
+
+		Iterator<State> stetesIt = states.iterator();
+
+		StringBuffer out = new StringBuffer("  {\n");
+
+		while (stetesIt.hasNext()) {
+			State s = stetesIt.next();
+			if (s.isAccept()) {
+				out.append("['").append(s.getNumber()).append("']=true,\n");
+			}
+		}
+		out.append("}\n");
+
+		return out.toString();
+	}
+	
 	private static void writeGeneratedLupa(Tffst tffst, String templateFileName, String destinationFileName, String manualFunctions) throws UnsupportedTFFSTException {
 		File inputFile = new File(templateFileName);
 		File outputFile = new File(destinationFileName + ".lua");
@@ -684,6 +716,8 @@ public class LupaExporter {
 		salida = salida.concat(compositeActionsToLupa(tffst));
 		salida = salida.concat("\n--transitions\nlocal fsm = FSM");
 		salida = salida.concat(transitionsToLupa(tffst));
+		salida = salida.concat("\n--final states\nlocal is_accept = ");
+		salida = salida.concat(finalsToLupa(tffst));
 		
 		salida = original.replace("--datahere--", salida);
 		
@@ -737,11 +771,11 @@ public class LupaExporter {
 	 * The resulting files are :
 	 * <ol>
 	 * <li> [filename].lua : Contains the generated LUA code for LUPA.
-	 * <li> [filename]_manual.lua : Contains the headers for the LUA TF functions neccesary for the TFFST to work.
+	 * <li> [filename]_manual.lua : Contains the headers for the LUA TF functions needed for the TFFST to work.
 	 * </ol>
 	 * 
 	 * In the "manual" file, any already existing function WILL NOT be overwritten.
-	 * If a funtion definition doesn't exists, a header for such will be introduced.
+	 * If a function definition doesn't exists, a header for such will be introduced.
 	 * 
 	 * In the "general" file, no code editing should be necessary.
 	 * 

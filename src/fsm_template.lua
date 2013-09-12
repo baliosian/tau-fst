@@ -13,10 +13,13 @@ end
 
 --auxiliar functions to be used when detecting happening events
 local function register_as_happening(event)
-	table.insert(happening_events, event)
+  happening_events[event]=true
 end
-local function unregister_as_happening(filter)
-	for i, event in ipairs(happening_events) do
+local function unregister_as_happening(event)
+  happening_events[event]=nil
+end
+local function unregister_as_happening_f(filter)
+	for event, _ in pairs(happening_events) do
 		local matches = true
 		for key, value in pairs(filter) do
 			if not event[key]==value then
@@ -25,12 +28,10 @@ local function unregister_as_happening(filter)
 			end
 		end
 		if matches then
-			--print("%%%%%%%unregistering ", i)
-			table.remove(happening_events, i)
+			happening_events[event]=nil
 		end
 	end	
 end
--- Tabla para compartir el evento con la acción.
 
 
 local shared = {}
@@ -51,59 +52,6 @@ function initialize()
 	return initialization_subs or {}
 end
 
---advances the machine a single step.
---returns nil if arrives at the end the window, or the event is not recognized
---otherwise, returns the resulting list from the action
-local function fst_step()
-	local event_reg = window[i_event]
-	if not event_reg then return end --window finished
-	local event=event_reg.event
-			
-	local state=fsm[current_state]
-	--search first transition that verifies e
-	local best_tf=-2
-	local transition
-	for _, l in ipairs(state) do
-		if l.t_function then
-			local tf=l.t_function(event)
-			if best_tf<tf then
-				best_tf=tf
-				transition=l
-			end
-		end
-	end 
-	if not transition or best_tf<0 then --last event wasn't recongized 
-		current_state=nil
-		return nil
-	end 
-	
-	local ret_call
-	local action=transition.action
-	if action then ret_call=action(event) end
-	i_event=i_event+1
-	current_state = transition.new
-
-	return ret_call	or {}
-end
-
-local function fst_traverse_epsilon()
-	local ret={}
-	local state=fsm[current_state]
-	if not state then return ret end
-	local transition=state[1] --asumes only 1 transition when epsilon
-	while transition and transition.t_function==nil do
-		local action=transition.action
-		if action then table.insert(ret, action()) end
-		current_state = transition.new
-		state=fsm[current_state]
-		transition=state[1] --asumes only 1 transition when epsilon
-	end
-	if not transition then --no outgoing transitions
-		current_state=nil	
-	end
-	return ret
-end
-
 local function dump_window()
 	local s="=> "
 	for _,e in ipairs(window) do
@@ -116,61 +64,75 @@ local function dump_window()
 	return s
 end
 
-local function insert_from_epsilon_trans(ret)
-	local rets_eps=fst_traverse_epsilon()
-	--queue generated actions
-	for _, ret_eps in ipairs(rets_eps) do
-		for _, r in ipairs(ret_eps) do
-			table.insert(ret, r)
-		end
-	end		
-end
-
-function proccess_window_add()
-	print("FSM: WINDOW ADD ", table.maxn(window), dump_window())
+--advances the machine a single step.
+--returns nil if arrives at the end the window, or the event is not recognized
+--otherwise, returns the resulting list from the action
+local function fst_step()
+	local event_reg = window[i_event]
+	if not event_reg then return end --window finished
+	local event=event_reg.event
+			
+	local state=fsm[current_state]
+  assert(#state>0)
+	--search first transition that verifies e
+	local best_tf=-1
+	local transition
+	for _, l in ipairs(state) do
+    local tf=l.t_function(event)
+    if best_tf<tf then
+      best_tf=tf
+      transition=l
+    end
+	end 
+  assert(transition)
 	
-	local ret = {}
-	if current_state then --and fsm[current_state] then
-		local ret_call=fst_step()
-		if ret_call then 
-			--queue generated actions
-			for _, r in ipairs(ret_call) do
-				table.insert(ret, r)
-			end		
-		end
-
-		insert_from_epsilon_trans(ret)		
-	end
-	if table.maxn(ret)>0 then
-		print ("FSM: WINDOW ADD generating output ", table.maxn(ret), current_state)
-	end
-	return ret
+	local ret_call
+	local action=transition.action
+	if action then ret_call=action(event) end
+	i_event=i_event+1
+	current_state = transition.new
+  
+  return ret_call	or {}, is_accept(current_state), #fsm[current_state]==0
 end
 
-function proccess_window_move()
-	print("FSM: WINDOW MOVE", table.maxn(window), dump_window())
-
-	i_event, current_state = 1, init_state
-	local ret={}
-
-	insert_from_epsilon_trans(ret)
-
-	while current_state do --and fsm[current_state] do
-		local ret_call=fst_step()
-		if not ret_call then break end --window finished or chain not recognized
-		if ret_call then 
-			--queue generated actions
-			for _, r in ipairs(ret_call) do
-				table.insert(ret, r)
-			end
+function step()
+	print("FSM: WINDOW STEP ", #window, dump_window())
+	
+	local ret, accept, final = {}, false, false
+  
+  repeat
+		local ret_step, accept, final = fst_step()
+		if ret_step then 
+			for _, r in ipairs(ret_step) do ret[#ret+1]=r	end --queue generated actions
 		end
+  until accept or i_event==#window
+  assert(not (final and not accept))
+  
+  if accept then
+    --purge consumed events from window
+    local i=1
+    local e = window[i_event]
+    repeat
+      if happening_events[window[i]] then
+        i=i+1
+      else
+        table.remove[window, i]
+        i_event=i_event-1
+      end
+    until window[i]==e
+    if not happening_events[window[i]] then table.remove[window, i] end
+  end
+  
+	if #ret>0 then
+		print ("FSM: WINDOW STEP generating output ", #ret, accept, final, current_state)
+	end
+	return ret, accept, final
+end
 
-		insert_from_epsilon_trans(ret)
-	end
-	if table.maxn(ret)>0 then
-		print ("FSM: WINDOW MOVE generating output ", table.maxn(ret), current_state)
-	end
-	return ret
+function reset()
+  current_state=init_state 
+  i_event=1 
+  happening_events={}
 end
 
 print ("FSM loaded.")

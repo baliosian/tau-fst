@@ -19,18 +19,27 @@ public class EventTf extends SimpleTf {
 	
 	public float tautnessValue;
 	
-	private Set<String> init_strings=new HashSet<String>();
+	private Set<String> init_notif_strings=new HashSet<String>();
+	private Set<String> init_subs_strings=new HashSet<String>();
 
 	public Filter getFilter() {
 		return filter;
 	}
 	
-	public Set<String> getInitStrings() {
-		return init_strings;
+	public Set<String> getInitNotifStrings() {
+		return init_notif_strings;
 	}
 	
-	public void addInitString(String newString){
-		init_strings.add(newString);
+	public void addInitNotifString(String newString){
+		init_notif_strings.add(newString);
+	}
+
+	public Set<String> getInitSubsfStrings() {
+		return init_subs_strings;
+	}
+	
+	public void addInitSubsString(String newString){
+		init_subs_strings.add(newString);
 	}
 
 	public LuaPredicate getLuaPredicate() {
