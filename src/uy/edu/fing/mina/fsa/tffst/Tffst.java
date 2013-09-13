@@ -1319,6 +1319,8 @@ public class Tffst implements Serializable {
 
     while (newStates.keySet().iterator().hasNext()) {
       
+      //Utils.showDot(toDot(""));
+      
       // the first partition
       P p = newStates.keySet().iterator().next();
       State pNewState = newStates.remove(p);
@@ -1329,7 +1331,6 @@ public class Tffst implements Serializable {
 		  break;
 		}
 	  }
-
 	  
 	  // for each possible partitions of the relevant tfs in two subsets
       for (Partition partition : Partition.getPartitions3(getRelevantTFs(p))) {
@@ -1338,15 +1339,20 @@ public class Tffst implements Serializable {
         if (!tfrelation.equals(SimpleTf.AcceptsNone())) {
           P transPset = unionOfTransP(p, partition.left);
           ProtoT pt = new ProtoT(pNewState, tfrelation, transPset);
+
           pt.unionOfTransP.simplifyTargetByState();
           TfString prefix = pt.unionOfTransP.longestPrefix();
 
           if (!pt.unionOfTransP.isEmpty()) {
             if (!visitedNewStates.keySet().contains(pt.unionOfTransP)) {
-              P lngstPosfxState = pt.unionOfTransP.longestPosfixState(visitedNewStates);  //FIXME
+              P lngstPosfxState = pt.unionOfTransP.longestPosfixState(visitedNewStates); 
               if (!lngstPosfxState.isEmpty()) {
                 pt.unionOfTransP.simplifyTargetByPosfixState(lngstPosfxState);  
                 prefix.addAll(pt.unionOfTransP.longestPrefix()); 
+                if (!visitedNewStates.keySet().contains(pt.unionOfTransP)) {
+                  newStates.put(pt.unionOfTransP, new State());
+                  visitedNewStates.put(pt.unionOfTransP, newStates.get(pt.unionOfTransP));
+                }
               } else {
                 newStates.put(pt.unionOfTransP, new State());
                 visitedNewStates.put(pt.unionOfTransP, newStates.get(pt.unionOfTransP));

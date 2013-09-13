@@ -416,13 +416,11 @@ public class P implements Set<ElementOfP> {
 				  for (int i = 1 ; 
 					  (i <= eovp.arrivingTFs.size() && 
 					  eop.arrivingTFs.subList(eop.arrivingTFs.size()-i, eop.arrivingTFs.size())
-					  .equals(eovp.arrivingTFs.subList(eovp.arrivingTFs.size() - i, eovp.arrivingTFs.size())));
+					  .equals(eovp.arrivingTFs.subList(eovp.arrivingTFs.size()-i, eovp.arrivingTFs.size())));
 					  i++) {
-					if (lastCandidate.get(eop.state) != null )
-					  if (lastCandidate.get(eop.state).size() < i-1)
-						lastCandidate.put(eop.state, (TfString) eop.arrivingTFs.subList(eop.arrivingTFs.size()-i, eop.arrivingTFs.size()));
+					lastCandidate.put(eop.state, new TfString(eop.arrivingTFs.subList(eop.arrivingTFs.size()-i, eop.arrivingTFs.size())));
 					eovpmatch = true;
-					eovpMaxLen = Math.max(eovpMaxLen, i-1);
+					eovpMaxLen = Math.max(eovpMaxLen, i);
 				  }
 				}
 			  }
