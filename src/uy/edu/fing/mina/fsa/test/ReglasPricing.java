@@ -397,8 +397,6 @@ public class ReglasPricing {
       Utils.showDot(testkleene.toDot("deterministic",1));
       
       
-      
-      
     }
 
 }

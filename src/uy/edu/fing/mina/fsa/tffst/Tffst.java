@@ -1336,45 +1336,24 @@ public class Tffst implements Serializable {
       for (Partition partition : Partition.getPartitions3(getRelevantTFs(p))) {
         // for each partition computes an exclusive TF
         TfI tfrelation = Partition.toTfrelation3(partition);
-        if (!tfrelation.equals(SimpleTf.AcceptsNone())) {
-          P transPset = unionOfTransP(p, partition.left);
-          ProtoT pt = new ProtoT(pNewState, tfrelation, transPset);
+		if (!tfrelation.equals(SimpleTf.AcceptsNone())) {
+		  P transPset = unionOfTransP(p, partition.left);
+		  ProtoT pt = new ProtoT(pNewState, tfrelation, transPset);
 
-          pt.unionOfTransP.simplifyTargetByState();
-          TfString prefix = pt.unionOfTransP.longestPrefix();
+		  pt.unionOfTransP.simplifyTargetByState(); //TODO not sure about this
+		  P lngstPosfxState = pt.unionOfTransP.longestPosfixState(visitedNewStates); //FIXME
+		  pt.unionOfTransP.simplifyTargetByPosfixState(lngstPosfxState);
+		  TfString prefix = pt.unionOfTransP.longestPrefix();
 
-          if (!pt.unionOfTransP.isEmpty()) {
-            if (!visitedNewStates.keySet().contains(pt.unionOfTransP)) {
-              P lngstPosfxState = pt.unionOfTransP.longestPosfixState(visitedNewStates); 
-              if (!lngstPosfxState.isEmpty()) {
-                pt.unionOfTransP.simplifyTargetByPosfixState(lngstPosfxState);  
-                prefix.addAll(pt.unionOfTransP.longestPrefix()); 
-                if (!visitedNewStates.keySet().contains(pt.unionOfTransP)) {
-                  newStates.put(pt.unionOfTransP, new State());
-                  visitedNewStates.put(pt.unionOfTransP, newStates.get(pt.unionOfTransP));
-                }
-              } else {
-                newStates.put(pt.unionOfTransP, new State());
-                visitedNewStates.put(pt.unionOfTransP, newStates.get(pt.unionOfTransP));
-              }
-            } 
-            pNewState.addOutTran(new Transition(new TfString(tfrelation), prefix, visitedNewStates.get(pt.unionOfTransP)));
-          }
-        }
+		  if (!pt.unionOfTransP.isEmpty()) {
+			if (!visitedNewStates.keySet().contains(pt.unionOfTransP)) {
+			  newStates.put(pt.unionOfTransP, new State());
+			  visitedNewStates.put(pt.unionOfTransP, newStates.get(pt.unionOfTransP));
+			}
+			pNewState.addOutTran(new Transition(new TfString(tfrelation), prefix, visitedNewStates.get(pt.unionOfTransP)));
+		  }
+		}
       }
-//      for (ElementOfP e : p) {
-//        if (e.state.accept) {
-//          P tail = p.tail();
-//          TfString output = tail.longestPrefix();
-//          if (!output.isEpsilon()) {
-//            State tailState = new State();
-//            tailState.setAccept(true);
-//            pNewState.addOutTran(new Transition(new TfString(SimpleTf.Epsilon()), output, tailState));
-//          } else 
-//            pNewState.setAccept(true);
-//          break;
-//        }
-//      }
     }
 
     inLabelEpsilonRemoval();
