@@ -16,7 +16,7 @@ import uy.edu.fing.mina.fsa.utils.Utils;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class DoNotHalts {
+public class AlternateOutput1 {
 
    /**
     * composition test 1  
@@ -27,7 +27,6 @@ public class DoNotHalts {
       
       Tffst.setMinimizeAlways(false);
       
-     
       Tffst tffst1 = new Tffst();
 
       State s0 = new State();
@@ -35,22 +34,23 @@ public class DoNotHalts {
       State s1 = new State();
       State s2 = new State();
       State s3 = new State();
-      s1.setAccept(true);
+      State s4 = new State();
+      s3.setAccept(true);
+      s4.setAccept(true);
 
-      s0.addOutTran(new Transition((new SimpleTf("D")).not(),(new SimpleTf("D")).not(), s0));
-      s0.addOutTran(new Transition((new SimpleTf("D")).not(), new SimpleTf("D"), s1));
-      
-      s1.addOutTran(new Transition((new SimpleTf("D")).not(),(new SimpleTf("D")), s1));      
+      s0.addOutTran(new Transition(new SimpleTf("A"), new SimpleTf("J"), s1));
+      s0.addOutTran(new Transition(new SimpleTf("A"), new SimpleTf("K"), s2));
+      s1.addOutTran(new Transition(new SimpleTf("B"), new SimpleTf("C"), s3));
+      s2.addOutTran(new Transition(new SimpleTf("B"), new SimpleTf("D"), s4));
+      s3.addOutTran(new Transition(new SimpleTf("B"), new SimpleTf("D"), s1));
+      s4.addOutTran(new Transition(new SimpleTf("B"), new SimpleTf("C"), s2));
       
       Utils.showDot(tffst1.toDot("tffst1"));
       
-      
       tffst1.setDeterministic(false);
-      tffst1.determinize();      
+      tffst1.determinize();
       
-      Utils.showDot(tffst1.toDot("determinized tffst1"));  
-      
-      
+      Utils.showDot(tffst1.toDot("determinized tffst1"));
 
    }
   

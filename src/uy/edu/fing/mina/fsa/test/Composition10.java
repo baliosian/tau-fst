@@ -77,25 +77,25 @@ public class Composition10 {
 //      initial  ──▶ │       20      │ ─────────▶ │       21      │ ────▶ ║       22      ║
 //                   └───────────────┘            └───────────────┘       ╚═══════════════╝
       
-      Tffst tffst2 = new Tffst();
-
-      State s20 = new State();
-      tffst2.setInitialState(s20);
-      State s21 = new State();
-      State s22 = new State();
-      s22.setAccept(true);
-
-      s20.addOutTran(new Transition(new SimpleTf("E"), new SimpleTf("E"), s21, 1));
-      s20.addOutTran(new Transition((new SimpleTf("E")).not(), (new SimpleTf("E")).not(), s20, 1));
-      s21.addOutTran(new Transition((new SimpleTf("C")).not(), (new SimpleTf("C")).not(), s21, 1));
-      s21.addOutTran(new Transition(new SimpleTf("C"),new SimpleTf("C") , s22));
-      
-      Utils.showDot(tffst2.toDot("tffst2"));
-      
-      Tffst tffstComposition = tffst1.composition(tffst2);
-      
-      Utils.showDot(tffstComposition.toDot("tffst1 o tffst2"));
-      
+//      Tffst tffst2 = new Tffst();
+//
+//      State s20 = new State();
+//      tffst2.setInitialState(s20);
+//      State s21 = new State();
+//      State s22 = new State();
+//      s22.setAccept(true);
+//
+//      s20.addOutTran(new Transition(new SimpleTf("E"), new SimpleTf("E"), s21, 1));
+//      s20.addOutTran(new Transition((new SimpleTf("E")).not(), (new SimpleTf("E")).not(), s20, 1));
+//      s21.addOutTran(new Transition((new SimpleTf("C")).not(), (new SimpleTf("C")).not(), s21, 1));
+//      s21.addOutTran(new Transition(new SimpleTf("C"),new SimpleTf("C") , s22));
+//      
+//      Utils.showDot(tffst2.toDot("tffst2"));
+//      
+//      Tffst tffstComposition = tffst1.composition(tffst2);
+//      
+//      Utils.showDot(tffstComposition.toDot("tffst1 o tffst2"));
+//      
 
    }
   

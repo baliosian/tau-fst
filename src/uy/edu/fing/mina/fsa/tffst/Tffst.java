@@ -1042,104 +1042,61 @@ public class Tffst implements Serializable {
     return b.append("}\n").toString(); 
   }
 
-
-  
-  
-//  /**
-//   * returns a Tffsr representing this tffst. it expands subEpochs in the input
-//   * label
-//   * 
-//   * @return
-//   */
-//  public void toSimpleInLabels() {
-//    HashMap<State, State> m = new HashMap<State, State>();
-//    Set<State> states = getStates();
-//
-//    for (State s : states) {
-//      State p = new State();
-//      p.accept = s.accept;
-//      if (s == initial) this.initial = p;
-//      m.put(s, p);
-//    }
-//
-//    for (State s : states) {
-//      for (Transition t : s.getTransitions()) {
-//        State last = m.get(s);
-//        for (int k = 0; k < t.labelIn.size(); k++) {
-//          State to;
-//          if (k == t.labelIn.size() - 1) to = m.get(t.getTo());
-//          else
-//            to = new State();
-//          if (k == 0) last.addOutTran(new Transition(new TfString(t.labelIn.get(0)),
-//              t.labelOut, to));
-//          else
-//            last.addOutTran(new Transition(t.labelIn.get(k), SimpleTf.Epsilon(), to));
-//          last = to;
-//        }
-//      }
-//    }
-//  }
-
   /**
    * returns a Tffsr representing this tffst. it expands subEpochs in simple
    * pairs of TFs adding epsilons
    * 
    * @return
    */
-  public Tffst toSimpleTransitions() { 
-    
-    Tffst simpleTffst = new Tffst();
-    HashMap<State, State> m = new HashMap<State, State>();
+  public Tffst toSimpleTransitions() {
 
-    Iterator<TfI> tIniter;
-    Iterator<TfI> tOutiter;
-    State last;
-    Set<State> states = getStates(); 
-    
-    for (State s : states) {
-      
-      if (m.get(s) == null) {
-        last = new State();
-        m.put(s, last);
-        last.accept = s.accept;
-        if (s == initial) simpleTffst.initial = last;
-      } 
+	Tffst simpleTffst = new Tffst();
+	HashMap<State, State> m = new HashMap<State, State>();
 
-      for (Transition t : s.getTransitions()) {
-        last = m.get(s);
-        tIniter = t.labelIn.iterator();
-        tOutiter = t.labelOut.iterator();
-        //labels maintain at least a epsilon Tf inside.  
-        while (tIniter.hasNext() || tOutiter.hasNext()) {
-          // creates a new intermediate state
-          State ns = new State();
-          m.put(ns, ns);
-          if (tIniter.hasNext() && tOutiter.hasNext()) {
-            new Transition(last, new TfString(tIniter.next()), new TfString(tOutiter.next()), ns);
-          } else if (tIniter.hasNext()) {
-            new Transition(last, new TfString(tIniter.next()), new TfString(), ns);
-          } else {
-            new Transition(last, new TfString(), new TfString(tOutiter.next()), ns);
-          }
-          last = ns;
-        }
-        
-        if (m.get(t.getTo()) == null) {
-          State newTo = new State();
-          m.put(t.getTo(), newTo);
-          newTo.accept = t.getTo().accept;
-          if (t.getTo() == initial) simpleTffst.initial = newTo;
-          new Transition(last, new TfString(), new TfString(), newTo);
-        } else {
-          new Transition(last, new TfString(), new TfString(), m.get(t.getTo()));
-        }
+	State last;
+	Set<State> states = getStates();
 
-      }
-    }
+	for (State s : states) {
+	  if (m.get(s) == null) {
+		last = new State();
+		m.put(s, last);
+		last.accept = s.accept;
+		if (s == initial)
+		  simpleTffst.initial = last;
+	  } else 
+		last = m.get(s);
 
-    simpleTffst.deterministic = deterministic;
-    simpleTffst.info = info;
-    return simpleTffst;
+	  for (Transition t : s.getTransitions()) {
+
+		if (m.get(t.getTo()) == null) {
+		  State newTo = new State();
+		  m.put(t.getTo(), newTo);
+		  newTo.accept = t.getTo().accept;
+		}
+
+		Transition lastTran = new Transition(last, new TfString(t.labelIn), new TfString(t.labelOut), m.get(t.getTo()));
+
+		while (lastTran.getLabelIn().size() > 1 || lastTran.getLabelOut().size() > 1) {
+		  last = lastTran.getFrom(); 
+		  State ns = new State();
+		  lastTran.setFrom(ns);
+		  if ((lastTran.getLabelIn().size() > 1 && lastTran.getLabelOut().size() > 1) || 
+			  (lastTran.getLabelIn().size() == 1 && lastTran.getLabelOut().size() > 1) || 
+			  (lastTran.getLabelIn().size() > 1 && lastTran.getLabelOut().size() == 1)  ) {
+			new Transition(last, new TfString(lastTran.getLabelIn().remove(0)), new TfString(lastTran.getLabelOut().remove(0)), ns);
+		  } else if (lastTran.getLabelIn().size() > 1) {
+			new Transition(last, new TfString(lastTran.getLabelIn().remove(0)), lastTran.getLabelOut(), ns);
+		  } else if (lastTran.getLabelOut().size() > 1) {
+			new Transition(last, lastTran.getLabelIn(), new TfString(lastTran.getLabelOut().remove(0)), ns);
+		  }
+		}
+	  }
+	}
+
+	simpleTffst.deterministic = deterministic;
+	simpleTffst.info = info;
+
+	return simpleTffst;
   }
 
   /**
@@ -1325,13 +1282,6 @@ public class Tffst implements Serializable {
       P p = newStates.keySet().iterator().next();
       State pNewState = newStates.remove(p);
       
-	  for (ElementOfP e : p) {
-		if (e.state.accept) {
-		  pNewState.setAccept(true);
-		  break;
-		}
-	  }
-	  
 	  // for each possible partitions of the relevant tfs in two subsets
       for (Partition partition : Partition.getPartitions3(getRelevantTFs(p))) {
         // for each partition computes an exclusive TF
@@ -1340,8 +1290,8 @@ public class Tffst implements Serializable {
 		  P transPset = unionOfTransP(p, partition.left);
 		  ProtoT pt = new ProtoT(pNewState, tfrelation, transPset);
 
-		  pt.unionOfTransP.simplifyTargetByState(); //TODO not sure about this
-		  P lngstPosfxState = pt.unionOfTransP.longestPosfixState(visitedNewStates); //FIXME
+		  pt.unionOfTransP.simplifyTargetByState(); 
+		  P lngstPosfxState = pt.unionOfTransP.longestPosfixState(visitedNewStates); 
 		  pt.unionOfTransP.simplifyTargetByPosfixState(lngstPosfxState);
 		  TfString prefix = pt.unionOfTransP.longestPrefix();
 
@@ -1354,6 +1304,19 @@ public class Tffst implements Serializable {
 		  }
 		}
       }
+	  for (ElementOfP e : p) {
+		if (e.state.accept) {
+		  P tail = p.tail();
+		  TfString output = tail.longestPrefix();
+		  if (!output.isEpsilon()) {
+			State tailState = new State();
+			tailState.setAccept(true);
+			pNewState.addOutTran(new Transition(new TfString(SimpleTf.Epsilon()), output, tailState));
+		  } else
+			pNewState.setAccept(true);
+		  break;
+		}
+	  }
     }
 
     inLabelEpsilonRemoval();

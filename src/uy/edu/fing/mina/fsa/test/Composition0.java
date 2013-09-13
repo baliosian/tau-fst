@@ -76,7 +76,7 @@ public class Composition0 {
       Utils.showDot(tffstComposition.toDot("tffst1 o tffst2"));
       
       tffstComposition.setDeterministic(false);
-      tffstComposition.determinize();    //FIXME it does not halt 
+      tffstComposition.determinize();  
       
       Utils.showDot(tffstComposition.toDot("determinized tffst1 o tffst2"));  
       

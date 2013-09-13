@@ -329,7 +329,7 @@ public class P implements Set<ElementOfP> {
     return outSE;
   }
 
-  public P simplifyTargetByPosfixState(P longestPosfixState) { // FIXME
+  public P simplifyTargetByPosfixState(P longestPosfixState) {
 	P prep = new P();
 	P outp = new P();
 
@@ -412,6 +412,7 @@ public class P implements Set<ElementOfP> {
 				if (eovp.arrivingTFs.isEpsilon()) {
 				  eovpmatch = true;
 				  eovpMaxLen = Math.max(eovpMaxLen, 0);
+				  lastCandidate.put(eop.state, new TfString());
 				} else if (!eop.arrivingTFs.isEpsilon()) {
 				  for (int i = 1 ; 
 					  (i <= eovp.arrivingTFs.size() && 
