@@ -10,7 +10,7 @@ import uy.edu.fing.mina.fsa.tffst.Tffst;
 import uy.edu.fing.mina.fsa.tffst.Transition;
 import uy.edu.fing.mina.fsa.utils.Utils;
 
-public class RateAndPower_nohalt {
+public class RateAndPower_small {
 
   public Tffst ruleTemplate(TfI tfinp1,TfI tfinp2,TfI tfinp3,TfI tfout4,TfI tfout5) {
     
@@ -46,7 +46,7 @@ public class RateAndPower_nohalt {
   
   public static void main(String[] args) {
     
-    RateAndPower_nohalt rap = new RateAndPower_nohalt();
+    RateAndPower_small rap = new RateAndPower_small();
     Set<Tffst> rules = new HashSet<Tffst>();
     
     
@@ -60,20 +60,11 @@ public class RateAndPower_nohalt {
 //low      |            | increase   | keep     |   keep
 
     
-//    rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   , SimpleTf.Epsilon(),(new SimpleTf("hp"))       , new SimpleTf("dr"), new SimpleTf("kp")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   , SimpleTf.Epsilon(),(new SimpleTf("hp")).not() , new SimpleTf("kr"), new SimpleTf("ip")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("ll"))         , SimpleTf.Epsilon(),(new SimpleTf("pi"))       , new SimpleTf("kr"), new SimpleTf("kp")));
+    rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   , SimpleTf.Epsilon(),(new SimpleTf("hp"))       , new SimpleTf("dr"), new SimpleTf("kp")));
+    rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   , SimpleTf.Epsilon(),(new SimpleTf("hp")).not() , new SimpleTf("kr"), new SimpleTf("ip")));
+    rules.add(rap.ruleTemplate((new SimpleTf("ll"))         , SimpleTf.Epsilon(),(new SimpleTf("pi"))       , new SimpleTf("kr"), new SimpleTf("kp")));
 
-//-----------------------------------------------------------    
-    
-//    rules.add(rap.ruleTemplate((new SimpleTf("ml"))   , SimpleTf.Epsilon(),(new SimpleTf("hp")) , new SimpleTf("dr"), new SimpleTf("kp")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("hl"))   , SimpleTf.Epsilon(),(new SimpleTf("hp")) , new SimpleTf("dr"), new SimpleTf("kp")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("ml"))   , SimpleTf.Epsilon(),(new SimpleTf("lp")) , new SimpleTf("kr"), new SimpleTf("ip")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("hl"))   , SimpleTf.Epsilon(),(new SimpleTf("lp")) , new SimpleTf("kr"), new SimpleTf("ip")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("ml"))   , SimpleTf.Epsilon(),(new SimpleTf("mp")) , new SimpleTf("kr"), new SimpleTf("ip")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("hl"))   , SimpleTf.Epsilon(),(new SimpleTf("mp")) , new SimpleTf("kr"), new SimpleTf("ip")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("ll"))   , SimpleTf.Epsilon(),(new SimpleTf("pi")) , new SimpleTf("kr"), new SimpleTf("kp")));
-    
+//-----------------------------------------------------------        
     
   //Inputs                          |  Outputs       
  // ---------------------------------------------------------------------   
@@ -104,9 +95,9 @@ public class RateAndPower_nohalt {
 
     rateAndPower.setDeterministic(false);
     rateAndPower.determinize();
-//    
-//    rateAndPower = rateAndPower.kleene();
-//    
+    
+    rateAndPower = rateAndPower.kleene();
+    
     Utils.showDot(rateAndPower.toDot("after"));
 
     
