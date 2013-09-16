@@ -155,7 +155,7 @@ public class P implements Set<ElementOfP> {
 					workingTFinSE = workingSEiter.next();
 
 				  if (currentTFinSE != null && workingTFinSE != null)
-					newSE.add(workingTFinSE.orSimple(currentTFinSE));
+					newSE.add(workingTFinSE.andSimple(currentTFinSE));
 				  else if (currentTFinSE == null)
 					newSE.add(workingTFinSE);
 				  else if (workingTFinSE == null)
@@ -171,68 +171,10 @@ public class P implements Set<ElementOfP> {
   }
 
   /**
-   * simplifies the union of transP sets
-   * 
-   */
-  public P simplifyPendingByState() {
-
-	P outp = new P();
-	try {
-	  outp = (P) this.clone();
-
-	  Set<ElementOfP> toRemove = new HashSet<ElementOfP>();
-	  int toRemoveSize;
-
-	  do {
-		toRemoveSize = toRemove.size();
-		for (ElementOfP workingPair : outp)
-		  if (!toRemove.contains(workingPair))
-			for (ElementOfP currentPair : outp)
-			  if (!toRemove.contains(currentPair))
-				if ((currentPair.state.equals(workingPair.state)) && workingPair != currentPair) {
-				  TfString newSE = new TfString();
-
-				  TfString currentSE = currentPair.getArrivingTFs();
-				  TfString workingSE = workingPair.getArrivingTFs();
-
-				  Iterator<TfI> workingSEiter = workingSE.iterator();
-				  Iterator<TfI> currentSEiter = currentSE.iterator();
-				  while (currentSEiter.hasNext() || workingSEiter.hasNext()) {
-					TfI currentTFinSE = null;
-					TfI workingTFinSE = null;
-
-					if (currentSEiter.hasNext())
-					  currentTFinSE = currentSEiter.next();
-					if (workingSEiter.hasNext())
-					  workingTFinSE = workingSEiter.next();
-
-					if (currentTFinSE != null && workingTFinSE != null)
-					  newSE.add(workingTFinSE.orSimple(currentTFinSE));
-					else if (currentTFinSE == null)
-					  newSE.add(workingTFinSE);
-					else if (workingTFinSE == null)
-					  newSE.add(currentTFinSE);
-				  }
-				  toRemove.add(currentPair);
-				  workingPair.setArrivingTFs(newSE);
-				}
-	  } while (toRemoveSize != toRemove.size());
-
-	  outp.removeAll(toRemove);
-
-	} catch (CloneNotSupportedException e) {
-	  e.printStackTrace();
-	}
-
-	return outp;
-
-  }
-
-  /**
    * computes the tail of final states.
    * 
    */
-  public P tail() {
+  public P tail() { // TODO merge with simplifyTargetByState and simplifyTargetByPosfixState
 
 	P outp = new P();
 	try {
@@ -264,7 +206,7 @@ public class P implements Set<ElementOfP> {
 					  workingTFinSE = workingSEiter.next();
 
 					if (currentTFinSE != null && workingTFinSE != null)
-					  newSE.add(workingTFinSE.orSimple(currentTFinSE));
+					  newSE.add(workingTFinSE.andSimple(currentTFinSE));
 
 					else if (currentTFinSE == null)
 					  newSE.add(workingTFinSE);
@@ -359,7 +301,7 @@ public class P implements Set<ElementOfP> {
 			  if (wSEiter.hasNext())
 				workingTFinSE = wSEiter.next();
 			  if (currentTFinSE != null && workingTFinSE != null)
-				newSE.add(workingTFinSE.orSimple(currentTFinSE));
+				newSE.add(workingTFinSE.andSimple(currentTFinSE));
 			  else if (currentTFinSE == null)
 				newSE.add(workingTFinSE);
 			  else if (workingTFinSE == null)

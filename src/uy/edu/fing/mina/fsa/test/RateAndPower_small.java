@@ -50,7 +50,6 @@ public class RateAndPower_small {
     Set<Tffst> rules = new HashSet<Tffst>();
     
     
-    
 //  Inputs                 |       Outputs
 //-------------------------------------------------------------   
 //Loss     | Rate       | Power      |  Rate    |  Power
@@ -58,7 +57,6 @@ public class RateAndPower_small {
 //not low  |            | high       | decrease |   keep
 //not low  |            | not high   | keep     |  increase
 //low      |            | increase   | keep     |   keep
-
     
     rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   , SimpleTf.Epsilon(),(new SimpleTf("hp"))       , new SimpleTf("dr"), new SimpleTf("kp")));
     rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   , SimpleTf.Epsilon(),(new SimpleTf("hp")).not() , new SimpleTf("kr"), new SimpleTf("ip")));
