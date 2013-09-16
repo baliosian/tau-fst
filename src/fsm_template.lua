@@ -3,11 +3,14 @@ print ("FSM loading...")
 local function FSM(t)
 	local a = {}
 	for _,v in ipairs(t) do
-		local old, t_function, new, action = v[1], v[2], v[3], v[4]
-			if a[old] == nil then a[old] = {} end
-			table.insert(a[old],{new = new, action = action, t_function = t_function})
-	  	end
-  	return a
+		local old, t_function, new, actions = v[1], v[2], v[3], v[4]
+    
+    if a[old] == nil then a[old] = {} end
+    if new then
+      table.insert(a[old],{new = new, actions = actions, t_function = t_function})
+    end    
+  end
+  return a
 end
 
 
@@ -49,14 +52,14 @@ local i_event=1 --current event in window
 
 function initialize()
  	print("FSM: initializing")
-	return initialization_subs or {}
+	return initialization_subs or {}, initialization_notifs or {}
 end
 
 local function dump_window()
 	local s="=> "
 	for _,e in ipairs(window) do
 		if e.event.message_type=="trap" then
-			s=s .. tostring(e.event.watcher_id) ..","
+			s=s .. tostring(e.event.mib) ..","
 		else
 			s=s .. "#,"
 		end
@@ -86,13 +89,18 @@ local function fst_step()
 	end 
   assert(transition)
 	
-	local ret_call
-	local action=transition.action
-	if action then ret_call=action(event) end
+	local ret_call = {}
+	if transition.actions then
+    for _, action in ipairs(transition.actions) do
+      local ret_action = action(event)
+      for _, v in ipairs(ret_action) do ret_call[#ret_call+1] = v end
+    end
+  end
+  
 	i_event=i_event+1
 	current_state = transition.new
-  
-  return ret_call	or {}, is_accept(current_state), #fsm[current_state]==0
+	print (current_state, #fsm[current_state],  #ret_call, is_accept[current_state], #fsm[current_state]==0)
+  return ret_call, is_accept[current_state], #fsm[current_state]==0
 end
 
 function step()
@@ -101,7 +109,8 @@ function step()
 	local ret, accept, final = {}, false, false
   
   repeat
-		local ret_step, accept, final = fst_step()
+    local ret_step
+		ret_step, accept, final = fst_step()
 		if ret_step then 
 			for _, r in ipairs(ret_step) do ret[#ret+1]=r	end --queue generated actions
 		end
@@ -110,17 +119,19 @@ function step()
   
   if accept then
     --purge consumed events from window
+    print("Purge consumed events", #window)
     local i=1
     local e = window[i_event]
     repeat
       if happening_events[window[i]] then
         i=i+1
       else
-        table.remove[window, i]
+        table.remove(window, i)
         i_event=i_event-1
       end
     until window[i]==e
-    if not happening_events[window[i]] then table.remove[window, i] end
+    if not happening_events[window[i]] then table.remove(window, i) end
+    print("Purge consumed events", #window)
   end
   
 	if #ret>0 then
@@ -133,9 +144,8 @@ function reset()
   current_state=init_state 
   i_event=1 
   happening_events={}
+  print ("FSM: RESET")
 end
 
 print ("FSM loaded.")
-
-
 

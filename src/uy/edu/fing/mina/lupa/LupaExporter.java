@@ -17,6 +17,7 @@ import java.util.Set;
 import uy.edu.fing.mina.fsa.tf.CompositeTf;
 import uy.edu.fing.mina.fsa.tf.Operator;
 import uy.edu.fing.mina.fsa.tf.TfI;
+import uy.edu.fing.mina.fsa.tf.TfString;
 import uy.edu.fing.mina.fsa.tffst.State;
 import uy.edu.fing.mina.fsa.tffst.Tffst;
 import uy.edu.fing.mina.fsa.tffst.Transition;
@@ -656,8 +657,17 @@ public class LupaExporter {
 				if (t.getLabelOut().size() == 0) {
 					out.append(", nil");
 				} else {
-					out.append(", actions.").append(
-							functionName(t.getLabelOut().get(0)));
+					out.append(", {");
+					LinkedList<TfI> actionsList = t.getLabelOut().getListOfTfs();
+					Iterator<TfI> actionsIterator = actionsList.iterator();
+					while (actionsIterator.hasNext()) {
+						TfI action = actionsIterator.next();
+						out.append("actions.").append(
+								functionName(action));
+						out.append(", ");
+					}
+					out.append("}");
+
 				}
 				out.append("},\n");
 			}
