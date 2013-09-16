@@ -1,8 +1,10 @@
 package uy.edu.fing.mina.fsa.test;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import uy.edu.fing.mina.fsa.tf.CompositeTf;
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
 import uy.edu.fing.mina.fsa.tf.TfI;
 import uy.edu.fing.mina.fsa.tffst.State;
@@ -10,6 +12,7 @@ import uy.edu.fing.mina.fsa.tffst.Tffst;
 import uy.edu.fing.mina.fsa.tffst.Transition;
 import uy.edu.fing.mina.fsa.utils.Utils;
 import uy.edu.fing.mina.lupa.LupaExporter;
+import uy.edu.fing.mina.lupa.LupaExporterRatePower;
 import uy.edu.fing.mina.lupa.exceptions.UnsupportedTFFSTException;
 import uy.edu.fing.mina.lupa.tf.ActionTf;
 import uy.edu.fing.mina.lupa.tf.EventTf;
@@ -41,11 +44,11 @@ public class RateAndPower_LuPA {
     s3.addOutTran(new Transition(EventTf.Epsilon(), tfout4,s4));
     s4.addOutTran(new Transition(EventTf.Epsilon(), tfout5,s5));
 
-    Utils.showDot(tffst.toDot("tffst before"));
+    //Utils.showDot(tffst.toDot("tffst before"));
     
     tffst.inLabelEpsilonRemoval();
     
-    Utils.showDot(tffst.toDot("tffst after"));
+    //Utils.showDot(tffst.toDot("tffst after"));
     
     return tffst;
   }
@@ -69,9 +72,15 @@ public class RateAndPower_LuPA {
     
     ActionTf kr = new ActionTf();
     kr.setName("kr");
+    kr.setUniverse("rate");
     
     ActionTf ip = new ActionTf();
     ip.setName("ip");
+    ip.setUniverse("power");
+    
+    ActionTf dp = new ActionTf();
+    dp.setName("dp");
+    dp.setUniverse("power");
     
     EventTf hl = new EventTf();
     hl.setName("hl");
@@ -97,8 +106,8 @@ public class RateAndPower_LuPA {
 //    rules.add(rap.ruleTemplate((new SimpleTf("ml"))   , SimpleTf.Epsilon(),(new SimpleTf("lp")) , new SimpleTf("kr"), new SimpleTf("ip")));
 
     
-    rules.add(rap.ruleTemplate(hl, EventTf.Epsilon(),lp , kr, ip));
-//    rules.add(rap.ruleTemplate(ml, SimpleTf.Epsilon(),mp , kr, ip));
+    rules.add(rap.ruleTemplate(hl, EventTf.Epsilon(),lp , ip.not(), new CompositeTf("AND",ip,kr.not())));
+    //rules.add(rap.ruleTemplate(ml, SimpleTf.Epsilon(),mp , kr, new CompositeTf("AND", ip, new CompositeTf("AND",kr,dp))));
 //    rules.add(rap.ruleTemplate((new SimpleTf("hl"))   , SimpleTf.Epsilon(),(new SimpleTf("mp")) , new SimpleTf("kr"), new SimpleTf("ip")));
 //    rules.add(rap.ruleTemplate((new SimpleTf("ll"))   , SimpleTf.Epsilon(),(new SimpleTf("pi")) , new SimpleTf("kr"), new SimpleTf("kp")));
     
@@ -128,17 +137,17 @@ public class RateAndPower_LuPA {
       rateAndPower = rateAndPower.union(tffst);
     }
 
-    Utils.showDot(rateAndPower.toDot("before"));
+    //Utils.showDot(rateAndPower.toDot("before"));
 
-    rateAndPower.setDeterministic(false);
-    rateAndPower.determinize();
+    //rateAndPower.setDeterministic(false);
+    //rateAndPower.determinize();
     
-    rateAndPower = rateAndPower.kleene();
+    //rateAndPower = rateAndPower.kleene();
     
-    Utils.showDot(rateAndPower.toDot("after"));
+    //Utils.showDot(rateAndPower.toDot("after"));
     
     try {
-  		LupaExporter.generateLupaFiles(rateAndPower, "src/fsm_template.lua", "out_test_pdp_aux");
+  		LupaExporterRatePower.generateLupaFiles(rateAndPower, "src/fsm_template.lua", "out_test_pdp_aux");
   	} catch (UnsupportedTFFSTException e) {
   		// TODO Auto-generated catch block
   		e.printStackTrace();
