@@ -66,6 +66,24 @@ public class RateAndPower_LuPA {
 //not low  |            | high       | decrease |   keep
 //not low  |            | not high   | keep     |  increase
 //low      |            | increase   | keep     |   keep
+    
+    ActionTf kr = new ActionTf();
+    kr.setName("kr");
+    
+    ActionTf ip = new ActionTf();
+    ip.setName("ip");
+    
+    EventTf hl = new EventTf();
+    hl.setName("hl");
+    
+    EventTf lp = new EventTf();
+    lp.setName("lp");
+    
+    EventTf ml = new EventTf();
+    ml.setName("ml");
+    
+    EventTf mp = new EventTf();
+    mp.setName("mp");
 
     
 //    rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   , SimpleTf.Epsilon(),(new SimpleTf("hp"))       , new SimpleTf("dr"), new SimpleTf("kp")));
@@ -77,14 +95,10 @@ public class RateAndPower_LuPA {
 //    rules.add(rap.ruleTemplate((new SimpleTf("ml"))   , SimpleTf.Epsilon(),(new SimpleTf("hp")) , new SimpleTf("dr"), new SimpleTf("kp")));
 //    rules.add(rap.ruleTemplate((new SimpleTf("hl"))   , SimpleTf.Epsilon(),(new SimpleTf("hp")) , new SimpleTf("dr"), new SimpleTf("kp")));
 //    rules.add(rap.ruleTemplate((new SimpleTf("ml"))   , SimpleTf.Epsilon(),(new SimpleTf("lp")) , new SimpleTf("kr"), new SimpleTf("ip")));
-    ActionTf kr = new ActionTf();
-    kr.setName("kr");
+
     
-    ActionTf ip = new ActionTf();
-    ip.setName("ip");
-    
-    rules.add(rap.ruleTemplate((new EventTf("hl"))   , EventTf.Epsilon(),(new EventTf("lp")) , kr, ip));
-//    rules.add(rap.ruleTemplate((new SimpleTf("ml"))   , SimpleTf.Epsilon(),(new SimpleTf("mp")) , new SimpleTf("kr"), new SimpleTf("ip")));
+    rules.add(rap.ruleTemplate(hl, EventTf.Epsilon(),lp , kr, ip));
+//    rules.add(rap.ruleTemplate(ml, SimpleTf.Epsilon(),mp , kr, ip));
 //    rules.add(rap.ruleTemplate((new SimpleTf("hl"))   , SimpleTf.Epsilon(),(new SimpleTf("mp")) , new SimpleTf("kr"), new SimpleTf("ip")));
 //    rules.add(rap.ruleTemplate((new SimpleTf("ll"))   , SimpleTf.Epsilon(),(new SimpleTf("pi")) , new SimpleTf("kr"), new SimpleTf("kp")));
     
