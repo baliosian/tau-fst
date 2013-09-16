@@ -7,6 +7,8 @@ public class ActionTf extends SimpleTf {
 	private static final long serialVersionUID = 1L;
 	
 	private String luaCode;
+	
+	private String universe;
 
 	public ActionTf() {
 		super();
@@ -23,6 +25,14 @@ public class ActionTf extends SimpleTf {
 
 	public void setLuaCode(String luaCode) {
 		this.luaCode = luaCode;
+	}
+	
+	public String getUniverse(){
+		return universe;
+	}
+	
+	public void setUniverse(String universe){
+		this.universe = universe;
 	}
 
 
