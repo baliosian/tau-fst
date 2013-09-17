@@ -166,7 +166,7 @@ public class RateAndPower_LuPA {
     Utils.showDot(rateAndPower.toDot("after"));
     
     try {
-  		LupaExporterRatePower.generateLupaFiles(rateAndPower, "src/fsm_template.lua", "out_test_pdp_aux");
+  		LupaExporterRatePower.generateLupaFiles(rateAndPower, "src/fsm_template.lua", "fsm_rate_loss.lua");
   	} catch (UnsupportedTFFSTException e) {
   		// TODO Auto-generated catch block
   		e.printStackTrace();
