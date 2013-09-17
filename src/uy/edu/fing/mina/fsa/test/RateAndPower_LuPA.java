@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import uy.edu.fing.mina.fsa.tf.CompositeTf;
+import uy.edu.fing.mina.fsa.tf.Operator;
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
 import uy.edu.fing.mina.fsa.tf.TfI;
 import uy.edu.fing.mina.fsa.tffst.State;
@@ -68,11 +69,33 @@ public class RateAndPower_LuPA {
 //-------------------------------------------------------------   
 //not low  |            | high       | decrease |   keep
 //not low  |            | not high   | keep     |  increase
-//low      |            | increase   | keep     |   keep
+//low      |            |            | keep     |   keep
+    
+    EventTf ll = new EventTf();
+    ll.setName("ll");    
+
+    EventTf ml = new EventTf();
+    ml.setName("ml");
+
+    EventTf hl = new EventTf();
+    hl.setName("hl");
+    
+    EventTf lp = new EventTf();
+    lp.setName("lp");    
+    
+    EventTf mp = new EventTf();
+    mp.setName("mp");
+    
+    EventTf hp = new EventTf();
+    hp.setName("hp");
     
     ActionTf kr = new ActionTf();
     kr.setName("kr");
     kr.setUniverse("rate");
+    
+    ActionTf dr = new ActionTf();
+    dr.setName("dr");
+    dr.setUniverse("rate");
     
     ActionTf ip = new ActionTf();
     ip.setName("ip");
@@ -82,22 +105,13 @@ public class RateAndPower_LuPA {
     dp.setName("dp");
     dp.setUniverse("power");
     
-    EventTf hl = new EventTf();
-    hl.setName("hl");
+    ActionTf kp = new ActionTf();
+    kp.setName("kp");
+    kp.setUniverse("power");
     
-    EventTf lp = new EventTf();
-    lp.setName("lp");
-    
-    EventTf ml = new EventTf();
-    ml.setName("ml");
-    
-    EventTf mp = new EventTf();
-    mp.setName("mp");
-
-    
-//    rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   , SimpleTf.Epsilon(),(new SimpleTf("hp"))       , new SimpleTf("dr"), new SimpleTf("kp")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   , SimpleTf.Epsilon(),(new SimpleTf("hp")).not() , new SimpleTf("kr"), new SimpleTf("ip")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("ll"))         , SimpleTf.Epsilon(),(new SimpleTf("pi"))       , new SimpleTf("kr"), new SimpleTf("kp")));
+/*    rules.add(rap.ruleTemplate(ll.not(), EventTf.Epsilon(), hp, dr, kp));
+    rules.add(rap.ruleTemplate(ll.not(), EventTf.Epsilon(),hp.not(), kr, ip));
+    rules.add(rap.ruleTemplate(ll, EventTf.Epsilon(), EventTf.Epsilon(), kr, kp));*/
 
 //-----------------------------------------------------------    
     
@@ -106,7 +120,8 @@ public class RateAndPower_LuPA {
 //    rules.add(rap.ruleTemplate((new SimpleTf("ml"))   , SimpleTf.Epsilon(),(new SimpleTf("lp")) , new SimpleTf("kr"), new SimpleTf("ip")));
 
     
-    rules.add(rap.ruleTemplate(hl, EventTf.Epsilon(),lp , ip.not(), new CompositeTf("AND",ip,kr.not())));
+    //rules.add(rap.ruleTemplate(new CompositeTf(Operator.AND,hl,ml), EventTf.Epsilon(),lp , ip.not(), (new CompositeTf(Operator.AND,ip,kr.not())).not()));
+    rules.add(rap.ruleTemplate(hl, EventTf.Epsilon(),lp , ip.not(), kr));
     //rules.add(rap.ruleTemplate(ml, SimpleTf.Epsilon(),mp , kr, new CompositeTf("AND", ip, new CompositeTf("AND",kr,dp))));
 //    rules.add(rap.ruleTemplate((new SimpleTf("hl"))   , SimpleTf.Epsilon(),(new SimpleTf("mp")) , new SimpleTf("kr"), new SimpleTf("ip")));
 //    rules.add(rap.ruleTemplate((new SimpleTf("ll"))   , SimpleTf.Epsilon(),(new SimpleTf("pi")) , new SimpleTf("kr"), new SimpleTf("kp")));
@@ -137,14 +152,14 @@ public class RateAndPower_LuPA {
       rateAndPower = rateAndPower.union(tffst);
     }
 
-    //Utils.showDot(rateAndPower.toDot("before"));
+    Utils.showDot(rateAndPower.toDot("before"));
 
-    //rateAndPower.setDeterministic(false);
-    //rateAndPower.determinize();
+    rateAndPower.setDeterministic(false);
+    rateAndPower.determinize();
     
-    //rateAndPower = rateAndPower.kleene();
+    rateAndPower = rateAndPower.kleene();
     
-    //Utils.showDot(rateAndPower.toDot("after"));
+    Utils.showDot(rateAndPower.toDot("after"));
     
     try {
   		LupaExporterRatePower.generateLupaFiles(rateAndPower, "src/fsm_template.lua", "out_test_pdp_aux");
