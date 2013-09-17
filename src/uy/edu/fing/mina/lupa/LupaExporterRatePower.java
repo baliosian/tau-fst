@@ -212,7 +212,15 @@ public class LupaExporterRatePower {
 	private static void loadEvents(TfI tfi) throws UnsupportedTFFSTException{
 		String functionName = functionName(tfi);
 		if(tfi instanceof CompositeTf){
-			compositeEvents.put(functionName, tfi);
+			if(tfi.isNot()){
+				compositeEvents.put(functionName,tfi);
+				tfi = tfi.not();
+				functionName = functionName(tfi);
+				compositeEvents.put(functionName, tfi);
+			}
+			else{
+				compositeEvents.put(functionName, tfi);
+			}
 			loadEvents(((CompositeTf) tfi).left);
 			loadEvents(((CompositeTf) tfi).right);
 		}
@@ -404,15 +412,41 @@ public class LupaExporterRatePower {
 		String functionHeader;
 		for(String functionName : mainActions.keySet()){
 			functionHeader = functionHeader(functionName);
-//			There are no duplicates in a Map.
 			if(! out.contains(functionHeader)){
 				out = out.concat("\t-- " + functionHeader + "\n");
 				out = out.concat("actions." + functionName + " = function(e)\n");
-//				TODO Mejorar!!
-				
-				out = out.concat("\te = shared[\"incomming_event\"]\n");
+                if (((ActionTf)mainActions.get(functionName)).getUniverse().compareTo("rate") == 0){
+                  out = out.concat("\tlocal levels = getDomain('rate')\n");
+		    	  out = out.concat("\tlocal retMax = -100\n");
+		    	  out = out.concat("\tlocal l\n");
+		    	  out = out.concat("\tfor _,lr in ipairs(levels) do\n");
+		    	  out = out.concat("\t\tlocal ret = functions." + functionName + "(lr)\n"); 
+				  out = out.concat("\t\tif ret > retMax then\n" +
+			      		"\t\t\tretMax = ret\n" +
+			      		"\t\t\tl = lr\n" +
+			      		"\t\tend\n" +
+			      		"\tend\n" +
+			      		"\treturn notifs.changeRate(l,e)\n" +
+			      		"end\n");
+				  }
+				  else{
+					  out = out.concat("\tlocal levels = getDomain('power')\n");
+			    	  out = out.concat("\tlocal retMax = -100\n");
+			    	  out = out.concat("\tlocal l\n");
+			    	  out = out.concat("\tfor _,lp in ipairs(levels) do\n");
+			    	  out = out.concat("\t\tlocal ret = functions." + functionName + "(lp)\n"); 
+					  out = out.concat("\t\tif ret > retMax then\n" +
+				      		"\t\t\tretMax = ret\n" +
+				      		"\t\t\tl = lp\n" +
+				      		"\t\tend\n" +
+				      		"\tend\n" +
+				      		"\treturn notifs.changePower(l,e)\n" +
+					      	"end\n");					  
+				  }
+                out = out.concat("\t-- " + functionHeader + "\n");
+				out = out.concat("functions." + functionName + " = function(e)\n");
 				out = out.concat("\t------------------------------------------------\n");
-				out = out.concat("\t-- TODO: Complete this with your action code. --\n");
+				out = out.concat("\t-- TODO: Complete this with your function code. --\n");
 				out = out.concat("\t------------------------------------------------\n");
 				out = out.concat("end\n\n");
 			}
@@ -439,7 +473,16 @@ public class LupaExporterRatePower {
 		String functionName;
 		for(TfI function : compositeEvents.values()){
 			functionName = functionName(function);
-			if(function instanceof CompositeTf){
+
+		    if (function.isNot()) {
+				out = out.concat("-- " + function.getName() + "\n");
+				out = out.concat("events." + functionName + " = function(e) \n");
+				TfI nonneg = function.not();
+				out = out.concat("\tlocal nonneg = events." + functionName(nonneg) + "(e)\n");
+				out = out.concat("\treturn 1-nonneg\n");
+				out = out.concat("end\n");
+			}
+		    else if(function instanceof CompositeTf){
 				comp = (CompositeTf) function;
 				leftTf = comp.left;
 				rightTf = comp.right;
@@ -453,14 +496,6 @@ public class LupaExporterRatePower {
 				} else if (comp.op == Operator.OR) {
 					out = out.concat("\tif left > right then return left else return right end\n");
 				} 
-				out = out.concat("end\n");
-			}
-			else if (function.isNot()) {
-				out = out.concat("-- " + function.getName() + "\n");
-				out = out.concat("events." + functionName + " = function(e) \n");
-				TfI nonneg = function.not();
-				out = out.concat("\tlocal nonneg = events." + functionName(nonneg) + "(e)\n");
-				out = out.concat("\treturn 1-nonneg\n");
 				out = out.concat("end\n");
 			}
 			else{
@@ -494,6 +529,7 @@ public class LupaExporterRatePower {
     String functionName;
     for (Entry<String, ArrayList<ArrayList<TfI>>> item : compositeActions.entrySet()) {
       functionName = item.getKey();
+      out = out.concat("-- " + functionName + "\n");
 	  out = out.concat("actions." + functionName + " = function(e)\n");
       ArrayList<TfI> compositeActionsRate = item.getValue().get(0);
       ArrayList<TfI> compositeActionsPower = item.getValue().get(1);
