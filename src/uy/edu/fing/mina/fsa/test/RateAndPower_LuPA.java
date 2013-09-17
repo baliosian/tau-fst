@@ -69,7 +69,7 @@ public class RateAndPower_LuPA {
 //-------------------------------------------------------------   
 //not low  |            | high       | decrease |   keep
 //not low  |            | not high   | keep     |  increase
-//low      |            |            | keep     |   keep
+//low      |            |            | increase |   keep
     
     EventTf ll = new EventTf();
     ll.setName("ll");    
@@ -97,6 +97,10 @@ public class RateAndPower_LuPA {
     dr.setName("dr");
     dr.setUniverse("rate");
     
+    ActionTf ir = new ActionTf();
+    ir.setName("ir");
+    ir.setUniverse("rate");
+    
     ActionTf ip = new ActionTf();
     ip.setName("ip");
     ip.setUniverse("power");
@@ -109,9 +113,9 @@ public class RateAndPower_LuPA {
     kp.setName("kp");
     kp.setUniverse("power");
     
-/*    rules.add(rap.ruleTemplate(ll.not(), EventTf.Epsilon(), hp, dr, kp));
+    rules.add(rap.ruleTemplate(ll.not(), EventTf.Epsilon(), hp, dr, kp));
     rules.add(rap.ruleTemplate(ll.not(), EventTf.Epsilon(),hp.not(), kr, ip));
-    rules.add(rap.ruleTemplate(ll, EventTf.Epsilon(), EventTf.Epsilon(), kr, kp));*/
+    rules.add(rap.ruleTemplate(ll, EventTf.Epsilon(), EventTf.Epsilon(), ir, kp));
 
 //-----------------------------------------------------------    
     
@@ -121,7 +125,7 @@ public class RateAndPower_LuPA {
 
     
     //rules.add(rap.ruleTemplate(new CompositeTf(Operator.AND,hl,ml), EventTf.Epsilon(),lp , ip.not(), (new CompositeTf(Operator.AND,ip,kr.not())).not()));
-    rules.add(rap.ruleTemplate(hl, EventTf.Epsilon(),lp , ip.not(), kr));
+    //rules.add(rap.ruleTemplate(hl, EventTf.Epsilon(),lp , ip.not(), kr));
     //rules.add(rap.ruleTemplate(ml, SimpleTf.Epsilon(),mp , kr, new CompositeTf("AND", ip, new CompositeTf("AND",kr,dp))));
 //    rules.add(rap.ruleTemplate((new SimpleTf("hl"))   , SimpleTf.Epsilon(),(new SimpleTf("mp")) , new SimpleTf("kr"), new SimpleTf("ip")));
 //    rules.add(rap.ruleTemplate((new SimpleTf("ll"))   , SimpleTf.Epsilon(),(new SimpleTf("pi")) , new SimpleTf("kr"), new SimpleTf("kp")));

@@ -114,7 +114,7 @@ function step()
 		if ret_step then 
 			for _, r in ipairs(ret_step) do ret[#ret+1]=r	end --queue generated actions
 		end
-  until accept or i_event==#window
+  until accept or i_event>#window
   assert(not (final and not accept))
   
   if accept then
