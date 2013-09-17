@@ -189,7 +189,7 @@ public class P implements Set<ElementOfP> {
 		  if (!toRemove.contains(workingPair))
 			for (ElementOfP currentPair : outp)
 			  if (!toRemove.contains(currentPair))
-				if ((workingPair.state.isAccept() || currentPair.state.isAccept()) && workingPair != currentPair) {
+				if (workingPair != currentPair) {
 				  TfString currentSE = currentPair.getArrivingTFs();
 				  TfString workingSE = workingPair.getArrivingTFs();
 				  TfString newSE = new TfString();
@@ -271,7 +271,7 @@ public class P implements Set<ElementOfP> {
     return outSE;
   }
 
-  public P simplifyTargetByPosfixState(P longestPosfixState) {
+  public void simplifyTargetByPosfixState(P longestPosfixState) {
 	P prep = new P();
 	P outp = new P();
 
@@ -323,8 +323,6 @@ public class P implements Set<ElementOfP> {
 	} catch (CloneNotSupportedException e) {
 	  e.printStackTrace();
 	}
-
-	return outp;
   }
 
   /**
@@ -337,12 +335,14 @@ public class P implements Set<ElementOfP> {
    */
   
   
-  P longestPosfixState(Map<P, State> visitedNewStates) {
-    P candidate = new P();
+  P[] longestPosfixState(Map<P, State> visitedNewStates) {
+    P[] candidate = new P[2];
+    candidate[0] = new P();
+    candidate[1] = new P();
     int candidateMaxLen = -1;
 
     for (P visitedP : visitedNewStates.keySet()) {
-      Map<State, TfString> lastCandidate = new HashMap<State, TfString>();
+      Map<State, TfString[] > lastCandidate = new HashMap<State, TfString[]>();
       boolean vpmatch = true;
       if (visitedP.size() == p.size()) {
         int eovpMaxLen = 0;
@@ -350,30 +350,31 @@ public class P implements Set<ElementOfP> {
 		  boolean eovpmatch = false;
 		  for (ElementOfP eovp : visitedP) {
 			if (eop.state.equals(eovp.state)) {
-			  if (eovp.arrivingTFs.size() <= eop.arrivingTFs.size()) {
+//			  if (eovp.arrivingTFs.size() <= eop.arrivingTFs.size()) {
 				if (eovp.arrivingTFs.isEpsilon()) {
 				  eovpmatch = true;
 				  eovpMaxLen = Math.max(eovpMaxLen, 0);
-				  lastCandidate.put(eop.state, new TfString());
+				  lastCandidate.put(eop.state, new TfString[] {new TfString(), new TfString()});
 				} else if (!eop.arrivingTFs.isEpsilon()) {
 				  for (int i = 1 ; 
-					  (i <= eovp.arrivingTFs.size() && 
+					  (i <= eovp.arrivingTFs.size() && i <= eop.arrivingTFs.size() && 
 					  eop.arrivingTFs.subList(eop.arrivingTFs.size()-i, eop.arrivingTFs.size())
 					  .equals(eovp.arrivingTFs.subList(eovp.arrivingTFs.size()-i, eovp.arrivingTFs.size())));
 					  i++) {
-					lastCandidate.put(eop.state, new TfString(eop.arrivingTFs.subList(eop.arrivingTFs.size()-i, eop.arrivingTFs.size())));
+					lastCandidate.put(eop.state, new TfString[] {new TfString(eovp.arrivingTFs.subList(0, eovp.arrivingTFs.size()-i)), new TfString(eop.arrivingTFs.subList(eop.arrivingTFs.size()-i, eop.arrivingTFs.size()))});
 					eovpmatch = true;
 					eovpMaxLen = Math.max(eovpMaxLen, i);
 				  }
 				}
-			  }
+			//  }
 			}
 		  }
 		  vpmatch = vpmatch && eovpmatch;
 		}
         if (vpmatch && candidateMaxLen < eovpMaxLen) {
           for (State s : lastCandidate.keySet()) {
-			candidate.add(new ElementOfP(s, lastCandidate.get(s)));
+			candidate[0].add(new ElementOfP(s, lastCandidate.get(s)[0]));
+			candidate[1].add(new ElementOfP(s, lastCandidate.get(s)[1]));
 		  }
           candidateMaxLen = eovpMaxLen; 
         }

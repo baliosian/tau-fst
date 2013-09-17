@@ -26,13 +26,13 @@ public class RateAndPower_small {
     s5.setAccept(true);
     
     s0.addOutTran(new Transition(tfinp1, SimpleTf.Epsilon(),s1));
-    s0.addOutTran(new Transition(tfinp1.not(), tfinp1.not(),s0,1));
+    s0.addOutTran(new Transition(tfinp1.not(), SimpleTf.Epsilon(),s0));
 
     s1.addOutTran(new Transition(tfinp2, SimpleTf.Epsilon(),s2));
-    s1.addOutTran(new Transition(tfinp2.not(), tfinp2.not(),s1,1));
+    s1.addOutTran(new Transition(tfinp2.not(), SimpleTf.Epsilon(),s1));
 
     s2.addOutTran(new Transition(tfinp3, SimpleTf.Epsilon(),s3));
-    s2.addOutTran(new Transition(tfinp3.not(), tfinp3.not(),s2,1));
+    s2.addOutTran(new Transition(tfinp3.not(), SimpleTf.Epsilon(),s2));
 
     s3.addOutTran(new Transition(SimpleTf.Epsilon(), tfout4,s4));
     s4.addOutTran(new Transition(SimpleTf.Epsilon(), tfout5,s5));
@@ -60,7 +60,7 @@ public class RateAndPower_small {
     
     rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   , SimpleTf.Epsilon(),(new SimpleTf("hp"))       , new SimpleTf("dr"), new SimpleTf("kp")));
     rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   , SimpleTf.Epsilon(),(new SimpleTf("hp")).not() , new SimpleTf("kr"), new SimpleTf("ip")));
-    rules.add(rap.ruleTemplate((new SimpleTf("ll"))         , SimpleTf.Epsilon(),(new SimpleTf("pi"))       , new SimpleTf("kr"), new SimpleTf("kp")));
+//    rules.add(rap.ruleTemplate((new SimpleTf("ll"))         , SimpleTf.Epsilon(),(new SimpleTf("pi"))       , new SimpleTf("kr"), new SimpleTf("kp")));
 
 //-----------------------------------------------------------        
     
@@ -96,6 +96,7 @@ public class RateAndPower_small {
     
     rateAndPower = rateAndPower.kleene();
     
+    //Utils.writeDot("/tmp/rateanpower.dot", rateAndPower.toDot("after"));
     Utils.showDot(rateAndPower.toDot("after"));
 
     

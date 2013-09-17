@@ -84,47 +84,19 @@ public class CompositeTf extends Tf {
   }
 
   public boolean equals(Object o) {
-        if (o instanceof CompositeTf) {
-            CompositeTf ctf = (CompositeTf) o;
-            
-            CompositeTf simpleThis = (CompositeTf) Utils.simplify(this);
-            CompositeTf simpleThat = (CompositeTf) Utils.simplify(ctf);
-            
-            if (simpleThis.op == simpleThat.op
-                    && simpleThis.isEpsilon() == simpleThat.isEpsilon()
-                    && simpleThis.isNot() == simpleThat.isNot()
-                    && simpleThis.left.equals(simpleThat.left) && simpleThis.right.equals(simpleThat.right))
-                return true;
-        }
-        return false;
-    }
+	if (o instanceof CompositeTf) {
+	  CompositeTf ctf = (CompositeTf) o;
 
-//  public float evaluate(MessageI e) {
-//
-//    if (this.operator.equals(Operator.AND)) {
-//      this.setValue(Math.min(this.leftTf.evaluate(e), this.rightTf.evaluate(e)));
-//    } else if (this.operator.equals(Operator.OR)) {
-//      this.setValue(Math.max(this.leftTf.evaluate(e), this.rightTf.evaluate(e)));
-//    } else if (this.operator.equals(Operator.AS_TAUT_AS)) {
-//      if (this.leftTf.evaluate(e) == this.rightTf.evaluate(e)) {
-//        this.setValue(this.leftTf.evaluate(e));
-//      } else {
-//        this.setValue(MIN_TF);
-//      }
-//    } else if (this.operator.equals(Operator.TAUTER_THAN)) {
-//      if (this.leftTf.evaluate(e) < this.rightTf.evaluate(e)) {
-//        this.setValue(this.leftTf.evaluate(e));
-//      } else {
-//        this.setValue(MIN_TF);
-//      }
-//    }
-//
-//    if (this.isNot()) {
-//      this.setValue(-this.getValue());
-//    }
-//
-//    return this.getValue();
-//  }
+	  CompositeTf simpleThis = (CompositeTf) Utils.simplify(this);
+	  CompositeTf simpleThat = (CompositeTf) Utils.simplify(ctf);
+
+	  if (simpleThis.op == simpleThat.op && simpleThis.isEpsilon() == simpleThat.isEpsilon() && simpleThis.isNot() == simpleThat.isNot()
+		  && ((simpleThis.left.equals(simpleThat.left) && simpleThis.right.equals(simpleThat.right))
+		  || (simpleThis.right.equals(simpleThat.left) && simpleThis.left.equals(simpleThat.right))))
+		return true;
+	}
+	return false;
+  }
 
   /**
    * @return Returns the leftTf.

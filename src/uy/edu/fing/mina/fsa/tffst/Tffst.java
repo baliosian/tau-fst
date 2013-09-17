@@ -1194,20 +1194,23 @@ public class Tffst implements Serializable {
 
     for (TfI tf : left) {
       if (!tf.isEpsilon()) {
-        for (ElementOfP pairP : setOfelementsOfP) {
-          for (Transition t : pairP.state.getTransitions()) {
+        for (ElementOfP eop : setOfelementsOfP) {
+          for (Transition t : eop.state.getTransitions()) {
             if (tf.equals(t.labelIn.isEpsilon() ? SimpleTf.Epsilon(): t.labelIn.get(0))) {
               TfString newSE = new TfString();
               
-              for (TfI tfpairp : pairP.getArrivingTFs()) {
+              for (TfI tfpairp : eop.getArrivingTFs()) {
                   if (!tfpairp.isEpsilon() && !t.labelIn.isEpsilon()) tfpairp.addWeight(t.labelIn.get(0));
                   newSE.add(tfpairp); 
               }
 
-              if (!t.labelOut.isEpsilon()){ 
-            	if (!t.labelIn.isEpsilon()) t.labelOut.get(0).addWeight(t.labelIn.get(0));
-            	newSE.add(t.labelOut.get(0));
-              }
+			  if (!t.labelOut.isEpsilon()) {
+				for (TfI tfI : t.labelOut) {
+				  if (!t.labelIn.isEpsilon())
+					tfI.addWeight(t.labelIn.get(0));
+				  newSE.add(tfI);
+				}
+			  }
               
               retPair = new ElementOfP(t.getTo(), newSE);
               unionOfTransPelements.add(retPair);
@@ -1262,6 +1265,7 @@ public class Tffst implements Serializable {
 
 	// removes all epsilon labels in the domain part
     inLabelEpsilonRemoval();
+    
 //  toSimpleInLabels();
     // stores new states
     Map<P, State> newStates = new HashMap<P, State>();
@@ -1291,8 +1295,8 @@ public class Tffst implements Serializable {
 		  ProtoT pt = new ProtoT(pNewState, tfrelation, transPset);
 
 		  pt.unionOfTransP.simplifyTargetByState(); 
-		  P lngstPosfxState = pt.unionOfTransP.longestPosfixState(visitedNewStates); 
-		  pt.unionOfTransP.simplifyTargetByPosfixState(lngstPosfxState);
+		  P[] lngstPosfxState = pt.unionOfTransP.longestPosfixState(visitedNewStates); 
+		  pt.unionOfTransP.simplifyTargetByPosfixState(lngstPosfxState[1]);
 		  TfString prefix = pt.unionOfTransP.longestPrefix();
 
 		  if (!pt.unionOfTransP.isEmpty()) {
