@@ -1286,6 +1286,21 @@ public class Tffst implements Serializable {
       P p = newStates.keySet().iterator().next();
       State pNewState = newStates.remove(p);
       
+      
+      for (ElementOfP e : p) {
+		if (e.state.accept) {
+//		  P tail = p.tail();
+//		  TfString output = tail.longestPrefix();
+//		  if (!output.isEpsilon()) {
+//			State tailState = new State();
+//			tailState.setAccept(true);
+//			pNewState.addOutTran(new Transition(new TfString(SimpleTf.Epsilon()), output, tailState));
+//		  } else
+		  pNewState.setAccept(true);
+		  break;
+		}
+	  }
+      
 	  // for each possible partitions of the relevant tfs in two subsets
       for (Partition partition : Partition.getPartitions3(getRelevantTFs(p))) {
         // for each partition computes an exclusive TF
@@ -1295,8 +1310,10 @@ public class Tffst implements Serializable {
 		  ProtoT pt = new ProtoT(pNewState, tfrelation, transPset);
 
 		  pt.unionOfTransP.simplifyTargetByState(); 
-		  P[] lngstPosfxState = pt.unionOfTransP.longestPosfixState(visitedNewStates); 
-		  pt.unionOfTransP.simplifyTargetByPosfixState(lngstPosfxState[1]);
+		  
+		  P lngstPosfxState = pt.unionOfTransP.longestPosfixState(visitedNewStates)[1];
+		  pt.unionOfTransP.simplifyTargetByPosfixState(lngstPosfxState);
+
 		  TfString prefix = pt.unionOfTransP.longestPrefix();
 
 		  if (!pt.unionOfTransP.isEmpty()) {
@@ -1308,19 +1325,7 @@ public class Tffst implements Serializable {
 		  }
 		}
       }
-	  for (ElementOfP e : p) {
-		if (e.state.accept) {
-		  P tail = p.tail();
-		  TfString output = tail.longestPrefix();
-		  if (!output.isEpsilon()) {
-			State tailState = new State();
-			tailState.setAccept(true);
-			pNewState.addOutTran(new Transition(new TfString(SimpleTf.Epsilon()), output, tailState));
-		  } else
-			pNewState.setAccept(true);
-		  break;
-		}
-	  }
+	  
     }
 
     inLabelEpsilonRemoval();

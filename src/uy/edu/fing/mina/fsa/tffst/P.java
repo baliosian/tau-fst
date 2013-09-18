@@ -137,6 +137,7 @@ public class P implements Set<ElementOfP> {
 		if (!toRemove.contains(workingPair))
 		  for (ElementOfP currentPair : this)
 			if (!toRemove.contains(currentPair))
+//			  if ((currentPair.state.equals(workingPair.state) || currentPair.state.isAccept() || workingPair.state.isAccept()) && workingPair != currentPair) {
 			  if ((currentPair.state.equals(workingPair.state)) && workingPair != currentPair) {
 				TfString newSE = new TfString();
 
@@ -236,53 +237,69 @@ public class P implements Set<ElementOfP> {
    */
   public TfString longestPrefix() {
 
-    TfString outSE = new TfString();
-    boolean match = true;
+	TfString outSE = new TfString();
+	boolean match = true;
 
-    if (this.size() != 0) {
-      while (match) {
-        Iterator<ElementOfP> iter = this.iterator();
-        ElementOfP firstPair = iter.next();
-        if (firstPair.getArrivingTFs().isEpsilon()) match = false;
-        while (iter.hasNext() && match) {
-          ElementOfP pair = iter.next();
-          if (pair.getArrivingTFs().isEpsilon()) match = false;
-          else 
-            if (!firstPair.getArrivingTFs().get(0).equals(pair.getArrivingTFs().get(0))) match = false;
-        }
-        if (match) {
-          outSE.add(firstPair.getArrivingTFs().get(0));
-          Iterator<ElementOfP> iter2 = this.iterator();
-          while (iter2.hasNext()) {
-            ElementOfP pair2 = iter2.next();
-            pair2.getArrivingTFs().remove(0);
-          }
-        }
-      }
-    }
-    
-    // create a new P because comparison between sets does not tolerates changes in their elements.
-    P newP = new P(); 
-    for (ElementOfP elementOfP : this) {
-      newP.add(elementOfP);
-    } 
-    
-    this.p = newP.p; 
-    return outSE;
+	if (this.size() != 0) {
+	  while (match) {
+		Iterator<ElementOfP> iter = this.iterator();
+		ElementOfP firstPair = iter.next();
+		if (firstPair.getArrivingTFs().isEpsilon())
+		  match = false;
+		while (iter.hasNext() && match) {
+		  ElementOfP pair = iter.next();
+		  if (pair.getArrivingTFs().isEpsilon())
+			match = false;
+		  else if (!firstPair.getArrivingTFs().get(0).equals(pair.getArrivingTFs().get(0)))
+			match = false;
+		}
+		if (match) {
+		  outSE.add(firstPair.getArrivingTFs().get(0));
+		  Iterator<ElementOfP> iter2 = this.iterator();
+		  while (iter2.hasNext()) {
+			ElementOfP pair2 = iter2.next();
+			pair2.getArrivingTFs().remove(0);
+		  }
+		}
+	  }
+	}
+
+	// create a new P because comparison between sets does not tolerates changes
+	// in their elements.
+	P newP = new P();
+	for (ElementOfP elementOfP : this) {
+	  newP.add(elementOfP);
+	}
+
+	this.p = newP.p;
+	return outSE;
   }
 
   public void simplifyTargetByPosfixState(P longestPosfixState) {
 	P prep = new P();
 	P outp = new P();
+	boolean simplify = false;
 
 	try {
 
 	  if (!longestPosfixState.isEmpty()) {
 		for (ElementOfP eovp : longestPosfixState)
 		  for (ElementOfP eop : p)
-			if (eop.state.equals(eovp.state))
+			if (eop.state.equals(eovp.state)) {
 			  prep.add(new ElementOfP(eop.state, new TfString(eop.arrivingTFs.subList(0, eop.arrivingTFs.size() - eovp.arrivingTFs.size()))));
+			  simplify = true;
+			}
 
+	  } else {
+		for (ElementOfP eop : p) {
+		  prep.add(new ElementOfP(eop.state, new TfString(eop.arrivingTFs)));
+		  if (eop.state.isAccept()) {
+			simplify = true;
+		  }
+		}
+	  }
+
+	  if (simplify) {
 		ElementOfP workingPair = prep.iterator().next();
 		ElementOfP outWP = (ElementOfP) workingPair.clone();
 
@@ -311,13 +328,18 @@ public class P implements Set<ElementOfP> {
 		  }
 		}
 
-		for (ElementOfP eoup : prep)
-		  for (ElementOfP eovp : longestPosfixState)
-			if (eoup.state.equals(eovp.state)) {
-			  TfString atf = outWP.arrivingTFs.clone();
-			  atf.addAll(eovp.arrivingTFs);
-			  outp.add(new ElementOfP(eoup.state, atf));
-			}
+		if (!longestPosfixState.isEmpty()) {
+		  for (ElementOfP eoup : prep)
+			for (ElementOfP eovp : longestPosfixState)
+			  if (eoup.state.equals(eovp.state)) {
+				TfString atf = outWP.arrivingTFs.clone();
+				atf.addAll(eovp.arrivingTFs);
+				outp.add(new ElementOfP(eoup.state, atf));
+			  }
+		} else {
+		  for (ElementOfP eoup : prep)
+			outp.add(new ElementOfP(eoup.state, (TfString) outWP.arrivingTFs.clone()));
+		}
 		this.p = outp.p;
 	  }
 	} catch (CloneNotSupportedException e) {
