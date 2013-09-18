@@ -426,7 +426,7 @@ public class LupaExporterRatePower {
 			      		"\t\t\tl = lr\n" +
 			      		"\t\tend\n" +
 			      		"\tend\n" +
-			      		"\treturn notifs.changeRate(l,e)\n" +
+			      		"\treturn notifs.change_rate(l,e)\n" +
 			      		"end\n");
 				  }
 				  else{
@@ -440,15 +440,23 @@ public class LupaExporterRatePower {
 				      		"\t\t\tl = lp\n" +
 				      		"\t\tend\n" +
 				      		"\tend\n" +
-				      		"\treturn notifs.changePower(l,e)\n" +
-					      	"end\n");					  
+				      		"\treturn notifs.change_power(l,e)\n" +
+					      	"end\n\n");					  
 				  }
-                out = out.concat("\t-- " + functionHeader + "\n");
-				out = out.concat("functions." + functionName + " = function(e)\n");
+                out = out.concat("\t-- Membership function for " + functionName + "\n");
+				out = out.concat("functions." + functionName + " = function(l)\n");
 				out = out.concat("\t------------------------------------------------\n");
 				out = out.concat("\t-- TODO: Complete this with your function code. --\n");
 				out = out.concat("\t------------------------------------------------\n");
 				out = out.concat("end\n\n");
+				
+
+//                out = out.concat("\t-- Notification generator for " + functionName + "\n");
+//				out = out.concat("notifs." + functionName + " = function(l,e)\n");
+//				out = out.concat("\t------------------------------------------------\n");
+//				out = out.concat("\t-- TODO: Complete this with your notification code. --\n");
+//				out = out.concat("\t------------------------------------------------\n");
+//				out = out.concat("end\n\n");
 			}
 			
 		}
@@ -562,7 +570,7 @@ public class LupaExporterRatePower {
 			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lr)))");
 		  }
 		  else{
-			  out = out.concat("functions." + functionName + "(lr), ");
+			  out = out.concat("functions." + functionName + "(lr)");
 		  }
 	      size = compositeActionsRate.size();
 	      for (int i=0; i<size-1; i++){
@@ -591,7 +599,7 @@ public class LupaExporterRatePower {
 			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lp)))");
 		  }
 		  else{
-			  out = out.concat("functions." + functionName + "(lp), ");
+			  out = out.concat("functions." + functionName + "(lp)");
 		  }
 	      size = compositeActionsPower.size();
 	      for (int i=0; i<size-1; i++){
@@ -609,7 +617,7 @@ public class LupaExporterRatePower {
 	      		"\t\t\tend\n" +
 	      		"\t\tend\n" +
 	      		"\tend\n" +
-	      		"\treturn notifs.changeRateAndPower(lRate,lPower,e)\n" +
+	      		"\treturn notifs.change_rate_power(lRate,lPower,e)\n" +
 	      		"end\n");
     	  
       }
@@ -639,7 +647,7 @@ public class LupaExporterRatePower {
 			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lr)))");
 		  }
 		  else{
-			  out = out.concat("functions." + functionName + "(lr), ");
+			  out = out.concat("functions." + functionName + "(lr)");
 		  }
 	      size = compositeActionsRate.size();
 	      for (int i=0; i<size-1; i++){
@@ -651,7 +659,7 @@ public class LupaExporterRatePower {
 	      		"\t\t\tl = lr\n" +
 	      		"\t\tend\n" +
 	      		"\tend\n" +
-	      		"\treturn notifs.changeRate(l,e)\n" +
+	      		"\treturn notifs.change_rate(l,e)\n" +
 	      		"end\n");
       }
       else{
@@ -680,7 +688,7 @@ public class LupaExporterRatePower {
 			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lp)))");
 		  }
 		  else{
-			  out = out.concat("functions." + functionName + "(lp), ");
+			  out = out.concat("functions." + functionName + "(lp)");
 		  }
 	      size = compositeActionsPower.size();
 	      for (int i=0; i<size-1; i++){
@@ -692,7 +700,7 @@ public class LupaExporterRatePower {
 	      		"\t\t\tl = lr\n" +
 	      		"\t\tend\n" +
 	      		"\tend\n" +
-	      		"\treturn notifs.changePower(l,e)\n" +
+	      		"\treturn notifs.change_power(l,e)\n" +
 	      		"end\n");
       }
     }
@@ -996,7 +1004,6 @@ public class LupaExporterRatePower {
 	 * @throws UnsupportedTFFSTException 
 	 */
   public static void generateLupaFiles(Tffst fst, String templateFilename, String filename) throws UnsupportedTFFSTException {
-	try {
 	  functionsCounter = new Integer(0);
 	  functionNames = new HashMap<TfI, String>();
 	  mainEvents = new HashMap<String, TfI>();
@@ -1005,17 +1012,14 @@ public class LupaExporterRatePower {
 	  compositeActions = new HashMap<String, ArrayList<ArrayList<TfI>>>();
 	  
 	  // Tffst proctffst = fst.toSimpleTransitions();
-	  Tffst proctffst;
-	  proctffst = fst.clone();
+	  //Tffst proctffst;
+	  //proctffst = fst.clone();
 
-	  loadActionsAndEvents(proctffst);
+	  loadActionsAndEvents(fst);
 
-	  String manualFunctions = updateManualLupa(proctffst, filename);
+	  String manualFunctions = updateManualLupa(fst, filename);
 
-	  writeGeneratedLupa(proctffst, templateFilename, filename, manualFunctions);
-	} catch (CloneNotSupportedException e) {
-	  e.printStackTrace();
-	}
+	  writeGeneratedLupa(fst, templateFilename, filename, manualFunctions);
   }
 
 }
