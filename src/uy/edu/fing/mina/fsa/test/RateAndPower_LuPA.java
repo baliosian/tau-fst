@@ -116,6 +116,8 @@ public class RateAndPower_LuPA {
     rules.add(rap.ruleTemplate(ll.not(), EventTf.Epsilon(), hp, dr, kp));
     rules.add(rap.ruleTemplate(ll.not(), EventTf.Epsilon(),hp.not(), kr, ip));
     rules.add(rap.ruleTemplate(ll, EventTf.Epsilon(), EventTf.Epsilon(), ir, kp));
+    
+    //TODO que pasa cuando me llegan eventos de rate, los cuales no considero en las reglas
 
 //-----------------------------------------------------------    
     

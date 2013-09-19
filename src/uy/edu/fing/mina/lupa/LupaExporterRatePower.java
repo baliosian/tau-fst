@@ -561,7 +561,7 @@ public class LupaExporterRatePower {
     			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lr)))" + ", ");
     		  }
     		  else{
-    			  out = out.concat("functions." + functionName + "(lr), ");
+    			  out = out.concat("functions." + functionName + ", ");
     		  }
     	  }
     	  ActionTf function = (ActionTf) rateIt.next();
@@ -570,11 +570,11 @@ public class LupaExporterRatePower {
 			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lr)))");
 		  }
 		  else{
-			  out = out.concat("functions." + functionName + "(lr)");
+			  out = out.concat("functions." + functionName);
 		  }
 	      size = compositeActionsRate.size();
 	      for (int i=0; i<size-1; i++){
-		      out = out.concat(")");
+		      out = out.concat(",lr)");
 	      }
 	      out = out.concat("\n");
 	      
@@ -590,7 +590,7 @@ public class LupaExporterRatePower {
     			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lp)))" + ", ");
     		  }
     		  else{
-    			  out = out.concat("functions." + functionName + "(lp), ");
+    			  out = out.concat("functions." + functionName + ", ");
     		  }
     	  }
     	  function = (ActionTf) powerIt.next();
@@ -599,11 +599,11 @@ public class LupaExporterRatePower {
 			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lp)))");
 		  }
 		  else{
-			  out = out.concat("functions." + functionName + "(lp)");
+			  out = out.concat("functions." + functionName);
 		  }
 	      size = compositeActionsPower.size();
 	      for (int i=0; i<size-1; i++){
-		      out = out.concat(")");
+		      out = out.concat(",lp)");
 	      }
 	      out = out.concat("\n");
 	      out = out.concat("\t\t\tif (retRate <= retPower) and (retRate > retMax) then\n" +
@@ -638,7 +638,7 @@ public class LupaExporterRatePower {
     			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lr)))" + ", ");
     		  }
     		  else{
-    			  out = out.concat("functions." + functionName + "(lr), ");
+    			  out = out.concat("functions." + functionName + ", ");
     		  }
     	  }
     	  ActionTf function = (ActionTf) rateIt.next();
@@ -647,11 +647,11 @@ public class LupaExporterRatePower {
 			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lr)))");
 		  }
 		  else{
-			  out = out.concat("functions." + functionName + "(lr)");
+			  out = out.concat("functions." + functionName);
 		  }
 	      size = compositeActionsRate.size();
 	      for (int i=0; i<size-1; i++){
-		      out = out.concat(")");
+		      out = out.concat(",lr)");
 	      }
 	      out = out.concat("\n");
 	      out = out.concat("\t\tif ret > retMax then\n" +
@@ -665,8 +665,8 @@ public class LupaExporterRatePower {
       else{
     	  out = out.concat("\tlocal levels = getDomain('power')\n");
     	  out = out.concat("\tlocal retMax = -100\n");
-    	  out = out.concat("\tlocal lp\n");
-    	  out = out.concat("\tfor _,l in ipairs(levels) do\n");
+    	  out = out.concat("\tlocal l\n");
+    	  out = out.concat("\tfor _,lp in ipairs(levels) do\n");
     	  int size = compositeActionsPower.size();	  
     	  out = out.concat("\t\tlocal ret = ");
     	  Iterator<TfI> powerIt = compositeActionsPower.iterator();
@@ -679,7 +679,7 @@ public class LupaExporterRatePower {
     			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lp)))" + ", ");
     		  }
     		  else{
-    			  out = out.concat("functions." + functionName + "(lp), ");
+    			  out = out.concat("functions." + functionName + ", ");
     		  }
     	  }
     	  ActionTf function = (ActionTf) powerIt.next();
@@ -688,16 +688,16 @@ public class LupaExporterRatePower {
 			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lp)))");
 		  }
 		  else{
-			  out = out.concat("functions." + functionName + "(lp)");
+			  out = out.concat("functions." + functionName);
 		  }
 	      size = compositeActionsPower.size();
 	      for (int i=0; i<size-1; i++){
-		      out = out.concat(")");
+		      out = out.concat(",lp)");
 	      }
 	      out = out.concat("\n");
 	      out = out.concat("\t\tif ret > retMax then\n" +
 	      		"\t\t\tretMax = ret\n" +
-	      		"\t\t\tl = lr\n" +
+	      		"\t\t\tl = lp\n" +
 	      		"\t\tend\n" +
 	      		"\tend\n" +
 	      		"\treturn notifs.change_power(l,e)\n" +
