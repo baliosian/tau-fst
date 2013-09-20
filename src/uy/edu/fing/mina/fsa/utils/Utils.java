@@ -10,7 +10,13 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
+
+import uy.edu.fing.mina.fsa.tf.TfString;
+import uy.edu.fing.mina.fsa.tffst.Tffst;
+import uy.edu.fing.mina.fsa.tffst.Transition;
 
 
 
@@ -38,12 +44,12 @@ public class Utils {
         //String[] cmd = { "dotty", filename };
         //Process p = Runtime.getRuntime().exec(cmd);
 
-        String cmd = "/usr/bin/dot -Tpng -o " + filename + ".png " + filename;
+        String cmd = "/usr/bin/dot -Tsvg -o " + filename + ".svg " + filename;
         System.out.println("Calling Dot: " + cmd);
         Process p = Runtime.getRuntime().exec(cmd);
         p.waitFor();
         System.out.println("return: "+ p.exitValue());
-        p = Runtime.getRuntime().exec("eog " + filename + ".png ");
+        p = Runtime.getRuntime().exec("eog " + filename + ".svg ");
         //p.waitFor();
         //System.out.println("return: "+ p.exitValue());
         
@@ -57,13 +63,27 @@ public class Utils {
 
    public static void writeDot(String filename, String dot) {
 
-      try {
-         BufferedWriter out = new BufferedWriter(new FileWriter(filename));
-         out.write(dot);
-         out.close();
-      } catch (IOException e) {}
-     
-   }
+     try {
+        BufferedWriter out = new BufferedWriter(new FileWriter(filename));
+        out.write(dot);
+        out.close();
+     } catch (IOException e) {}
+    
+  }
+
+   public static void writeLabels(String filename, Tffst tffst) {
+	 Set<TfString> outLabels = new HashSet<TfString>();
+     try {
+        BufferedWriter out = new BufferedWriter(new FileWriter(filename));
+        Set<Transition> trans = tffst.getTransitions();
+        for (Transition transition : trans) 
+		  outLabels.add(transition.getLabelOut());
+		for (TfString tfs : outLabels)
+		  out.write(tfs.toString()+"\n");
+		out.close();
+     } catch (IOException e) {}
+    
+  }
 
  
 }

@@ -1263,6 +1263,7 @@ public class Tffst implements Serializable {
    */
   private void determinize(Set<State> initialSetOfStates) {
 
+	int g = 0;
 	// removes all epsilon labels in the domain part
     inLabelEpsilonRemoval();
     
@@ -1279,27 +1280,15 @@ public class Tffst implements Serializable {
     visitedNewStates.put(initialP, initial);
 
     while (newStates.keySet().iterator().hasNext()) {
-      
-      //Utils.showDot(toDot(""));
-      
       // the first partition
       P p = newStates.keySet().iterator().next();
       State pNewState = newStates.remove(p);
       
-      
-      for (ElementOfP e : p) {
+	  for (ElementOfP e : p)
 		if (e.state.accept) {
-//		  P tail = p.tail();
-//		  TfString output = tail.longestPrefix();
-//		  if (!output.isEpsilon()) {
-//			State tailState = new State();
-//			tailState.setAccept(true);
-//			pNewState.addOutTran(new Transition(new TfString(SimpleTf.Epsilon()), output, tailState));
-//		  } else
 		  pNewState.setAccept(true);
 		  break;
 		}
-	  }
       
 	  // for each possible partitions of the relevant tfs in two subsets
       for (Partition partition : Partition.getPartitions3(getRelevantTFs(p))) {
@@ -1325,7 +1314,7 @@ public class Tffst implements Serializable {
 		  }
 		}
       }
-	  
+      //    Utils.showDot(toDot(Integer.toString(g++)));
     }
 
     inLabelEpsilonRemoval();
@@ -1381,5 +1370,5 @@ public class Tffst implements Serializable {
 //      return a;
 //  }
   
-  
+ 
 }

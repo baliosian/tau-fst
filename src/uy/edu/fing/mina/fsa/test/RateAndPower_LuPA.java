@@ -157,15 +157,17 @@ public class RateAndPower_LuPA {
     for (Tffst tffst : rules) {
       rateAndPower = rateAndPower.union(tffst);
     }
+    
+    Utils.showDot(rateAndPower.toDot("before kleene"));
 
-    Utils.showDot(rateAndPower.toDot("before"));
+    rateAndPower = rateAndPower.kleene();
+    
+    Utils.showDot(rateAndPower.toDot("before det"));
 
     rateAndPower.setDeterministic(false);
     rateAndPower.determinize();
     
-    rateAndPower = rateAndPower.kleene();
-    
-    Utils.showDot(rateAndPower.toDot("after"));
+    Utils.showDot(rateAndPower.toDot("after all"));
     
     try {
   		LupaExporterRatePower.generateLupaFiles(rateAndPower, "src/fsm_template.lua", "fsm_rate_loss");

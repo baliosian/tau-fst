@@ -75,13 +75,12 @@ public class RateAndPower_small {
  //low      |  high     |      low  |  keep      |    keep    
  //low      |  not high |      low  |  increase  |    keep    
      
-//    rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   ,(new SimpleTf("lr")).not() ,SimpleTf.Epsilon()         , new SimpleTf("dr"), new SimpleTf("kp")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   ,(new SimpleTf("lr"))       ,(new SimpleTf("hp"))       , new SimpleTf("kr"), new SimpleTf("kp")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   ,(new SimpleTf("lr"))       ,(new SimpleTf("hp")).not() , new SimpleTf("kr"), new SimpleTf("ip")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("ll"))         ,SimpleTf.Epsilon()         ,(new SimpleTf("lp")).not() , new SimpleTf("kr"), new SimpleTf("dp")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("ll"))         ,(new SimpleTf("hr"))       ,(new SimpleTf("lp"))       , new SimpleTf("kr"), new SimpleTf("kp")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("ll"))         ,(new SimpleTf("hr")).not() ,(new SimpleTf("lp"))       , new SimpleTf("ir"), new SimpleTf("kp")));
-    
+    rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   ,(new SimpleTf("lr")).not() ,SimpleTf.Epsilon()         , new SimpleTf("dr"), new SimpleTf("kp")));
+    rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   ,(new SimpleTf("lr"))       ,(new SimpleTf("hp"))       , new SimpleTf("kr"), new SimpleTf("kp")));
+    rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   ,(new SimpleTf("lr"))       ,(new SimpleTf("hp")).not() , new SimpleTf("kr"), new SimpleTf("ip")));
+    rules.add(rap.ruleTemplate((new SimpleTf("ll"))         ,SimpleTf.Epsilon()         ,(new SimpleTf("lp")).not() , new SimpleTf("kr"), new SimpleTf("dp")));
+    rules.add(rap.ruleTemplate((new SimpleTf("ll"))         ,(new SimpleTf("hr"))       ,(new SimpleTf("lp"))       , new SimpleTf("kr"), new SimpleTf("kp")));
+    rules.add(rap.ruleTemplate((new SimpleTf("ll"))         ,(new SimpleTf("hr")).not() ,(new SimpleTf("lp"))       , new SimpleTf("ir"), new SimpleTf("kp")));
     
     Tffst rateAndPower = new Tffst();
     
@@ -96,9 +95,10 @@ public class RateAndPower_small {
     
     rateAndPower = rateAndPower.kleene();
     
-    //Utils.writeDot("/tmp/rateanpower.dot", rateAndPower.toDot("after"));
-    Utils.showDot(rateAndPower.toDot("after"));
+    Utils.writeDot("/tmp/rateanpower.dot", rateAndPower.toDot("after"));
+//    Utils.showDot(rateAndPower.toDot("after"));
 
+    Utils.writeLabels("/tmp/rateandpowerlabels.txt", rateAndPower);
     
   }
   
