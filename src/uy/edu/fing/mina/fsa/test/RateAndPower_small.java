@@ -89,11 +89,10 @@ public class RateAndPower_small {
     }
 
     Utils.showDot(rateAndPower.toDot("before"));
-
+    
+    //rateAndPower = rateAndPower.kleene();
     rateAndPower.setDeterministic(false);
     rateAndPower.determinize();
-    
-    rateAndPower = rateAndPower.kleene();
     
     Utils.writeDot("/tmp/rateanpower.dot", rateAndPower.toDot("after"));
 //    Utils.showDot(rateAndPower.toDot("after"));

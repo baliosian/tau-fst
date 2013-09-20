@@ -22,34 +22,85 @@ public class RateAndPower_LuPA {
 
   public Tffst ruleTemplate(TfI tfinp1,TfI tfinp2,TfI tfinp3,TfI tfout4,TfI tfout5) {
     
-    State s0 = new State();
-    State s1 = new State();
-    State s2 = new State();
-    State s3 = new State();
-    State s4 = new State();
-    State s5 = new State();
+    State s00 = new State();
+    State s01 = new State();
+    State s02 = new State();
+    State s03 = new State();
+    State s04 = new State();
+    State s05 = new State();
 
-    Tffst tffst = new Tffst();
-    tffst.setInitialState(s0);
-    s5.setAccept(true);
+    State s10 = new State();
+    State s11 = new State();
+    State s12 = new State();
+    State s13 = new State();
+    State s14 = new State();
+    State s15 = new State();
+
+    State s20 = new State();
+    State s21 = new State();
+    State s22 = new State();
+    State s23 = new State();
+    State s24 = new State();
+    State s25 = new State();
+
+    Tffst tffst0 = new Tffst();
+    tffst0.setInitialState(s00);
+    s05.setAccept(true);
     
-    s0.addOutTran(new Transition(tfinp1, ActionTf.Epsilon(),s1));
-    s0.addOutTran(new Transition(tfinp1.not(), ActionTf.Epsilon(),s0));
-
-    s1.addOutTran(new Transition(tfinp2, ActionTf.Epsilon(),s2));
-    s1.addOutTran(new Transition(tfinp2.not(), ActionTf.Epsilon(),s1));
-
-    s2.addOutTran(new Transition(tfinp3, ActionTf.Epsilon(),s3));
-    s2.addOutTran(new Transition(tfinp3.not(), ActionTf.Epsilon(),s2));
-
-    s3.addOutTran(new Transition(EventTf.Epsilon(), tfout4,s4));
-    s4.addOutTran(new Transition(EventTf.Epsilon(), tfout5,s5));
-
-    //Utils.showDot(tffst.toDot("tffst before"));
+    Tffst tffst1 = new Tffst();
+    tffst1.setInitialState(s10);
+    s15.setAccept(true);
     
-    tffst.inLabelEpsilonRemoval();
+    Tffst tffst2 = new Tffst();
+    tffst2.setInitialState(s20);
+    s25.setAccept(true);
     
-    //Utils.showDot(tffst.toDot("tffst after"));
+    s00.addOutTran(new Transition(tfinp1, ActionTf.Epsilon(),s01));
+    s00.addOutTran(new Transition(tfinp1.not(), ActionTf.Epsilon(),s00));
+
+    s01.addOutTran(new Transition(tfinp2, ActionTf.Epsilon(),s02));
+    s01.addOutTran(new Transition(tfinp2.not(), ActionTf.Epsilon(),s01));
+
+    s02.addOutTran(new Transition(tfinp3, ActionTf.Epsilon(),s03));
+    s02.addOutTran(new Transition(tfinp3.not(), ActionTf.Epsilon(),s02));
+
+    //----
+    
+    s11.addOutTran(new Transition(tfinp1, ActionTf.Epsilon(),s12));
+    s11.addOutTran(new Transition(tfinp1.not(), ActionTf.Epsilon(),s11));
+
+    s12.addOutTran(new Transition(tfinp2, ActionTf.Epsilon(),s13));
+    s12.addOutTran(new Transition(tfinp2.not(), ActionTf.Epsilon(),s12));
+
+    s10.addOutTran(new Transition(tfinp3, ActionTf.Epsilon(),s11));
+    s10.addOutTran(new Transition(tfinp3.not(), ActionTf.Epsilon(),s10));
+
+    //-------
+    
+    s22.addOutTran(new Transition(tfinp1, ActionTf.Epsilon(),s23));
+    s22.addOutTran(new Transition(tfinp1.not(), ActionTf.Epsilon(),s22));
+
+    s20.addOutTran(new Transition(tfinp2, ActionTf.Epsilon(),s21));
+    s20.addOutTran(new Transition(tfinp2.not(), ActionTf.Epsilon(),s20));
+
+    s21.addOutTran(new Transition(tfinp3, ActionTf.Epsilon(),s22));
+    s21.addOutTran(new Transition(tfinp3.not(), ActionTf.Epsilon(),s21));
+    
+    
+    s03.addOutTran(new Transition(EventTf.Epsilon(), tfout4,s04));
+    s04.addOutTran(new Transition(EventTf.Epsilon(), tfout5,s05));
+
+    s13.addOutTran(new Transition(EventTf.Epsilon(), tfout4,s14));
+    s14.addOutTran(new Transition(EventTf.Epsilon(), tfout5,s15));
+    
+    s23.addOutTran(new Transition(EventTf.Epsilon(), tfout4,s24));
+    s24.addOutTran(new Transition(EventTf.Epsilon(), tfout5,s25));
+
+    tffst0.inLabelEpsilonRemoval();
+    tffst1.inLabelEpsilonRemoval();
+    tffst2.inLabelEpsilonRemoval();
+    
+    Tffst tffst = tffst0.union(tffst1).union(tffst2); 
     
     return tffst;
   }
