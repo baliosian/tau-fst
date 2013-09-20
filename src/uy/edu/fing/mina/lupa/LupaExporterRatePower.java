@@ -561,7 +561,7 @@ public class LupaExporterRatePower {
     			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lr)))" + ", ");
     		  }
     		  else{
-    			  out = out.concat("functions." + functionName + ", ");
+    			  out = out.concat("functions." + functionName + "(lr), ");
     		  }
     	  }
     	  ActionTf function = (ActionTf) rateIt.next();
@@ -570,11 +570,11 @@ public class LupaExporterRatePower {
 			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lr)))");
 		  }
 		  else{
-			  out = out.concat("functions." + functionName);
+			  out = out.concat("functions." + functionName + "(lr)");
 		  }
 	      size = compositeActionsRate.size();
 	      for (int i=0; i<size-1; i++){
-		      out = out.concat(",lr)");
+		      out = out.concat(")");
 	      }
 	      out = out.concat("\n");
 	      
@@ -590,7 +590,7 @@ public class LupaExporterRatePower {
     			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lp)))" + ", ");
     		  }
     		  else{
-    			  out = out.concat("functions." + functionName + ", ");
+    			  out = out.concat("functions." + functionName + "(lp), ");
     		  }
     	  }
     	  function = (ActionTf) powerIt.next();
@@ -599,11 +599,11 @@ public class LupaExporterRatePower {
 			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lp)))");
 		  }
 		  else{
-			  out = out.concat("functions." + functionName);
+			  out = out.concat("functions." + functionName + "(lp)");
 		  }
 	      size = compositeActionsPower.size();
 	      for (int i=0; i<size-1; i++){
-		      out = out.concat(",lp)");
+		      out = out.concat(")");
 	      }
 	      out = out.concat("\n");
 	      out = out.concat("\t\t\tif (retRate <= retPower) and (retRate > retMax) then\n" +
@@ -638,7 +638,7 @@ public class LupaExporterRatePower {
     			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lr)))" + ", ");
     		  }
     		  else{
-    			  out = out.concat("functions." + functionName + ", ");
+    			  out = out.concat("functions." + functionName + "(lr), ");
     		  }
     	  }
     	  ActionTf function = (ActionTf) rateIt.next();
@@ -647,11 +647,11 @@ public class LupaExporterRatePower {
 			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lr)))");
 		  }
 		  else{
-			  out = out.concat("functions." + functionName);
+			  out = out.concat("functions." + functionName + "(lr)");
 		  }
 	      size = compositeActionsRate.size();
 	      for (int i=0; i<size-1; i++){
-		      out = out.concat(",lr)");
+		      out = out.concat(")");
 	      }
 	      out = out.concat("\n");
 	      out = out.concat("\t\tif ret > retMax then\n" +
@@ -679,7 +679,7 @@ public class LupaExporterRatePower {
     			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lp)))" + ", ");
     		  }
     		  else{
-    			  out = out.concat("functions." + functionName + ", ");
+    			  out = out.concat("functions." + functionName + "(lp), ");
     		  }
     	  }
     	  ActionTf function = (ActionTf) powerIt.next();
@@ -688,11 +688,11 @@ public class LupaExporterRatePower {
 			  out = out.concat("(1-(functions." + functionName(function.not()) + "(lp)))");
 		  }
 		  else{
-			  out = out.concat("functions." + functionName);
+			  out = out.concat("functions." + functionName + "(lp)");
 		  }
 	      size = compositeActionsPower.size();
 	      for (int i=0; i<size-1; i++){
-		      out = out.concat(",lp)");
+		      out = out.concat(")");
 	      }
 	      out = out.concat("\n");
 	      out = out.concat("\t\tif ret > retMax then\n" +

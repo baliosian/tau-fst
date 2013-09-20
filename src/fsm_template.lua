@@ -99,7 +99,7 @@ local function fst_step()
   
 	i_event=i_event+1
 	current_state = transition.new
-	print (current_state, #fsm[current_state],  #ret_call, is_accept[current_state], #fsm[current_state]==0)
+	print ("NEW STATE:", current_state, "#TRANS:", #fsm[current_state],  "#RETS:", #ret_call, "ACCEPT:", is_accept[current_state], "FINAL:", #fsm[current_state]==0)
   return ret_call, is_accept[current_state], #fsm[current_state]==0
 end
 
