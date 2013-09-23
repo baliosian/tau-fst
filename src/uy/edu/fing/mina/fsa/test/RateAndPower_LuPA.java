@@ -208,12 +208,12 @@ public class RateAndPower_LuPA {
  //low      |  high     |      low  |  keep      |    keep    
  //low      |  not high |      low  |  increase  |    keep    
      
-//    rules.add(rap.ruleTemplate(ll.not()   ,lr.not() ,EventTf.Epsilon()         , dr, kp));
-//    rules.add(rap.ruleTemplate(ll.not()   ,lr       ,hp       , kr, kp));
-//    rules.add(rap.ruleTemplate(ll.not()   ,lr       ,hp.not() , kr, ip));
-//    rules.add(rap.ruleTemplate(ll         ,EventTf.Epsilon()         ,lp.not() , kr, dp));
-//    rules.add(rap.ruleTemplate(ll         ,hr       ,lp       , kr, kp));
-//    rules.add(rap.ruleTemplate(ll        ,hr.not() ,lp      , ir, kp));
+    rules.add(rap.ruleTemplate(hl   ,hr ,EventTf.Epsilon(), dr, kp));
+    rules.add(rap.ruleTemplate(hl, lr, hp, kr, kp));
+//    rules.add(rap.ruleTemplate(hl, lr, lp, kr, ip));
+//    rules.add(rap.ruleTemplate(ll, EventTf.Epsilon(), hp, kr, dp));
+//    rules.add(rap.ruleTemplate(ll, hr, lp, kr, kp));
+//    rules.add(rap.ruleTemplate(ll, lr, lp, ir, kp));
     
     
     Tffst rateAndPower = new Tffst();
