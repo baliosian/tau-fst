@@ -66,11 +66,11 @@ public class RateAndPower_LuPA {
 
     //----
     
-    s11.addOutTran(new Transition(tfinp1, ActionTf.Epsilon(),s12));
-    s11.addOutTran(new Transition(tfinp1.not(), ActionTf.Epsilon(),s11));
+    s11.addOutTran(new Transition(tfinp2, ActionTf.Epsilon(),s12));
+    s11.addOutTran(new Transition(tfinp2.not(), ActionTf.Epsilon(),s11));
 
-    s12.addOutTran(new Transition(tfinp2, ActionTf.Epsilon(),s13));
-    s12.addOutTran(new Transition(tfinp2.not(), ActionTf.Epsilon(),s12));
+    s12.addOutTran(new Transition(tfinp1, ActionTf.Epsilon(),s13));
+    s12.addOutTran(new Transition(tfinp1.not(), ActionTf.Epsilon(),s12));
 
     s10.addOutTran(new Transition(tfinp3, ActionTf.Epsilon(),s11));
     s10.addOutTran(new Transition(tfinp3.not(), ActionTf.Epsilon(),s10));
@@ -99,8 +99,15 @@ public class RateAndPower_LuPA {
     tffst0.inLabelEpsilonRemoval();
     tffst1.inLabelEpsilonRemoval();
     tffst2.inLabelEpsilonRemoval();
+
+//    Utils.showDot(tffst0.toDot("tffst0"));
+//    Utils.showDot(tffst1.toDot("tffst1"));
+//    Utils.showDot(tffst2.toDot("tffst2"));
     
     Tffst tffst = tffst0.union(tffst1).union(tffst2); 
+    
+
+//    Utils.showDot(tffst.toDot("tffst"));
     
     return tffst;
   }
@@ -140,6 +147,12 @@ public class RateAndPower_LuPA {
     EventTf hp = new EventTf();
     hp.setName("hp");
     
+    EventTf lr = new EventTf();
+    lr.setName("lr");
+    
+    EventTf hr = new EventTf();
+    hr.setName("hr");
+    
     ActionTf kr = new ActionTf();
     kr.setName("kr");
     kr.setUniverse("rate");
@@ -164,8 +177,8 @@ public class RateAndPower_LuPA {
     kp.setName("kp");
     kp.setUniverse("power");
     
-    rules.add(rap.ruleTemplate(ll.not(), EventTf.Epsilon(), hp, dr, kp));
-    rules.add(rap.ruleTemplate(ll.not(), EventTf.Epsilon(),hp.not(), kr, ip));
+    rules.add(rap.ruleTemplate(hl, EventTf.Epsilon(), hp, dr, kp));
+    rules.add(rap.ruleTemplate(hl, EventTf.Epsilon(),lp, kr, ip));
     rules.add(rap.ruleTemplate(ll, EventTf.Epsilon(), EventTf.Epsilon(), ir, kp));
     
     //TODO que pasa cuando me llegan eventos de rate, los cuales no considero en las reglas
@@ -195,12 +208,12 @@ public class RateAndPower_LuPA {
  //low      |  high     |      low  |  keep      |    keep    
  //low      |  not high |      low  |  increase  |    keep    
      
-//    rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   ,(new SimpleTf("lr")).not() ,SimpleTf.Epsilon()         , new SimpleTf("dr"), new SimpleTf("kp")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   ,(new SimpleTf("lr"))       ,(new SimpleTf("hp"))       , new SimpleTf("kr"), new SimpleTf("kp")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("ll")).not()   ,(new SimpleTf("lr"))       ,(new SimpleTf("hp")).not() , new SimpleTf("kr"), new SimpleTf("ip")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("ll"))         ,SimpleTf.Epsilon()         ,(new SimpleTf("lp")).not() , new SimpleTf("kr"), new SimpleTf("dp")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("ll"))         ,(new SimpleTf("hr"))       ,(new SimpleTf("lp"))       , new SimpleTf("kr"), new SimpleTf("kp")));
-//    rules.add(rap.ruleTemplate((new SimpleTf("ll"))         ,(new SimpleTf("hr")).not() ,(new SimpleTf("lp"))       , new SimpleTf("ir"), new SimpleTf("kp")));
+    rules.add(rap.ruleTemplate(hl   ,hr ,EventTf.Epsilon(), dr, kp));
+    rules.add(rap.ruleTemplate(hl, lr, hp, kr, kp));
+//    rules.add(rap.ruleTemplate(hl, lr, lp, kr, ip));
+//    rules.add(rap.ruleTemplate(ll, EventTf.Epsilon(), hp, kr, dp));
+//    rules.add(rap.ruleTemplate(ll, hr, lp, kr, kp));
+//    rules.add(rap.ruleTemplate(ll, lr, lp, ir, kp));
     
     
     Tffst rateAndPower = new Tffst();
@@ -209,16 +222,16 @@ public class RateAndPower_LuPA {
       rateAndPower = rateAndPower.union(tffst);
     }
     
-    Utils.showDot(rateAndPower.toDot("before kleene"));
+    //Utils.showDot(rateAndPower.toDot("before kleene"));
 
     rateAndPower = rateAndPower.kleene();
     
-    Utils.showDot(rateAndPower.toDot("before det"));
+    //Utils.showDot(rateAndPower.toDot("before det"));
 
     rateAndPower.setDeterministic(false);
     rateAndPower.determinize();
     
-    Utils.showDot(rateAndPower.toDot("after all"));
+    //Utils.showDot(rateAndPower.toDot("after all"));
     
     try {
   		LupaExporterRatePower.generateLupaFiles(rateAndPower, "src/fsm_template.lua", "fsm_rate_loss");
