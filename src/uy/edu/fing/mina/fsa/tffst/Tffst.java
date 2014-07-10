@@ -925,10 +925,15 @@ public class Tffst implements Serializable {
    */
   public void minimize() {
     Tffsr tffsr = this.toTffsr();
+    Utils.showDot(tffsr.toDot("fsr"));
+    
     tffsr.minimize();
+    
     Tffst tffst = tffsr.toTffst();
     assign(tffst);
     inLabelEpsilonRemoval();
+    Utils.showDot(tffst.toDot("back and forward"));
+    
   }
 
   /**

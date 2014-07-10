@@ -28,9 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import uy.edu.fing.mina.fsa.logics.Utils;
 import uy.edu.fing.mina.fsa.tf.Partition;
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
 import uy.edu.fing.mina.fsa.tf.TfI;
+import uy.edu.fing.mina.fsa.tf.TfPair;
 import uy.edu.fing.mina.fsa.tf.TfString;
 import uy.edu.fing.mina.fsa.tffst.ElementOfP;
 import uy.edu.fing.mina.fsa.tffst.P;
@@ -866,7 +868,7 @@ public class Tffsr implements Serializable {
   }
 
   /**
-   * retirns the Tffst corresponding to this tffsr. it leaves epsilon
+   * returns the Tffst corresponding to this tffsr. it leaves epsilon
    * transitions as is
    * 
    * @return
@@ -875,28 +877,20 @@ public class Tffsr implements Serializable {
   public Tffst toTffst() {
     Tffst a = new Tffst();
     HashMap<State, uy.edu.fing.mina.fsa.tffst.State> m = new HashMap<State, uy.edu.fing.mina.fsa.tffst.State>();
-    Set<State> states = getStates();
 
-    for (Iterator<State> iter = states.iterator(); iter.hasNext();) {
-      State s = iter.next();
+    for (State s : getStates()) 
       m.put(s, new uy.edu.fing.mina.fsa.tffst.State());
-    }
 
-    for (Iterator<State> iter = states.iterator(); iter.hasNext();) {
-      State s = iter.next();
+    for (State s : m.keySet()) {
       uy.edu.fing.mina.fsa.tffst.State p = m.get(s);
-
       p.setAccept(s.isAccept());
       if (s == initial) a.setInitialState(p);
-
-      p.setTransitions(new HashSet<uy.edu.fing.mina.fsa.tffst.Transition>());
-
-      for (Iterator<Transition> iterator = s.getTransitions().iterator(); iterator.hasNext();) {
-        Transition t = iterator.next();
+      for (Transition t :  s.getTransitions()) {
         uy.edu.fing.mina.fsa.tffst.State to = m.get(t.to);
-        Set<uy.edu.fing.mina.fsa.tffst.Transition> trans = p.getTransitions();
-        Set<uy.edu.fing.mina.fsa.tffst.Transition> newTransitions = t.toTffstTrans(to);
-        trans.addAll(newTransitions);
+        if (t.label instanceof TfPair)
+          p.addOutTran(new uy.edu.fing.mina.fsa.tffst.Transition(((TfPair)t.label).tfIn, ((TfPair)t.label).tfOut, to));
+       
+          
       }
     }
     a.setDeterministic(deterministic);
@@ -1075,6 +1069,7 @@ public class Tffsr implements Serializable {
    */
   private void minimizeBrzozowski() {
     reverse();
+    uy.edu.fing.mina.fsa.utils.Utils.showDot(toDot());
     determinize();
     reverse();
     determinize();

@@ -122,21 +122,6 @@ public class Transition implements Serializable {
 		b.append("\"]\n");
 	}
 
-   /**
-    * @param to2
-    * @return
-    */
-   public Set<uy.edu.fing.mina.fsa.tffst.Transition> toTffstTrans(uy.edu.fing.mina.fsa.tffst.State to) {
-      Set<uy.edu.fing.mina.fsa.tffst.Transition> out = new HashSet<uy.edu.fing.mina.fsa.tffst.Transition>();
-      Set<TfPair> tfpairs = TfPair.breakTfPairs(this.label);
-      for (Iterator<TfPair> iter = tfpairs.iterator(); iter.hasNext();) {
-         TfPair tfp = (TfPair) iter.next();
-         uy.edu.fing.mina.fsa.tffst.Transition t = new uy.edu.fing.mina.fsa.tffst.Transition(tfp.tfIn, tfp.tfOut, to);
-         out.add(t);
-      }
-      return out;
-   }
-
 
 }
 
