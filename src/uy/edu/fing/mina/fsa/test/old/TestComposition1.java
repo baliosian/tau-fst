@@ -60,7 +60,7 @@ public class TestComposition1 {
       seck.add(tfk);
       Transition trans3 = new Transition(sec, seck, s2);
       s1.addOutTran(trans3);
-      tffst1 = tffst1.toSimpleTransitions();
+      tffst1 = tffst1.toSingleLabelTransitions();
 
       Tffst tffst2 = new Tffst();
 

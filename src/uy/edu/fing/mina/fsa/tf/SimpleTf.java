@@ -59,7 +59,7 @@ public class SimpleTf extends Tf {
         return getName().equals(SimpleTf.NONE);
     }
 
-    public Object clone() throws CloneNotSupportedException {
+    public SimpleTf clone() throws CloneNotSupportedException {
         SimpleTf clon = (SimpleTf) super.clone();
         clon.name = name;
         if (this.isEpsilon())

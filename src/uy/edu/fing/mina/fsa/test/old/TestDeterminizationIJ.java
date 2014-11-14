@@ -59,7 +59,7 @@ public class TestDeterminizationIJ {
 
       Utils.showDot(tffst1.toDot(""));
       
-      Utils.showDot(tffst1.toSimpleTransitions().toDot(""));
+      Utils.showDot(tffst1.toSingleLabelTransitions().toDot(""));
             
       
    }

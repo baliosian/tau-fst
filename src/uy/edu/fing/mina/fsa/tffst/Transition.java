@@ -15,7 +15,6 @@ package uy.edu.fing.mina.fsa.tffst;
 
 import java.io.Serializable;
 
-import uy.edu.fing.mina.fsa.tf.SimpleTf;
 import uy.edu.fing.mina.fsa.tf.TfI;
 import uy.edu.fing.mina.fsa.tf.TfString;
 
@@ -72,18 +71,6 @@ public class Transition implements Serializable {
   }
 
   private Double weight;
-
-//  /**
-//   * Constructs new transition with only one tf in the output.
-//   * 
-//   * @param labelIn
-//   * @param labelOut
-//   * @param to
-//   *          destination state
-//   */
-//  public Transition() {
-//    this(null, new TfString(SimpleTf.Epsilon()), new TfString(SimpleTf.Epsilon()), null);
-//  }
 
   /**
    * Constructs new transition with only one tf in the output.

@@ -31,12 +31,12 @@ import java.util.Set;
 import uy.edu.fing.mina.fsa.logics.Utils;
 import uy.edu.fing.mina.fsa.tf.Partition;
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
+import uy.edu.fing.mina.fsa.tf.Tf;
 import uy.edu.fing.mina.fsa.tf.TfI;
 import uy.edu.fing.mina.fsa.tf.TfPair;
 import uy.edu.fing.mina.fsa.tf.TfString;
-import uy.edu.fing.mina.fsa.tffst.ElementOfP;
-import uy.edu.fing.mina.fsa.tffst.P;
 import uy.edu.fing.mina.fsa.tffst.Tffst;
+
 
 /*
  * Class invariants: - An Tffsr is either represented explicitly (with State and
@@ -182,8 +182,8 @@ public class Tffsr implements Serializable {
     a.initial = s0;
     State s1 = new State();
     s1.setAccept(true);
-    Transition t = new Transition(new SimpleTf(), s1);
-    s0.addTransition(t);
+    Transition t = new Transition(new TfString( new SimpleTf()), s1);
+    s0.addOutTran(t);
     a.deterministic = true;
     return a;
   }
@@ -323,7 +323,7 @@ public class Tffsr implements Serializable {
       Iterator<Transition> j = s.getTransitions().iterator();
       while (j.hasNext()) {
         Transition t = j.next();
-        p.getTransitions().add(new Transition(t.label, m.get(t.to)));
+        p.addOutTran(new Transition(t.label, m.get(t.getTo())));
       }
     }
     a.deterministic = deterministic;
@@ -338,9 +338,8 @@ public class Tffsr implements Serializable {
    * Complexity: linear in number of states (if already deterministic).
    */
   public Tffsr complement() {
-    Tffsr a = (Tffsr) clone();
-    a.determinize();
-    a.totalize();
+//    a.determinize(); TODO to check if is necesary to determinize 
+    Tffsr a = this.totalize();
     Iterator<State> i = a.getStates().iterator();
     while (i.hasNext()) {
       State p = i.next();
@@ -399,9 +398,9 @@ public class Tffsr implements Serializable {
       Iterator<Transition> i = s.getTransitions().iterator();
       while (i.hasNext()) {
         Transition t = i.next();
-        if (!visited.contains(t.to)) {
-          visited.add(t.to);
-          worklist.add(t.to);
+        if (!visited.contains(t.getTo())) {
+          visited.add(t.getTo());
+          worklist.add(t.getTo());
         }
       }
     }
@@ -473,9 +472,9 @@ public class Tffsr implements Serializable {
       Iterator<Transition> i = s.getTransitions().iterator();
       while (i.hasNext()) {
         Transition t = i.next();
-        if (!visited.contains(t.to)) {
-          visited.add(t.to);
-          worklist.add(t.to);
+        if (!visited.contains(t.getTo())) {
+          visited.add(t.getTo());
+          worklist.add(t.getTo());
         }
       }
     }
@@ -519,7 +518,7 @@ public class Tffsr implements Serializable {
       Transition[] t2 = transitions2[p.s2.getNumber()];
       for (int n1 = 0, n2 = 0; n1 < t1.length && n2 < t2.length;) {
 
-        StatePair q = new StatePair(t1[n1].to, t2[n2].to);
+        StatePair q = new StatePair(t1[n1].getTo(), t2[n2].getTo());
         StatePair r = newstates.get(q);
         if (r == null) {
           q.s = new State();
@@ -527,8 +526,8 @@ public class Tffsr implements Serializable {
           newstates.put(q, q);
           r = q;
         }
-        p.s.getTransitions().add(new Transition(t1[n1].label.and(t2[n2].label), r.s));
-      }
+        p.s.addOutTran(new Transition(new TfString(t1[n1].label.get(0).and(t2[n2].label.get(0))), r.s));  //FIXME has to simplified 
+      } 
     }
     c.deterministic = true;
     c.removeDeadTransitions();
@@ -603,7 +602,7 @@ public class Tffsr implements Serializable {
       s.resetTransitions();
       while (j.hasNext()) {
         Transition t = j.next();
-        if (live.contains(t.to)) s.getTransitions().add(t);
+        if (live.contains(t.getTo())) s.addOutTran(t);
       }
     }
   }
@@ -718,7 +717,7 @@ public class Tffsr implements Serializable {
       Iterator<Transition> j = r.getTransitions().iterator();
       while (j.hasNext()) {
         Transition t = j.next();
-        (m.get(t.to)).add(new Transition(t.label, r));
+        (m.get(t.getTo())).add(new Transition(t.label, r)); //FIXME needs to be simplified
       }
     }
     i = states.iterator();
@@ -886,9 +885,9 @@ public class Tffsr implements Serializable {
       p.setAccept(s.isAccept());
       if (s == initial) a.setInitialState(p);
       for (Transition t :  s.getTransitions()) {
-        uy.edu.fing.mina.fsa.tffst.State to = m.get(t.to);
-        if (t.label instanceof TfPair)
-          p.addOutTran(new uy.edu.fing.mina.fsa.tffst.Transition(((TfPair)t.label).tfIn, ((TfPair)t.label).tfOut, to));
+        uy.edu.fing.mina.fsa.tffst.State to = m.get(t.getTo());
+        if (t.label.get(0) instanceof TfPair) //FIXME needs to be simplified
+          p.addOutTran(new uy.edu.fing.mina.fsa.tffst.Transition(((TfPair)t.label.get(0)).tfIn, ((TfPair)t.label.get(0)).tfOut, to));
        
           
       }
@@ -925,10 +924,10 @@ public class Tffsr implements Serializable {
 
       for (Iterator<Transition> iterator = s.getTransitions().iterator(); iterator.hasNext();) {
         Transition t = iterator.next();
-        uy.edu.fing.mina.fsa.tffst.State to = m.get(t.to);
+        uy.edu.fing.mina.fsa.tffst.State to = m.get(t.getTo());
         Set<uy.edu.fing.mina.fsa.tffst.Transition> trans = p.getTransitions();
         uy.edu.fing.mina.fsa.tffst.Transition id = new uy.edu.fing.mina.fsa.tffst.Transition(
-            t.label, t.label, to, 1);
+            t.label.get(0), t.label.get(0), to, 1); //FIXME label must be simple
         trans.add(id);
       }
     }
@@ -964,10 +963,10 @@ public class Tffsr implements Serializable {
 
       for (Iterator<Transition> iterator = s.getTransitions().iterator(); iterator.hasNext();) {
         Transition t = iterator.next();
-        uy.edu.fing.mina.fsa.tffst.State to = m.get(t.to);
+        uy.edu.fing.mina.fsa.tffst.State to = m.get(t.getTo());
         Set<uy.edu.fing.mina.fsa.tffst.Transition> trans = p.getTransitions();
         uy.edu.fing.mina.fsa.tffst.Transition rg = new uy.edu.fing.mina.fsa.tffst.Transition(
-            SimpleTf.AcceptsAll(), t.label, to, 1);
+            SimpleTf.AcceptsAll(), t.label.get(0), to, 1);
         trans.add(rg);
       }
     }
@@ -1046,7 +1045,7 @@ public class Tffsr implements Serializable {
             worklist.add(tDUnion);
             newstate.put(tDUnion, new State());
           }
-          nd.getTransitions().add(new Transition(tfpartition, (State) newstate.get(tDUnion)));
+          nd.addOutTran(new Transition(new TfString(tfpartition), (State) newstate.get(tDUnion)));
         }
       }
     }
@@ -1058,7 +1057,7 @@ public class Tffsr implements Serializable {
     Set<TfI> relevantTFs = new HashSet<TfI>();
     for (State s : p)
       for (Transition t : s.getTransitions())
-        relevantTFs.add(t.label);
+        relevantTFs.add(t.label.get(0)); //FIXME tffst must have been simplified
 
     return relevantTFs;
   }
@@ -1091,7 +1090,7 @@ public class Tffsr implements Serializable {
         for (State s : states)
         for (Transition t : s.getTransitions())
           if (tf.equals(t.label)) { //FIXME this needs the tfs to be simplified to  have a chance of matching 
-            targets.add(t.to);
+            targets.add(t.getTo());
           }
     }
     return targets;
@@ -1125,7 +1124,7 @@ public class Tffsr implements Serializable {
       Iterator<Transition> j = s.getTransitions().iterator();
       while (j.hasNext()) {
         Transition t = j.next();
-        map.get(t.to).add(s);
+        map.get(t.getTo()).add(s);
       }
     }
     Set<State> live = new HashSet<State>(getAcceptStates());
@@ -1154,7 +1153,7 @@ public class Tffsr implements Serializable {
     Iterator<State> i = states.iterator();
     while (i.hasNext()) {
       State s = i.next();
-      transitions[s.getNumber()] = s.getTransitionArray();
+      transitions[s.getNumber()] = (Transition[]) s.getTransitions().toArray(); //TODO take arrays out of this
     }
     return transitions;
   }
@@ -1168,7 +1167,7 @@ public class Tffsr implements Serializable {
     Iterator<Transition> i = s.getTransitions().iterator();
     while (i.hasNext()) {
       Transition t = i.next();
-      if (path.contains(t.to) || !isFinite(t.to, path)) return false;
+      if (path.contains(t.getTo()) || !isFinite(t.getTo(), path)) return false;
     }
     path.remove(s);
     return true;
@@ -1190,49 +1189,103 @@ public class Tffsr implements Serializable {
    * Adds transitions to explicit crash state to ensure that transition function
    * is total.
    */
-  public void totalize() {
-
-    State s = new State();
-    SimpleTf stfall = new SimpleTf();
-    stfall.setAcceptAll();
-    s.getTransitions().add(new Transition(stfall, s));
-
-    SimpleTf stfnone = new SimpleTf();
-    stfnone.setAcceptNone();
-
-    Iterator<State> i = getStates().iterator();
+  public Tffsr totalize() {
+	
+	Tffsr simple = this.toSingleLabelTransitions();
+	
+	// the crash state
+	State s = new State();
+    s.addOutTran(new Transition(new TfString(SimpleTf.AcceptsAll()), s));
+    
+	Iterator<State> i = simple.getStates().iterator();
     while (i.hasNext()) {
-      TfI newLabel = stfnone;
       State p = i.next();
+      TfI newTf = SimpleTf.AcceptsNone();
       Iterator<Transition> j = p.getTransitions().iterator();
       if (j.hasNext()) {
-        newLabel = j.next().label;
         while (j.hasNext()) {
           Transition t = j.next();
-          newLabel = newLabel.or(t.label);
+          newTf = newTf.orSimple(t.getLabel().get(0));
         }
       }
-      p.getTransitions().add(new Transition(newLabel.not(), s));
+      p.addOutTran(new Transition( new TfString(newTf.not()), s));
     }
-    simplifyTransitions();
+
+    simple.simplifyTransitionLabels();
+    
+    return simple;
   }
 
   /**
    * simplify all transitions in the tffsr
    * 
    */
-  void simplifyTransitions() {
+  void simplifyTransitionLabels() {
     Iterator<State> i = getStates().iterator();
     while (i.hasNext()) {
       State s = (State) i.next();
+      Set<Transition> sTransToRem = new HashSet<Transition>();
       Iterator<Transition> j = s.getTransitions().iterator();
       while (j.hasNext()) {
         Transition t = j.next();
-        t.label = uy.edu.fing.mina.fsa.logics.Utils.simplify(t.label);
-        if (t.label.acceptsNone()) j.remove();
+        t.label = new TfString(Utils.simplify(t.label.get(0)));
+        if (t.label.get(0).acceptsNone()) sTransToRem.add(t);
       }
+      s.getTransitions().removeAll(sTransToRem);
     }
   }
+
+
+
+  /**
+   * returns a Tffst representing this tffst but with simple labels on each
+   * edge. it expands subEpochs in simple pairs of TFs adding epsilons
+   * 
+   * @return
+   */
+  public Tffsr toSingleLabelTransitions() {
+
+	Tffsr simpleTffst = new Tffsr();
+	HashMap<State, State> m = new HashMap<State, State>();
+
+	State last;
+	Set<State> states = getStates();
+
+	for (State s : states) {
+	  if (m.get(s) == null) {
+		last = new State();
+		m.put(s, last);
+		last.accept = s.accept;
+		if (s == initial)
+		  simpleTffst.initial = last;
+	  } else
+		last = m.get(s);
+
+	  for (Transition t : s.getTransitions()) {
+
+		if (m.get(t.getTo()) == null) {
+		  State newTo = new State();
+		  m.put(t.getTo(), newTo);
+		  newTo.accept = t.getTo().accept;
+		}
+
+		Transition lastTran = new Transition(last, new TfString(t.label), m.get(t.getTo()));
+
+		while (lastTran.getLabel().size() > 1) {
+		  last = lastTran.getFrom();
+		  State ns = new State();
+		  lastTran.setFrom(ns);
+		  new Transition(last, new TfString(lastTran.getLabel().remove(0)), ns);
+		}
+	  }
+	}
+
+	simpleTffst.deterministic = deterministic;
+	simpleTffst.info = info;
+
+	return simpleTffst;
+  }
+
 
 }
 

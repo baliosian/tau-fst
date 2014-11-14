@@ -119,7 +119,8 @@ public class TfString implements List<TfI> {// extends Tf implements List {
 
 
   public TfI get(int index) {
-    return this.listOfTfs.get(index);
+	if (isEpsilon()) return SimpleTf.Epsilon();
+	else return this.listOfTfs.get(index);
   }
 
   /**

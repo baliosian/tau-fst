@@ -62,7 +62,7 @@ public class TestEpsilonRem {
 
       Utils.showDot(tffst1.toDot("tffst1"));
   
-      tffst1 = tffst1.toSimpleTransitions(); //FIXME
+      tffst1 = tffst1.toSingleLabelTransitions(); //FIXME
       Utils.showDot(tffst1.toDot("tffst1 simple"));
       
       tffst1.inLabelEpsilonRemoval(); 

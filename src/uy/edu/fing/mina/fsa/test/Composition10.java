@@ -64,7 +64,7 @@ public class Composition10 {
 //      initial  ──▶ │       3       │ ─────────▶ │       2       │ ─────▶ │ 0 │ ────▶ ║ 1 ║
 //                   └───────────────┘            └───────────────┘        └───┘       ╚═══╝
       
-      tffst1 = tffst1.toSimpleTransitions();
+      tffst1 = tffst1.toSingleLabelTransitions();
       
       Utils.showDot(tffst1.toDot("tffst1 simple transitions"));
 

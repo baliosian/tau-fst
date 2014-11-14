@@ -29,13 +29,18 @@ public class Utils {
 
   public static TfI disjunctiveFormByMua(TfI tf) {
 
-    TfI dnftf = null;
+	TfI dnftf = null;
 
-    if (tf instanceof CompositeTf) dnftf = ((CompositeTf) tf).toDNF();
+	if (tf instanceof CompositeTf)
+	  dnftf = ((CompositeTf) tf).toDNF();
+	else if (tf instanceof SimpleTf)
+	  try {
+		dnftf = ((SimpleTf) tf).clone();
+	  } catch (CloneNotSupportedException e) {
+		e.printStackTrace();
+	  }
 
-    // TODO add other types of Tfs.
-
-    return dnftf;
+	return dnftf;
   }
 
   /*

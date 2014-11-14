@@ -19,8 +19,10 @@ import uy.edu.fing.mina.fsa.tf.SimpleTf;
 import uy.edu.fing.mina.fsa.tf.TfI;
 import uy.edu.fing.mina.fsa.tf.TfPair;
 import uy.edu.fing.mina.fsa.tf.TfString;
+
 import uy.edu.fing.mina.fsa.tffsr.Tffsr;
 import uy.edu.fing.mina.fsa.utils.Utils;
+
 
 /*
  * Class invariants: - An TFFST is represented explicitly (with State and
@@ -332,8 +334,8 @@ public class Tffst implements Serializable {
   
   public Tffst composition(Tffst theOther) { 
 
-    Tffst thisSimple = this.toSimpleTransitions();
-    Tffst theOtherSimple = theOther.toSimpleTransitions();
+    Tffst thisSimple = this.toSingleLabelTransitions();
+    Tffst theOtherSimple = theOther.toSingleLabelTransitions();
     
     Tffst out = new Tffst();
 
@@ -640,7 +642,7 @@ public class Tffst implements Serializable {
    */
   public Tffsr firstProjection() {
 
-    Tffst simpleTffst = toSimpleTransitions(); 
+    Tffst simpleTffst = toSingleLabelTransitions(); 
     Tffsr outTffsr = new Tffsr();
     Map<State, uy.edu.fing.mina.fsa.tffsr.State> stateMap = new HashMap<State, uy.edu.fing.mina.fsa.tffsr.State>();
 
@@ -656,8 +658,10 @@ public class Tffst implements Serializable {
       uy.edu.fing.mina.fsa.tffsr.State fsrState = stateMap.get(fstState);
       for (Transition fstTransition :fstState.getTransitions()) {
         // can do this because  simpleTffst = toSimpleTransitions() 
-        fsrState.addTransition(new uy.edu.fing.mina.fsa.tffsr.Transition(
-        	fstTransition.labelIn.isEpsilon() ? SimpleTf.Epsilon() : fstTransition.labelIn.get(0), stateMap.get(fstTransition.getTo())));
+        fsrState.addOutTran(
+        		new uy.edu.fing.mina.fsa.tffsr.Transition(
+        			new TfString(fstTransition.labelIn.isEpsilon() ? SimpleTf.Epsilon() : fstTransition.labelIn.get(0)), 
+        				stateMap.get(fstTransition.getTo())));
       }
     }
     return outTffsr;
@@ -1048,12 +1052,12 @@ public class Tffst implements Serializable {
   }
 
   /**
-   * returns a Tffsr representing this tffst. it expands subEpochs in simple
-   * pairs of TFs adding epsilons
+   * returns a Tffst representing this tffst but with simple labels on each edge. 
+   * it expands subEpochs in simple pairs of TFs adding epsilons
    * 
    * @return
    */
-  public Tffst toSimpleTransitions() {
+  public Tffst toSingleLabelTransitions() {
 
 	Tffst simpleTffst = new Tffst();
 	HashMap<State, State> m = new HashMap<State, State>();
@@ -1112,7 +1116,7 @@ public class Tffst implements Serializable {
    */
   public Tffsr toTffsr() {
 
-    Tffst simpleTffst = toSimpleTransitions(); 
+    Tffst simpleTffst = toSingleLabelTransitions(); 
     Tffsr outTffsr = new Tffsr();
     Map<State, uy.edu.fing.mina.fsa.tffsr.State> stateMap = new HashMap<State, uy.edu.fing.mina.fsa.tffsr.State>();
 
@@ -1128,10 +1132,9 @@ public class Tffst implements Serializable {
       uy.edu.fing.mina.fsa.tffsr.State fsrState = stateMap.get(fstState);
       for (Transition fstTransition :fstState.getTransitions()) {
         // can do this because  simpleTffst = toSimpleTransitions() 
-        fsrState.addTransition(new uy.edu.fing.mina.fsa.tffsr.Transition(
-            new TfPair(
-            	fstTransition.labelIn.isEpsilon() ? SimpleTf.Epsilon(): fstTransition.labelIn.get(0),
-            		fstTransition.labelOut.isEpsilon() ? SimpleTf.Epsilon() : fstTransition.labelOut.get(0)), 
+        fsrState.addOutTran(new uy.edu.fing.mina.fsa.tffsr.Transition(new TfString(
+            new TfPair(fstTransition.labelIn.isEpsilon() ? SimpleTf.Epsilon(): fstTransition.labelIn.get(0),
+            		fstTransition.labelOut.isEpsilon() ? SimpleTf.Epsilon() : fstTransition.labelOut.get(0))), 
             		stateMap.get(fstTransition.getTo())));
       }
     }
@@ -1354,26 +1357,82 @@ public class Tffst implements Serializable {
     if (minimize_always) minimize();
   }
 
+  /**
+   * Computes a total version of this tffst. The not operation on the pair labelin/labelout considers its identity part too. 
+   * 
+   * -(<a>/<a>) = ([a]/[a] + -a/? + a/-a)
+   * 
+   * @return
+   */
   
-//
-//  /**
-//   * Returns new (deterministic) automaton that accepts the complement of the
-//   * language of this automaton.
-//   * <p>
-//   * Complexity: linear in number of states (if already deterministic).
-//   */
-//  public Automaton complement() {
-//      Automaton a = cloneExpanded();
-//      a.determinize();
-//      a.totalize();
-//      Iterator i = a.getStates().iterator();
-//      while (i.hasNext()) {
-//          State p = (State) i.next();
-//          p.accept = !p.accept;
-//      }
-//      a.removeDeadTransitions();
-//      return a;
-//  }
+  public Tffst totalize() {
+	
+	//TODO add identity
+	
+	Tffst simple = this.toSingleLabelTransitions();
+	
+	// the crash state
+	State s = new State();
+    s.addOutTran(new Transition(new TfString(SimpleTf.AcceptsAll()), new TfString(SimpleTf.AcceptsAll()), s));
+    
+	Iterator<State> i = simple.getStates().iterator();
+    while (i.hasNext()) {
+      State p = i.next();
+      Set<Transition> toAdd = new HashSet<Transition>();
+      TfI newTf = SimpleTf.AcceptsNone();
+      Iterator<Transition> j = p.getTransitions().iterator();
+      if (j.hasNext()) {
+        while (j.hasNext()) {
+          Transition t = j.next();
+          newTf = newTf.orSimple(t.getLabelIn().get(0));
+          toAdd.add(new Transition( new TfString(t.getLabelIn().get(0)),new TfString(t.getLabelOut().get(0).not()), s)); 
+        }
+      }
+      p.addOutTran(new Transition( new TfString(newTf.not()),new TfString(SimpleTf.AcceptsAll()), s));
+      p.addAllTransitions(toAdd);
+    }
+
+    simple.simplifyTransitionLabels();
+    
+    return simple;
+
+  }
+
+  private void simplifyTransitionLabels() {
+    Iterator<State> i = getStates().iterator();
+    while (i.hasNext()) {
+      State s = (State) i.next();
+      Set<Transition> sTransToRem = new HashSet<Transition>();
+      Iterator<Transition> j = s.getTransitions().iterator();
+      while (j.hasNext()) {
+        Transition t = j.next();
+        if (!t.labelIn.isEpsilon()) t.labelIn.set(0, uy.edu.fing.mina.fsa.logics.Utils.simplify(t.labelIn.get(0)));
+        if (t.labelIn.get(0).acceptsNone()) sTransToRem.add(t); 
+        else if (!t.labelOut.isEpsilon()) t.labelOut.set(0, uy.edu.fing.mina.fsa.logics.Utils.simplify(t.labelOut.get(0)));
+      }
+      s.getTransitions().removeAll(sTransToRem);
+    }
+  }
+
+  
+  /**
+   * COMPLEMENT Returns new (deterministic) Tffsr that accepts the complement of
+   * the language of this Tffsr.
+   * <p>
+   * Complexity: linear in number of states (if already deterministic).
+   */
+  public Tffst complement() {
+//    a.determinize(); TODO to check if is necesary to determinize 
+    Tffst a = this.totalize();
+    Iterator<State> i = a.getStates().iterator();
+    while (i.hasNext()) {
+      State p = i.next();
+      p.setAccept(!p.isAccept());
+    }
+    a.removeDeadTransitions();
+    return a;
+  }
+
   
  
 }

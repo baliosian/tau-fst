@@ -4,7 +4,7 @@
  * Copyright (C) 2004 Javier Baliosian
  * All rights reserved.
  * */
-package uy.edu.fing.mina.fsa.test;
+package uy.edu.fing.mina.fsa.test.operations;
 
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
 import uy.edu.fing.mina.fsa.tf.TfI;
@@ -19,7 +19,7 @@ import uy.edu.fing.mina.fsa.utils.Utils;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class Complement {
+public class TffstComplement1 {
 
    /**
     * uy.edu.fing.mina.omega.tffst.test 8. it shows determinization of a union 
@@ -59,7 +59,7 @@ public class Complement {
       seck.add(tfk);
       Transition trans3 = new Transition(sec, seck, s2);
       s1.addOutTran(trans3);
-      tffst1 = tffst1.toSimpleTransitions();
+      tffst1 = tffst1.toSingleLabelTransitions();
 
       Tffst tffst2 = new Tffst();
 
@@ -87,26 +87,21 @@ public class Complement {
       Transition trans52 = new Transition(SimpleTf.AcceptsAll(),SimpleTf.AcceptsAll(), s22, 1);
       s22.addOutTran(trans52);
       
-      Tffsr tffsr2 = tffst2.firstProjection();
       
-      Tffsr tffsr2total = (Tffsr) tffsr2.clone();
-      
-      tffsr2total.totalize();
-      
-      Tffsr tffsr2comp = tffsr2.complement();
-      
-      Tffst tffst2comp = tffsr2comp.identity();
-      
-      Tffst tffstunion = tffst2.union(tffst2comp);
-      
-      Utils.showDot(tffst1.toDot("tffst1"));
+      Tffst tffst2comp = tffst2.complement();
+            
       Utils.showDot(tffst2.toDot("tffst2"));
+
       Utils.showDot(tffst2comp.toDot("tffst2comp"));
-      Utils.showDot(tffstunion.toDot("tffstunion"));
       
-      tffstunion.determinize();
+//      Tffst tffstunion = tffst2.union(tffst2comp);
+
       
-      Utils.showDot(tffstunion.toDot("tffstunion Determinized"));
+//      Utils.showDot(tffstunion.toDot("tffstunion"));
+      
+//      tffstunion.determinize();
+      
+//      Utils.showDot(tffstunion.toDot("tffstunion Determinized"));
       
 //      Tffst tffst2k = tffst2.kleene();
 //      Tffst tffst2compk = tffst2comp.kleene();
