@@ -844,6 +844,7 @@ public class Tffst implements Serializable {
     Tffst a = null;
     try {
       a = clone();
+      
       State s = new State();
       s.accept = true;
       s.addEpsilon(a.initial);
@@ -854,7 +855,6 @@ public class Tffst implements Serializable {
       a.initial = s;
 
       a.deterministic = false;
-      a.checkMinimizeAlways();
     } catch (CloneNotSupportedException e) {
       e.printStackTrace();
     }
@@ -929,15 +929,12 @@ public class Tffst implements Serializable {
    */
   public void minimize() {
     Tffsr tffsr = this.toTffsr();
-    Utils.showDot(tffsr.toDot("fsr"));
     
     tffsr.minimize();
     
     Tffst tffst = tffsr.toTffst();
     assign(tffst);
     inLabelEpsilonRemoval();
-    Utils.showDot(tffst.toDot("back and forward"));
-    
   }
 
   /**
@@ -995,29 +992,33 @@ public class Tffst implements Serializable {
    */
   public String toDot(String label) {
 
-    StringBuffer b = new StringBuffer("digraph Tffst {\n"); //$NON-NLS-1$
-    b.append("rankdir = \"LR\"\n;");
-    b.append("label = \"").append(label).append("\"\n;");
+    StringBuffer b = new StringBuffer("digraph Tffst {\n"); 
+    
+    b.append("graph [ bgcolor=white,fontname=Arial, fontcolor=black, fontsize=12 ];\n");
+    b.append("node [ fontname=Arial, fontcolor=black, fontsize=11];\n");
+    b.append("edge [ fontname=Helvetica, fontcolor=black, fontsize=10, arrowsize=0.6 ];\n");
+    b.append("rankdir = \"LR\";\n");
+    b.append("label = \"").append(label).append("\";\n");
     Iterator<State> i = getStates().iterator();
     while (i.hasNext()) {
       State s = i.next();
-      b.append("  ").append(s.getNumber()); //$NON-NLS-1$
+      b.append("  ").append(s.getNumber()); 
       if (s.accept) 
-        b.append(" [shape=doublecircle,label=\"").append(s.getNumber()).append("\"];\n"); //$NON-NLS-1$
+        b.append(" [shape=doublecircle,label=\"").append(s.getNumber()).append("\"];\n"); 
       else
-        b.append(" [shape=circle,label=\"").append(s.getNumber()).append("\"];\n"); //$NON-NLS-1$
+        b.append(" [shape=circle,label=\"").append(s.getNumber()).append("\"];\n"); 
       if (s == initial) {
-        b.append("  initial [shape=plaintext,label=\"\"];\n"); //$NON-NLS-1$
-        b.append("  initial -> ").append(s.getNumber()).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        b.append("  initial [shape=plaintext,label=\"\"];\n"); 
+        b.append("  initial -> ").append(s.getNumber()).append("\n"); 
       }
       Iterator<Transition> j = s.getTransitionsIterator();
       while (j.hasNext()) {
         Transition t = j.next();
-        b.append("  ").append(s.getNumber()); //$NON-NLS-1$
+        b.append("  ").append(s.getNumber()); 
         t.appendDot(b);
       }
     }
-    return b.append("}\n").toString(); //$NON-NLS-1$
+    return b.append("}\n").toString(); 
   }
 
   /**
@@ -1398,6 +1399,47 @@ public class Tffst implements Serializable {
 
   }
 
+  /**
+   * Computes a total version of this tffst. adds Epsilon outputs. 
+   * 
+   * @return
+   */
+  
+  public Tffst epsilonTotalize() {
+	
+	Tffst simple = this.toSingleLabelTransitions();
+	
+	// the crash state
+	State s = new State();
+	s.setAccept(true);
+    s.addOutTran(new Transition(new TfString(SimpleTf.AcceptsAll()), new TfString(SimpleTf.AcceptsAll()), s));
+    
+	Iterator<State> i = simple.getStates().iterator();
+    while (i.hasNext()) {
+      State p = i.next();
+      TfI newTf = SimpleTf.AcceptsNone();
+      Iterator<Transition> j = p.getTransitions().iterator();
+      if (j.hasNext()) {
+        while (j.hasNext()) {
+          Transition t = j.next();
+          newTf = newTf.orSimple(t.getLabelIn().get(0));
+        }
+      }
+      p.addOutTran(new Transition( new TfString(newTf.not()),new TfString(SimpleTf.Epsilon()), s));
+    }
+
+    simple.simplifyTransitionLabels();
+    
+    return simple;
+
+  }
+
+  
+  /**
+   * 
+   * 
+   * 
+   */
   private void simplifyTransitionLabels() {
     Iterator<State> i = getStates().iterator();
     while (i.hasNext()) {

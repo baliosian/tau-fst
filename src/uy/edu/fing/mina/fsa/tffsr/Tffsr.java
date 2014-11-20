@@ -1068,7 +1068,6 @@ public class Tffsr implements Serializable {
    */
   private void minimizeBrzozowski() {
     reverse();
-    uy.edu.fing.mina.fsa.utils.Utils.showDot(toDot());
     determinize();
     reverse();
     determinize();

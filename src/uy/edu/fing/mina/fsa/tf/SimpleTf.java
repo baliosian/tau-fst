@@ -9,9 +9,9 @@ package uy.edu.fing.mina.fsa.tf;
 
 public class SimpleTf extends Tf {
 
-  public static final String EPSILON = "(e)";
-  public static final String ALL = "ALL";
-  public static final String NONE = "NONE";
+  public static final String EPSILON = "&epsilon;";
+  public static final String ALL = "&#8868;";
+  public static final String NONE = "&#8869;";
   
     /**
      * Comment for <code>serialVersionUID</code>

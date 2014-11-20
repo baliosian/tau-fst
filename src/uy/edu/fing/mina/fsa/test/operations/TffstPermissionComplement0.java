@@ -19,7 +19,7 @@ import uy.edu.fing.mina.fsa.utils.Utils;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class TffstComplement0 {
+public class TffstPermissionComplement0 {
 
    /**
     * uy.edu.fing.mina.omega.tffst.test 8. it shows determinization of a union 
@@ -40,26 +40,29 @@ public class TffstComplement0 {
       SimpleTf tfa = new SimpleTf("A");
       
       s0.addOutTran(new Transition(tfa, tfa, s1));
-      s0.addOutTran(new Transition(tfa.not(),SimpleTf.Epsilon(),s0));
-      s1.addOutTran(new Transition(tfa.not(),SimpleTf.Epsilon(),s1));
+      s0.addOutTran(new Transition(tfa.not(),SimpleTf.Epsilon(),s1));
  
-      Tffst tffst1kleene = tffst1.kleene(1);
-      
-      Tffst tffst1comp = tffst1kleene.complement();
-            
       Utils.showDot(tffst1.toDot("tffst1"));
+      
+      Tffst tffst1kleene = tffst1.kleene(1);
 
       Utils.showDot(tffst1kleene.toDot("tffst1 kleene"));
+      
+      Tffst total = tffst1kleene.totalize();
 
-      Utils.showDot(tffst1comp.toDot("tffst1 kleene comp"));
-      
-      Tffst tffstunion = tffst1kleene.union(tffst1comp);
-      
-      Utils.showDot(tffstunion.toDot("union"));
-      
-      tffstunion.determinize();
-      
-      Utils.showDot(tffstunion.toDot("determinized union"));
+      Utils.showDot(total.toDot("totalized tffst1kleene"));
+
+      Tffst tffst1kleeneComp = tffst1kleene.complement(); 
+           
+      Utils.showDot(tffst1kleeneComp.toDot("tffst1 kleene comp"));
+//      
+//      Tffst tffstunion = tffst1kleene.union(tffst1kleeneComp);
+//      
+//      Utils.showDot(tffstunion.toDot("union"));
+//      
+//      tffstunion.determinize();
+//      
+//      Utils.showDot(tffstunion.toDot("determinized union"));
 
    }
   

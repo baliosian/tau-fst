@@ -59,22 +59,6 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
     this.weightTf = new HashSet<TfI>();
   }
 
-  /**
-   * it sets as not a set of tfs it must be removed when tffsr.determinize would
-   * be fixed
-   * 
-   * @param tfs
-   * @return
-   */
-  public static Set<Tf> notS(Set<Tf> tfs) {
-    Set<Tf> newtfs = new HashSet<Tf>();
-    for (Iterator<Tf> iter = tfs.iterator(); iter.hasNext();) {
-      Tf tf = iter.next();
-      tf.setNot(!tf.isNot());
-    }
-    return newtfs;
-  }
-
   abstract public boolean acceptsAll();
 
   abstract public boolean acceptsNone();
@@ -248,24 +232,25 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
   }
 
   public TfI not() {
-    TfI r;
-    
-    try {
-      r = (TfI) clone();
-      if (acceptsAll())
-        ((SimpleTf) r).setAcceptNone();
-      else if (acceptsNone())
-        ((SimpleTf) r).setAcceptAll();
-      else if (!isEpsilon())
-        r.setNot(!isNot());
 
-      return r;
-    
-    } catch (CloneNotSupportedException e) {
-      e.printStackTrace();
-    }
-    
-    return null;
+	if (isEpsilon())
+	  return SimpleTf.AcceptsAll();
+	else if (acceptsAll())
+	  return SimpleTf.AcceptsNone();
+	else if (acceptsNone())
+	  return SimpleTf.AcceptsAll();
+	else
+
+	  try {
+		TfI r;
+		r = (TfI) clone();
+		r.setNot(!isNot());
+		return r;
+	  } catch (CloneNotSupportedException e) {
+		e.printStackTrace();
+	  }
+
+	return null;
   }
 
   public abstract String toString();

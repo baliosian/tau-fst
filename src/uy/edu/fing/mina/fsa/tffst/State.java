@@ -104,7 +104,9 @@ public class State implements Serializable, Comparable<State> {
   }
 
   void addEpsilon(State to) {
-    if (to.accept) accept = true;
+    
+	if (to.accept) accept = true;
+    
     Iterator<Transition> i = to.getTransitionsIterator();
     while (i.hasNext()) {
       Transition t = (Transition) i.next();

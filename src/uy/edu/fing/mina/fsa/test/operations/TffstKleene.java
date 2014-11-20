@@ -7,9 +7,6 @@
 package uy.edu.fing.mina.fsa.test.operations;
 
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
-import uy.edu.fing.mina.fsa.tf.TfI;
-import uy.edu.fing.mina.fsa.tf.TfString;
-import uy.edu.fing.mina.fsa.tffsr.Tffsr;
 import uy.edu.fing.mina.fsa.tffst.State;
 import uy.edu.fing.mina.fsa.tffst.Tffst;
 import uy.edu.fing.mina.fsa.tffst.Transition;
@@ -19,7 +16,7 @@ import uy.edu.fing.mina.fsa.utils.Utils;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class TffstComplement0 {
+public class TffstKleene {
 
    /**
     * uy.edu.fing.mina.omega.tffst.test 8. it shows determinization of a union 
@@ -43,23 +40,11 @@ public class TffstComplement0 {
       s0.addOutTran(new Transition(tfa.not(),SimpleTf.Epsilon(),s0));
       s1.addOutTran(new Transition(tfa.not(),SimpleTf.Epsilon(),s1));
  
-      Tffst tffst1kleene = tffst1.kleene(1);
-      
-      Tffst tffst1comp = tffst1kleene.complement();
+      Tffst tffst1kleene = tffst1.kleene();
             
       Utils.showDot(tffst1.toDot("tffst1"));
 
       Utils.showDot(tffst1kleene.toDot("tffst1 kleene"));
-
-      Utils.showDot(tffst1comp.toDot("tffst1 kleene comp"));
-      
-      Tffst tffstunion = tffst1kleene.union(tffst1comp);
-      
-      Utils.showDot(tffstunion.toDot("union"));
-      
-      tffstunion.determinize();
-      
-      Utils.showDot(tffstunion.toDot("determinized union"));
 
    }
   

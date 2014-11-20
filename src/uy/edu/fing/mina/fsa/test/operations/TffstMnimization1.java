@@ -4,7 +4,7 @@
  * Copyright (C) 2004 Javier Baliosian
  * All rights reserved.
  * */
-package uy.edu.fing.mina.fsa.test;
+package uy.edu.fing.mina.fsa.test.operations;
 
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
 import uy.edu.fing.mina.fsa.tffsr.Tffsr;
@@ -17,7 +17,7 @@ import uy.edu.fing.mina.fsa.utils.Utils;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class Mnimize {
+public class TffstMnimization1 {
 
   public static void main(String[] args) {
 
@@ -88,14 +88,14 @@ public class Mnimize {
     tffsr.minimize(); 
 
     Utils.showDot(tffsr.toDot("minimize 1"));
-
-    tffsr = tffsr.kleene();
-
-    Utils.showDot(tffsr.toDot("kleene"));
-
-    tffsr.minimize();  
-
-    Utils.showDot(tffsr.toDot("minimize 2"));
+//
+//    tffsr = tffsr.kleene();
+//
+//    Utils.showDot(tffsr.toDot("kleene"));
+//
+//    tffsr.minimize();  
+//
+//    Utils.showDot(tffsr.toDot("minimize 2"));
 
   }
 
