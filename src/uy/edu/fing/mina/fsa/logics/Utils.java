@@ -20,6 +20,7 @@ import uy.edu.fing.mina.fsa.tf.CompositeTf;
 import uy.edu.fing.mina.fsa.tf.Operator;
 import uy.edu.fing.mina.fsa.tf.SimpleTf;
 import uy.edu.fing.mina.fsa.tf.TfI;
+import uy.edu.fing.mina.fsa.tf.TfPair;
 
 /**
  * @author Javier Baliosian &lt; <a
@@ -36,6 +37,12 @@ public class Utils {
 	else if (tf instanceof SimpleTf)
 	  try {
 		dnftf = ((SimpleTf) tf).clone();
+	  } catch (CloneNotSupportedException e) {
+		e.printStackTrace();
+	  }
+	else if (tf instanceof TfPair)
+	  try {
+		dnftf = ((TfPair) tf).clone();
 	  } catch (CloneNotSupportedException e) {
 		e.printStackTrace();
 	  }

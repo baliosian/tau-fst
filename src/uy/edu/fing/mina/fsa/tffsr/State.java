@@ -14,10 +14,10 @@
 package uy.edu.fing.mina.fsa.tffsr;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 
 /**
  * <tt>TFFST</tt> state.
@@ -228,6 +228,14 @@ public class State implements Serializable, Comparable<State> {
     State other = (State) obj;
     if (number != other.number) return false;
     return true;
+  }
+  
+  /** Returns transitions sorted by (min, reverse max, to) or (to, min, reverse max) */
+  Transition[] getSortedTransitionArray(boolean to_first)
+  {
+	Transition[] e = (Transition[]) transitions.toArray(new Transition[0]);
+	Arrays.sort(e);
+	return e;
   }
 
 }

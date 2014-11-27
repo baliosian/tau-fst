@@ -94,7 +94,7 @@ public class RateAndPower_small {
     rateAndPower.setDeterministic(false);
     rateAndPower.determinize();
     
-    Utils.writeDot("/tmp/rateanpower.dot", rateAndPower.toDot("after"));
+    Utils.writeDot(rateAndPower.toDot("after"), "/tmp/rateanpower.dot");
 //    Utils.showDot(rateAndPower.toDot("after"));
 
     Utils.writeLabels("/tmp/rateandpowerlabels.txt", rateAndPower);

@@ -701,6 +701,9 @@ public class Tffsr implements Serializable {
    * set of new initial states. (Used for <code>minimizeBrzozowski()</code>)
    */
   public Set<State> reverse() {
+	
+	toSingleLabelTransitions();
+	
     // reverse all edges
     HashMap<State, HashSet<Transition>> m = new HashMap<State, HashSet<Transition>>();
     Set<State> states = getStates();
@@ -717,7 +720,7 @@ public class Tffsr implements Serializable {
       Iterator<Transition> j = r.getTransitions().iterator();
       while (j.hasNext()) {
         Transition t = j.next();
-        (m.get(t.getTo())).add(new Transition(t.label, r)); //FIXME needs to be simplified
+        (m.get(t.getTo())).add(new Transition(t.label, r)); 
       }
     }
     i = states.iterator();
@@ -1004,6 +1007,8 @@ public class Tffsr implements Serializable {
    * states.
    */
   private void determinize(Set<State> initialset) {
+	
+	this.simplifyTransitionLabels();
 
     // subset construction
     Map<Set<State>, Set<State>> sets = new HashMap<Set<State>, Set<State>>();
@@ -1039,7 +1044,7 @@ public class Tffsr implements Serializable {
         TfI tfpartition = Partition.toTfrelation3(partition);
         // transD union of each positive TF
         if (!tfpartition.equals(SimpleTf.AcceptsNone())) {
-          Set<State> tDUnion = unionOfTransD(d, partition.left);
+          Set<State> tDUnion = unionOfTransD(d, partition.left); 
           if (!sets.containsKey(tDUnion)) {
             sets.put(tDUnion, tDUnion);
             worklist.add(tDUnion);
@@ -1047,7 +1052,7 @@ public class Tffsr implements Serializable {
           }
           nd.addOutTran(new Transition(new TfString(tfpartition), (State) newstate.get(tDUnion)));
         }
-      }
+      }      
     }
     deterministic = true;
     removeDeadTransitions(); // removes the old tffsr
@@ -1068,11 +1073,82 @@ public class Tffsr implements Serializable {
    */
   private void minimizeBrzozowski() {
     reverse();
-    determinize();
+    determinize();    
+    totalize();
+    
+    uy.edu.fing.mina.fsa.utils.Utils.showDot(toDot("total"));
+    
     reverse();
+
     determinize();
   }
 
+//	/** Minimize using Huffman's algorithm. */
+//	private void minimizeHuffman() {
+//		determinize();
+//		totalize();
+//		Set ss = getStates();
+//		Transition[][] transitions = new Transition[ss.size()][];
+//		State[] states = (State[]) ss.toArray(new State[0]);
+//		boolean[][] mark = new boolean[states.length][states.length];
+//		HashSet[][] triggers = new HashSet[states.length][states.length];
+//		// initialize marks based on acceptance status and find transition
+//		// arrays
+//		for (int n1 = 0; n1 < states.length; n1++) {
+//			states[n1].setNumber(n1);
+//			transitions[n1] = states[n1].getSortedTransitionArray(false);
+//			for (int n2 = n1 + 1; n2 < states.length; n2++)
+//				if (states[n1].accept != states[n2].accept)
+//					mark[n1][n2] = true;
+//		}
+//		// for all pairs, see if states agree
+//		for (int n1 = 0; n1 < states.length; n1++)
+//			for (int n2 = n1 + 1; n2 < states.length; n2++)
+//				if (!mark[n1][n2]) {
+//					if (statesAgree(transitions, mark, n1, n2))
+//						addTriggers(transitions, mark, triggers, n1, n2);
+//					else
+//						markPair(mark, triggers, n1, n2);
+//				}
+//		// assign equivalence class numbers to states
+//		int numclasses = 0;
+//		for (int n = 0; n < states.length; n++)
+//			states[n].setNumber(-1);
+//		for (int n1 = 0; n1 < states.length; n1++)
+//			if (states[n1].getNumber() == -1) {
+//				states[n1].setNumber(numclasses);
+//				for (int n2 = n1 + 1; n2 < states.length; n2++)
+//					if (!mark[n1][n2])
+//						states[n2].setNumber(numclasses);
+//				numclasses++;
+//			}
+//		// make a new state for each equivalence class
+//		State[] newstates = new State[numclasses];
+//		for (int n = 0; n < numclasses; n++)
+//			newstates[n] = new State();
+//		// select a class representative for each class and find the new initial
+//		// state
+//		for (int n = 0; n < states.length; n++) {
+//			newstates[states[n].getNumber()].setNumber(n);
+//			if (states[n] == initial)
+//				initial = newstates[states[n].getNumber()];
+//		}
+//		// build transitions and set acceptance
+//		for (int n = 0; n < numclasses; n++) {
+//			State s = newstates[n];
+//			s.accept = states[s.getNumber()].accept;
+//			Iterator i = states[s.getNumber()].getTransitions().iterator();
+//			while (i.hasNext()) {
+//				Transition t = (Transition) i.next();
+//				s.addOutTran(new Transition(t.label,newstates[t.getTo().getNumber()]));
+//			}
+//		}
+//		removeDeadTransitions();
+//	}
+
+  
+  
+  
   /**
    * 
    * implements the function TransD. it returns a set of states in transitions
@@ -1088,7 +1164,7 @@ public class Tffsr implements Serializable {
       if (!tf.isEpsilon()) 
         for (State s : states)
         for (Transition t : s.getTransitions())
-          if (tf.equals(t.label)) { //FIXME this needs the tfs to be simplified to  have a chance of matching 
+          if (tf.equals(t.label.get(0))) { 
             targets.add(t.getTo());
           }
     }
@@ -1143,7 +1219,7 @@ public class Tffsr implements Serializable {
   }
 
   /**
-   * Returns sorted array of transitions for each state, by state "number". (and
+   * Returns sorted array of transitions for each state, by state "numinimber". (and
    * sets state numbers).
    */
   Transition[][] getSortedTransitions(Set<State> states) {
@@ -1373,4 +1449,33 @@ class StateListNode {
       next.prev = prev;
   }
 
+  
+//	private boolean statesAgree(Transition[][] transitions, boolean[][] mark,
+//		int n1, int n2) {
+//	Transition[] t1 = transitions[n1];
+//	Transition[] t2 = transitions[n2];
+//	for (int k1 = 0, k2 = 0; k1 < t1.length && k2 < t2.length;) {
+//		if (t1[k1].max < t2[k2].min)
+//			k1++;
+//		else if (t2[k2].max < t1[k1].min)
+//			k2++;
+//		else {
+//			int m1 = t1[k1].to.number;
+//			int m2 = t2[k2].to.number;
+//			if (m1 > m2) {
+//				int t = m1;
+//				m1 = m2;
+//				m2 = t;
+//			}
+//			if (mark[m1][m2])
+//				return false;
+//			if (t1[k1].max < t2[k2].max)
+//				k1++;
+//			else
+//				k2++;
+//		}
+//	}
+//	return true;
+//}
+  
 }

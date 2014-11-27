@@ -33,6 +33,8 @@ public class Partition {
     TfI tfrelation = null;
   
     if (relation.left != null) {
+      if (relation.left.size() == 1) 
+    	System.out.println(relation.left);
       for (Iterator<TfI> iter = relation.left.iterator(); iter.hasNext();) {
         TfI element = iter.next();
         if (tfrelation == null) tfrelation = element;

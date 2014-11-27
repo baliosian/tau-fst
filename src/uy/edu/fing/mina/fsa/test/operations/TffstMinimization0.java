@@ -50,7 +50,7 @@ public class TffstMinimization0 {
       
      Utils.showDot(t.toDot("Permission"));
      
-     t = t.epsilonTotalize();
+     t = t.totalize();
      
      Utils.showDot(t.toDot("Totalized Permission"));
      
