@@ -86,7 +86,7 @@ public class DeterminizeTFFSR {
     Utils.showDot(tffsr.toDot("totffsr"));
     
     tffsr.setDeterministic(false);
-    tffsr.determinize(); 
+    tffsr.determinizeTF(); 
     
     Utils.showDot(tffsr.toDot("determinized totffsr"));
 

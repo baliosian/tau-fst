@@ -96,9 +96,9 @@ public class RateAndPower_LuPA {
     s23.addOutTran(new Transition(EventTf.Epsilon(), tfout4,s24));
     s24.addOutTran(new Transition(EventTf.Epsilon(), tfout5,s25));
 
-    tffst0.inLabelEpsilonRemoval();
-    tffst1.inLabelEpsilonRemoval();
-    tffst2.inLabelEpsilonRemoval();
+    tffst0.removeInputEpsilonLabel();
+    tffst1.removeInputEpsilonLabel();
+    tffst2.removeInputEpsilonLabel();
 
 //    Utils.showDot(tffst0.toDot("tffst0"));
 //    Utils.showDot(tffst1.toDot("tffst1"));

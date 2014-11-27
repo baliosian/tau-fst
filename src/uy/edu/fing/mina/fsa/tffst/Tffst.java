@@ -19,7 +19,6 @@ import uy.edu.fing.mina.fsa.tf.SimpleTf;
 import uy.edu.fing.mina.fsa.tf.TfI;
 import uy.edu.fing.mina.fsa.tf.TfPair;
 import uy.edu.fing.mina.fsa.tf.TfString;
-
 import uy.edu.fing.mina.fsa.tffsr.Tffsr;
 import uy.edu.fing.mina.fsa.utils.Utils;
 
@@ -401,7 +400,7 @@ public class Tffst implements Serializable {
       }
     }
     
-    out.inLabelEpsilonRemoval();
+    out.removeInputEpsilonLabel();
     out.removeDeadTransitions();
 //   out.checkMinimizeAlways();  //TODO need this?
     //out.setDeterministic(false);
@@ -557,7 +556,7 @@ public class Tffst implements Serializable {
    * the tffst cannot recognize the empty language
    * 
    */
-  public void inLabelEpsilonRemoval() {
+  public void removeInputEpsilonLabel() {
 	
     try {
       Set<State> workingStates = new HashSet<State>();
@@ -928,13 +927,12 @@ public class Tffst implements Serializable {
    * @see #setMinimization(int)
    */
   public void minimize() {
-    Tffsr tffsr = this.toTffsr();
-    
+	toSingleLabelTransitions();
+    Tffsr tffsr = toTffsr();
     tffsr.minimize();
-    
     Tffst tffst = tffsr.toTffst();
     assign(tffst);
-    inLabelEpsilonRemoval();
+    removeInputEpsilonLabel();
   }
 
   /**
@@ -1059,7 +1057,7 @@ public class Tffst implements Serializable {
    * @return
    */
   public Tffst toSingleLabelTransitions() {
-
+	
 	Tffst simpleTffst = new Tffst();
 	HashMap<State, State> m = new HashMap<State, State>();
 
@@ -1067,6 +1065,7 @@ public class Tffst implements Serializable {
 	Set<State> states = getStates();
 
 	for (State s : states) {
+
 	  if (m.get(s) == null) {
 		last = new State();
 		m.put(s, last);
@@ -1083,22 +1082,28 @@ public class Tffst implements Serializable {
 		  m.put(t.getTo(), newTo);
 		  newTo.accept = t.getTo().accept;
 		}
+		
+		try {
+		  TfString prelabelIn = t.labelIn.clone();
+		  TfString prelabelOut = t.labelOut.clone();
+		  State ns = last;
 
-		Transition lastTran = new Transition(last, new TfString(t.labelIn), new TfString(t.labelOut), m.get(t.getTo()));
-
-		while (lastTran.getLabelIn().size() > 1 || lastTran.getLabelOut().size() > 1) {
-		  last = lastTran.getFrom(); 
-		  State ns = new State();
-		  lastTran.setFrom(ns);
-		  if ((lastTran.getLabelIn().size() > 1 && lastTran.getLabelOut().size() > 1) || 
-			  (lastTran.getLabelIn().size() == 1 && lastTran.getLabelOut().size() > 1) || 
-			  (lastTran.getLabelIn().size() > 1 && lastTran.getLabelOut().size() == 1)  ) {
-			new Transition(last, new TfString(lastTran.getLabelIn().remove(0)), new TfString(lastTran.getLabelOut().remove(0)), ns);
-		  } else if (lastTran.getLabelIn().size() > 1) {
-			new Transition(last, new TfString(lastTran.getLabelIn().remove(0)), lastTran.getLabelOut(), ns);
-		  } else if (lastTran.getLabelOut().size() > 1) {
-			new Transition(last, lastTran.getLabelIn(), new TfString(lastTran.getLabelOut().remove(0)), ns);
+		  while (prelabelIn.size() > 1 || prelabelOut.size() > 1) {
+			ns = new State();
+			if ((prelabelIn.size() > 1 && prelabelOut.size() > 1) 
+				|| (prelabelIn.size() > 1 && prelabelOut.size() == 1) 
+				||  (prelabelIn.size() == 1 && prelabelOut.size() > 1))
+			  new Transition(last, new TfString(prelabelIn.remove(0)), new TfString(prelabelOut.remove(0)), ns);
+			else if (prelabelIn.size() > 1)
+			  new Transition(last, new TfString(prelabelIn.remove(0)), prelabelOut, ns);
+			else if (prelabelOut.size() > 1)
+			  new Transition(last, prelabelIn, new TfString(prelabelOut.remove(0)), ns);
+			last = ns;
 		  }
+		  new Transition(ns, prelabelIn, prelabelOut, m.get(t.getTo()));
+
+		} catch (CloneNotSupportedException e) {
+		  e.printStackTrace();
 		}
 	  }
 	}
@@ -1350,7 +1355,7 @@ public class Tffst implements Serializable {
 
 	int g = 0;
 	// removes all epsilon labels in the domain part
-    inLabelEpsilonRemoval();
+    removeInputEpsilonLabel();
     
 //  toSimpleInLabels();
     // stores new states
@@ -1402,7 +1407,7 @@ public class Tffst implements Serializable {
       //    Utils.showDot(toDot(Integer.toString(g++)));
     }
 
-    inLabelEpsilonRemoval();
+    removeInputEpsilonLabel();
     deterministic = true;
   }
 
@@ -1462,7 +1467,7 @@ public class Tffst implements Serializable {
         while (j.hasNext()) {
           Transition t = j.next();
           newTf = newTf.orSimple(t.getLabelIn().get(0));
-          //toAdd.add(new Transition( new TfString(t.getLabelIn().get(0)),new TfString(t.getLabelOut().get(0).not()), s)); 
+          toAdd.add(new Transition( new TfString(t.getLabelIn().get(0)),new TfString(t.getLabelOut().get(0).not()), s)); 
         }
       }
       p.addOutTran(new Transition( new TfString(newTf.not()),new TfString(SimpleTf.Epsilon()), s));

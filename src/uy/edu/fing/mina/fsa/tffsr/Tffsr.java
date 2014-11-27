@@ -374,11 +374,79 @@ public class Tffsr implements Serializable {
    * <p>
    * Complexity: exponential in number of states.
    */
-  public void determinize() {
+  public void determinizeTF() {
     if (deterministic) return;
     Set<State> initialset = new HashSet<State>();
     initialset.add(initial);
-    determinize(initialset);
+    determinizeTF(initialset);
+  }
+  
+  /**
+   * DETERMINIZATION Determinizes this Tffsr.
+   * <p>
+   * Complexity: exponential in number of states.
+   */
+  public void determinizeSymbols() {
+    if (deterministic) return;
+    Set<State> initialset = new HashSet<State>();
+    initialset.add(initial);
+    determinizeSymbols(initialset);
+  }
+  
+
+  private void determinizeSymbols(Set<State> initialset) {
+	
+	simplifyTransitionLabels();
+
+    // subset construction
+    Map<Set<State>, Set<State>> sets = new HashMap<Set<State>, Set<State>>();
+    // stores new states
+    Map<Set<State>, State> newstate = new HashMap<Set<State>, State>();
+    // this isthe first partition
+    sets.put(initialset, initialset);
+
+    LinkedList<Set<State>> worklist = new LinkedList<Set<State>>();
+    worklist.add(initialset);
+
+    initial = new State();
+    newstate.put(initialset, initial);
+    // the new set of states each one
+    // associated with a partition
+
+	while (worklist.size() > 0) {
+	  // the first partition
+	  Set<State> d = worklist.removeFirst();
+	  // the new corresponding state
+	  State nd = (State) newstate.get(d);
+
+	  // if any of the old states was final, this is final
+	  for (State q : d)
+		if (q.isAccept()) {
+		  nd.setAccept(true);
+		  break;
+		}
+
+	  // obtener el conjunto de tfs asociadas a los estados de p
+	  Set<TfI> relevatTFs = getRelevant(d);
+	  for (TfI rtf : relevatTFs) {
+		// transp union
+		Set<State> targets = new HashSet<State>();
+		for (State s : d)
+		  for (Transition t : s.getTransitions())
+			if (rtf.equals(t.label.get(0))) {
+			  targets.add(t.getTo());
+			}
+
+		if (!sets.containsKey(targets)) {
+		  sets.put(targets, targets);
+		  worklist.add(targets);
+		  newstate.put(targets, new State());
+		}
+		nd.addOutTran(new Transition(new TfString(rtf), (State) newstate.get(targets)));
+	  }
+	}      
+  
+    removeDeadTransitions(); // removes the old tffsr
   }
 
   /**
@@ -499,8 +567,8 @@ public class Tffsr implements Serializable {
    * Complexity: quadratic in number of states (if already deterministic).
    */
   public Tffsr intersection(Tffsr a) {
-    determinize();
-    a.determinize();
+    determinizeTF();
+    a.determinizeTF();
     Transition[][] transitions1 = getSortedTransitions(getStates());
     Transition[][] transitions2 = getSortedTransitions(a.getStates());
     Tffsr c = new Tffsr();
@@ -1006,7 +1074,7 @@ public class Tffsr implements Serializable {
    * DETERMINIZATION Determinizes this Tffst using the given set of initial
    * states.
    */
-  private void determinize(Set<State> initialset) {
+  private void determinizeTF(Set<State> initialset) {
 	
 	this.simplifyTransitionLabels();
 
@@ -1073,15 +1141,12 @@ public class Tffsr implements Serializable {
    */
   private void minimizeBrzozowski() {
     reverse();
-    determinize();    
-    totalize();
-    
-    uy.edu.fing.mina.fsa.utils.Utils.showDot(toDot("total"));
-    
+    determinizeSymbols();    
     reverse();
-
-    determinize();
+    determinizeSymbols();
   }
+  
+  
 
 //	/** Minimize using Huffman's algorithm. */
 //	private void minimizeHuffman() {

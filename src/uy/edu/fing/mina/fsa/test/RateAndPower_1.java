@@ -37,7 +37,7 @@ public class RateAndPower_1 {
 //    s3.addTransition(new Transition(SimpleTf.Epsilon(), tfout4,s4));
 //    s4.addTransition(new Transition(SimpleTf.Epsilon(), tfout5,s5));
     
-    tffst.inLabelEpsilonRemoval();
+    tffst.removeInputEpsilonLabel();
     
     return tffst;
   }
