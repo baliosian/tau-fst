@@ -1451,7 +1451,7 @@ public class Tffst implements Serializable {
 	
 	//TODO add identity
 	
-	Tffst simple = this.toSingleInputLabelTransitions(); 
+	Tffst simple = this.toSingleLabelTransitions(); 
 	
 	// the crash state
 	State s = new State();
@@ -1480,10 +1480,63 @@ public class Tffst implements Serializable {
 
   }
 
-
-  
-
-
+  /**
+   * INTERSECTION Returns new Tffst that accepts the intersection of the
+   * languages of this and the given Tffst.
+   * <p>
+   * Complexity: linear in number of states.
+   * 
+   * Description:
+   * 
+   * The intersection of two transducers results in a transducer that defines
+   * the relation resulting from the intersection of the relations of the two
+   * original transducers. It is one of the most important and powerful
+   * operations on automata. As TFFSTs are not always closed under intersection,
+   * it is necessary to start thinking about recognisers instead of transducers.
+   * 
+   * In the classical case, the intersection of two given automata $M_{1}$ and
+   * $M_{2}$ is constructed by considering the cross product of states of
+   * $M_{1}$ and $M_{2}$.
+   * 
+   * A transition $((p_1,p_2),\sigma,(q_1,q_2))$ exists in the intersection iff
+   * the corresponding transition $(p_1,\sigma,q_1)$ exists in $M_1$ and
+   * $(p_2,\sigma,q_2)$ exists in $M_2$. In the case of TFFSR, instead of
+   * requiring that the symbol $\sigma$ occur in the corresponding transitions
+   * of $M_1$ and $M_2$, the resulting tautness function must be the conjunction
+   * of the corresponding tautness functions in $M_1$ and $M_2$.
+   * 
+   * Given two $\epsilon$-free TFFSRs $M_1=(Q_1, E, T, \Pi_1, S_1, F_1)$ and
+   * $M_2=(Q_2, E, T, \Pi_2, S_2, F_2)$, the intersection $L(M_1) \cap L(M_2)$
+   * is the language accepted by $M=(Q_1 \times Q_2, E, T, \Pi, S_1 \times S_2,
+   * F_1 \times F_2)$ and
+   * $\Pi=\{((p_1,q_1),\tau_1\wedge\tau_2,(p,q))\mid(p_1,\tau_1
+   * ,p)\in\Pi_1,(q_1,\tau_2,q)\in\Pi_2\}$.
+   * 
+   * The transducers used in our model will always be analogous to the letter
+   * transducers presented in \cite{Roche97}. Then we will be able to use this
+   * intersection definition on the underlying TFFSRs, which we will define
+   * below, to calculate the intersection of the transducers themselves.
+   * 
+   * \begin{defn} \label{def:underlying} Underlying TFFSR. If
+   * $M=(Q,E,T,\Pi,S,F)$ is an TFFST, its underlying TFFSR is
+   * $M'=(Q,E,T,\Pi',S,F)$ where:
+   * 
+   * \[\Pi'=\{(p,(x,y),q)\mid(p,x,y,p,i)\in\Pi\}\]
+   * 
+   * \end{defn}
+   * 
+   * All properties of finite state automata apply to the underlying automaton
+   * of a transducer. For example, the intersection algorithm could be applied
+   * to the underlying TFFSR and in our conditions, properly interpreted as the
+   * intersection of two TFFSTs.
+   * 
+   */
+  public Tffst intersection(Tffst b) {
+	Tffsr afsr = this.toTffsr();
+	Tffsr bfsr = b.toTffsr();	
+	Tffsr ifsr = afsr.intersection(bfsr);
+    return ifsr.toTffst();
+  }
   
   /**
    * COMPLEMENT Returns new (deterministic) Tffsr that accepts the complement of
@@ -1502,6 +1555,9 @@ public class Tffst implements Serializable {
     a.removeDeadTransitions();
     return a;
   }
+  
+  
+  
 
   
  
