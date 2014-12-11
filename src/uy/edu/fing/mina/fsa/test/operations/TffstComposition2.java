@@ -19,7 +19,7 @@ import uy.edu.fing.mina.fsa.utils.Utils;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class TffstComposition3 {
+public class TffstComposition2 {
 
    /**
     * composition test 1  

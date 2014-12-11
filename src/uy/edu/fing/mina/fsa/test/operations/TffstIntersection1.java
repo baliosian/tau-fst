@@ -19,7 +19,7 @@ import uy.edu.fing.mina.fsa.utils.Utils;
  * @author Javier Baliosian &lt; <a
  *         href="mailto:jbaliosian@tsc.upc.es">jbaliosian@tsc.upc.es </a>&gt;
  */
-public class TffstIntersection0 {
+public class TffstIntersection1 {
 
   /**
    * composition test 1
@@ -30,9 +30,9 @@ public class TffstIntersection0 {
 
 	Tffst.setMinimizeAlways(false);
 
-	// tffst1 :
-	//             ┌───┐  A/B   ╔═══╗
-	// initial ──▶ │ 0 │ ─────▶ ║ 1 ║
+	// tffst1 :                   ┌───┐A/B 
+	//             ┌───┐  A/B   ╔═══╗ │
+	// initial ──▶ │ 0 │ ─────▶ ║ 1 ║ ┘
 	//             └───┘        ╚═══╝
 	//                   ─────▶
 	//                    C/D
@@ -45,13 +45,14 @@ public class TffstIntersection0 {
 	s1.setAccept(true);
 
 	s0.addOutTran(new Transition(new SimpleTf("A"), new SimpleTf("B"), s1));
+	s1.addOutTran(new Transition(new SimpleTf("A"), new SimpleTf("B"), s1));
 	s0.addOutTran(new Transition(new SimpleTf("C"), new SimpleTf("D"), s1));
 
 	Utils.showDot(tffst1.toDot("tffst1"));
 
-	// tffst1 :
-	//             ┌───┐  A/B   ╔═══╗
-	// initial ──▶ │ 0 │ ─────▶ ║ 1 ║
+	// tffst2 :                   ┌───┐A/B 
+	//             ┌───┐  A/B   ╔═══╗ │
+	// initial ──▶ │ 0 │ ─────▶ ║ 1 ║ ┘
 	//             └───┘        ╚═══╝
 	//                   ─────▶
 	//                    E/F
@@ -64,6 +65,7 @@ public class TffstIntersection0 {
 	s21.setAccept(true);
 
 	s20.addOutTran(new Transition(new SimpleTf("A"), new SimpleTf("B"), s21));
+	s21.addOutTran(new Transition(new SimpleTf("A"), new SimpleTf("B"), s21));
 	s20.addOutTran(new Transition(new SimpleTf("E"), new SimpleTf("F"), s21));
 
 	Utils.showDot(tffst1.toDot("tffst1"));

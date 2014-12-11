@@ -400,8 +400,9 @@ public class Tffst implements Serializable {
       }
     }
     
-    out.removeInputEpsilonLabel();
-    out.removeDeadTransitions();
+    out.removeInputEpsilonLabel(); 
+    out.removeDeadTransitions(); 
+    
 //   out.checkMinimizeAlways();  //TODO need this?
     //out.setDeterministic(false);
     //out.determinize();

@@ -567,10 +567,10 @@ public class Tffsr implements Serializable {
    * Complexity: quadratic in number of states (if already deterministic).
    */
   public Tffsr intersection(Tffsr a) {
-    determinizeTF();
-    a.determinizeTF();
-    Transition[][] transitions1 = getSortedTransitions(getStates());
-    Transition[][] transitions2 = getSortedTransitions(a.getStates());
+    determinizeSymbols();
+    a.determinizeSymbols();
+    Map<Integer, Set<Transition>> transitions1 = getTransitions(getStates());
+    Map<Integer, Set<Transition>> transitions2 = getTransitions(a.getStates());
     Tffsr c = new Tffsr();
     LinkedList<StatePair> worklist = new LinkedList<StatePair>();
     HashMap<StatePair, StatePair> newstates = new HashMap<StatePair, StatePair>();
@@ -582,20 +582,21 @@ public class Tffsr implements Serializable {
     while (worklist.size() > 0) {
       p = worklist.removeFirst();
       p.s.setAccept(p.s1.isAccept() && p.s2.isAccept());
-      Transition[] t1 = transitions1[p.s1.getNumber()];
-      Transition[] t2 = transitions2[p.s2.getNumber()];
-      for (int n1 = 0, n2 = 0; n1 < t1.length && n2 < t2.length;) {
-
-        StatePair q = new StatePair(t1[n1].getTo(), t2[n2].getTo());
-        StatePair r = newstates.get(q);
-        if (r == null) {
-          q.s = new State();
-          worklist.add(q);
-          newstates.put(q, q);
-          r = q;
-        }
-        p.s.addOutTran(new Transition(new TfString(t1[n1].label.get(0).and(t2[n2].label.get(0))), r.s));  //FIXME has to simplified 
-      } 
+      Set<Transition> ts1 = transitions1.get(Integer.valueOf(p.s1.getNumber()));
+      Set<Transition> ts2 = transitions2.get(Integer.valueOf(p.s2.getNumber()));
+      
+      for (Transition t1 : ts1)
+    	for (Transition t2 : ts2) {
+          StatePair q = new StatePair(t1.getTo(), t2.getTo());
+          StatePair r = newstates.get(q);
+          if (r == null) {
+            q.s = new State();
+            worklist.add(q);
+            newstates.put(q, q);
+            r = q;
+          }
+          p.s.addOutTran(new Transition(new TfString(t1.label.get(0).andSimple(t2.label.get(0))), r.s));  
+    	}
     }
     c.deterministic = true;
     c.removeDeadTransitions();
@@ -1284,7 +1285,7 @@ public class Tffsr implements Serializable {
   }
 
   /**
-   * Returns sorted array of transitions for each state, by state "numinimber". (and
+   * Returns sorted array of transitions for each state, by state "number". (and
    * sets state numbers).
    */
   Transition[][] getSortedTransitions(Set<State> states) {
@@ -1293,11 +1294,25 @@ public class Tffsr implements Serializable {
     Iterator<State> i = states.iterator();
     while (i.hasNext()) {
       State s = i.next();
-      transitions[s.getNumber()] = (Transition[]) s.getTransitions().toArray(); //TODO take arrays out of this
+      transitions[s.getNumber()] = s.getTransitions().toArray(transitions[s.getNumber()]); 
     }
     return transitions;
   }
 
+  /**
+   * Returns sorted array of transitions for each state, by state "number". (and
+   * sets state numbers).
+   */
+  Map<Integer,Set<Transition>> getTransitions(Set<State> states) {
+    setStateNumbers(states);
+    Map<Integer,Set<Transition>> transitions = new HashMap<Integer, Set<Transition>>();
+    for (State state : states) {
+	  transitions.put(state.getNumber(), state.getTransitions());
+	}
+    return transitions;
+  }
+  
+  
   /**
    * Checks whether there is a loop containing s. (This is sufficient since
    * there are never transitions to dead states.)

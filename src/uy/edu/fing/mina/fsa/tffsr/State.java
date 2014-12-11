@@ -38,7 +38,7 @@ public class State implements Serializable, Comparable<State> {
   /**
    * @uml.property name="transitions"
    */
-  private Set<Transition> transitions = new HashSet<Transition>();
+  private Set<Transition> departingTransitions = new HashSet<Transition>();
 
   private Set<Transition> arrivingTransitions = new HashSet<Transition>();
 
@@ -98,7 +98,7 @@ public class State implements Serializable, Comparable<State> {
     State s = new State();
     for (Iterator<Transition> iter = getTransitionsIterator(); iter.hasNext();) {
       Transition t = (Transition) iter.next();
-      s.transitions.add(t);
+      s.departingTransitions.add(t);
     }
     s.setAccept(isAccept());
     return s;
@@ -109,7 +109,7 @@ public class State implements Serializable, Comparable<State> {
     Iterator<Transition> i = to.getTransitionsIterator();
     while (i.hasNext()) {
       Transition t = (Transition) i.next();
-      transitions.add(t);
+      departingTransitions.add(t);
     }
   }
 
@@ -128,7 +128,7 @@ public class State implements Serializable, Comparable<State> {
    * @uml.property name="transitions"
    */
   public void setTransitions(HashSet<Transition> transitions) {
-    this.transitions = transitions;
+    this.departingTransitions = transitions; //FIXME it may be a problem with the arriving transitions at the destination nodes. 
   }
 
   /** Resets transition set. */
@@ -143,9 +143,9 @@ public class State implements Serializable, Comparable<State> {
    *          transition
    */
   public void addOutTran(Transition t) {
-    if (!transitions.contains(t)) {
+    if (!departingTransitions.contains(t)) {
       t.setFrom(this);
-      transitions.add(t);
+      departingTransitions.add(t);
     }
   }
 
@@ -153,8 +153,8 @@ public class State implements Serializable, Comparable<State> {
    * @param transition
    */
   public void remOutTran(Transition transition) {
-    if (transitions.contains(transition)) {
-      transitions.remove(transition);
+    if (departingTransitions.contains(transition)) {
+      departingTransitions.remove(transition);
       transition.setFrom(null);
     }
   }
@@ -196,7 +196,7 @@ public class State implements Serializable, Comparable<State> {
    * @return the transitions
    */
   public Set<Transition> getTransitions() {
-    return transitions;
+    return departingTransitions;
   }
 
   /**
@@ -208,7 +208,7 @@ public class State implements Serializable, Comparable<State> {
    * @uml.property name="transitions"
    */
   public Iterator<Transition> getTransitionsIterator() {
-    return transitions.iterator();
+    return departingTransitions.iterator();
   }
 
   
@@ -233,7 +233,7 @@ public class State implements Serializable, Comparable<State> {
   /** Returns transitions sorted by (min, reverse max, to) or (to, min, reverse max) */
   Transition[] getSortedTransitionArray(boolean to_first)
   {
-	Transition[] e = (Transition[]) transitions.toArray(new Transition[0]);
+	Transition[] e = (Transition[]) departingTransitions.toArray(new Transition[0]);
 	Arrays.sort(e);
 	return e;
   }
