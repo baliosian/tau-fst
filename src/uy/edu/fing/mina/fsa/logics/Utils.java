@@ -63,7 +63,8 @@ public class Utils {
     TfI simplifiedTf = disjunctiveFormByMua(tf);
 
     List<Term> termList = toTermList(simplifiedTf);
-    applyKnowledge(termList);
+    
+    if (Knowledge.implications != null) applyKnowledge(termList);
     
     if (termList.size() > 0) {
       // termList = expandDontCares(termList,0);
