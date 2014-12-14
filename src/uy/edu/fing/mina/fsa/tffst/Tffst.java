@@ -408,7 +408,148 @@ public class Tffst implements Serializable {
     //out.determinize();
     return out;
   }
+  
+  /**
+   * COMPOSITION
+   * b o a (i.e. b(a(x)) )   
+   * 
+   * Constraint: a cannot have e-input labels and b cannot have e-output labels.  
+   * 
+   * 
+   * \[
+      \begin{array}{ll}
+          \Pi=\{((p_1,p_2),d,r,(q_1,q_2),i)\mid
+                    & p_1, d, \tau_1, q_1, i_1) \in \Pi_1, \\
+                    & (p_2, \tau_2, r, q_2, i_2) \in \Pi_2, \\
+                    & \tau_1 \wedge \tau_2 \\
+                    & i=0 \: if\: i_1=0 \: or\: i_2=0\: or\: i_1 \neq i_2,\\
+                    & i=1 \: if\: i_1=1\: and\: i_2=1, \\
+                    & i=-1 \: if\: i_1=-1\: and\: i_2=-1\}\\
+          \multicolumn{2}{l}{\cup\;\{((p_1, p_2), \epsilon, d, (q_1, q_2), 0) \mid
+                    (p_1,\epsilon,d',q_1,i_1)\in\Pi_1,(p_2,d',d,q_2,i_2)\in\Pi_2\}} \\
+          \multicolumn{2}{l}{\cup\;\{((p_{1},p_{2}),r,\epsilon,(q_{1},q_{2}),0)\mid
+                    (p_1,r,d',q_1,i_1)\in\Pi_1,(p_2,d',\epsilon,q_2,i_2)\in\Pi_2\}}
+      \end{array}
+      \]
+   * 
+   * 
+   * 
+   * 
+   */
+  
+  static public Tffst composition(Tffst b, Tffst a) { 
+	
+    Tffst aSimple = a.toSingleLabelTransitions();
+    Tffst bSimple = b.toSingleLabelTransitions();
+    
+    Tffst out = new Tffst();
 
+    Set<State> aStates = aSimple.getLiveStates();
+    Set<State> bStates = bSimple.getLiveStates();
+
+    HashMap<StatePair, State> newstates = new HashMap<StatePair, State>();
+
+    for (State aState : aStates){
+      for (State bState : bStates){
+        
+        // get the new state that is equivalent to this pair, create it. 
+        State outStartState = newstates.get(new StatePair(aState, bState));
+        if (outStartState == null) {
+          outStartState = new State();
+          newstates.put(new StatePair(aState, bState), outStartState);
+          if (aState.equals(aSimple.initial) && bState.equals(bSimple.initial))
+            out.initial = outStartState;
+          outStartState.setAccept(aState.isAccept() && bState.isAccept());
+        }
+
+        //add fake e/e transition loop  
+        aState.addOutTran(new Transition(SimpleTf.Epsilon(),SimpleTf.Epsilon(),aState));
+        bState.addOutTran(new Transition(SimpleTf.Epsilon(),SimpleTf.Epsilon(),bState));
+
+        Set<Transition> aStateTrans = aState.getTransitions();
+        Set<Transition> bStateTrans = bState.getTransitions(); 
+
+		for (Transition at : aStateTrans) {
+		  for (Transition bt : bStateTrans) {
+
+			TfI tOutLabelIn = null;
+			TfI tOutLabelOut = null;
+			try {
+			  // epsilon as a especial tf 
+			  if (at.labelOut.isEpsilon() && bt.labelIn.isEpsilon()) {
+				tOutLabelIn = (TfI) at.labelIn.get(0).clone();
+				tOutLabelOut = (TfI) bt.labelOut.get(0).clone();
+			  }
+
+			  if (!at.labelOut.isEpsilon() && !bt.labelIn.isEpsilon()) {
+
+				// ct((p1,π1,π1,q1,1),(p2,π2,π2,q2,1))=((p1,p2),π1∧π2,π1∧π2,(q1,q2),1)
+				if (at.labelOut.get(0).getIdentityType() == 1 && bt.labelOut.get(0).getIdentityType() == 1) {
+				  tOutLabelIn = ((TfI) at.labelOut.get(0).clone()).andSimple((TfI) bt.labelIn.get(0).clone());
+				  tOutLabelOut = (TfI) tOutLabelIn.clone();
+				  tOutLabelOut.setIdentityType(1);
+				  tOutLabelOut.setRefersTo(tOutLabelIn);
+				}
+				// ct((p1,φ,π1,q1,0),(p2,π2,π2,q2,1))=((p1,p2),φ,π1∧π2,(q1,q2),0)
+				if (at.labelOut.get(0).getIdentityType() == 0 && bt.labelOut.get(0).getIdentityType() == 1) {
+				  tOutLabelIn = (TfI) at.labelIn.get(0).clone();
+				  tOutLabelOut = ((TfI) at.labelOut.get(0).clone()).andSimple((TfI) bt.labelIn.get(0).clone());
+				  tOutLabelOut.setIdentityType(0);
+				}
+
+				// ct((p1,π1,π1,q1,1),(p2,π2,ψ,q2,0))=((p1,p2),π1∧π2,ψ,(q1,q2),0)
+				if (at.labelOut.get(0).getIdentityType() == 1 && bt.labelOut.get(0).getIdentityType() == 0) {
+				  tOutLabelIn = ((TfI) at.labelOut.get(0).clone()).andSimple((TfI) bt.labelIn.get(0).clone());
+				  tOutLabelOut = (TfI) bt.labelIn.get(0).clone();
+				  tOutLabelOut.setIdentityType(0);
+				}
+				// ct((p1,φ,π1,q1,0),(p2,π2,ψ,q2,0))=((p1,p2),φ,ψ,(q1,q2),0) if
+				// satisfiable(π1∧π2)
+				if (at.labelOut.get(0).getIdentityType() == 1 && bt.labelOut.get(0).getIdentityType() == 0
+					&& ((TfI) at.labelOut.get(0).clone()).andSimple((TfI) bt.labelIn.get(0).clone()).satisfiable()) {
+				  tOutLabelIn = (TfI) at.labelIn.get(0).clone();
+				  tOutLabelOut = (TfI) bt.labelOut.get(0).clone();
+				  tOutLabelOut.setIdentityType(0);
+				}
+			  }
+			  // {((p1,p2 ), ,ψ,(p1,q2),0)|p1 ∈ Q1,(p2,,ψ,q2,0) ∈ E2 }
+			  ; // TODO
+
+			  // {((p1,p2 ),φ, ,(q1,p2),0)|p2 ∈ Q2,(p1,φ,,q1,0) ∈ E1 }
+			  ; // TODO
+
+			  if (tOutLabelIn != null && tOutLabelOut != null) {
+				// get the new state that is equivalent to this pair, create it.
+				State outToState = newstates.get(new StatePair(at.getTo(), bt.getTo()));
+				if (outToState == null) {
+				  outToState = new State();
+				  newstates.put(new StatePair(at.getTo(), bt.getTo()), outToState);
+				  if (at.getTo().equals(a.initial) && bt.getTo().equals(bSimple.initial))
+					out.initial = outToState;
+				  outToState.setAccept(at.getTo().isAccept() && bt.getTo().isAccept());
+				}
+				
+				outStartState.addOutTran(new Transition(tOutLabelIn, tOutLabelOut, outToState));
+			  }
+			  
+			} catch (CloneNotSupportedException e) {
+			  e.printStackTrace();
+			}
+		  }
+		}
+      }
+    }
+    
+    out.removeInputEpsilonLabel(); 
+    out.removeDeadTransitions(); 
+    
+    //out.checkMinimizeAlways();  //TODO need this?
+    //out.setDeterministic(false);
+    //out.determinize();
+    return out;
+  }
+  
+  
   /**
    * Returns new Tffst that accepts the concatenation of the languages of this
    * and the given Tffst.

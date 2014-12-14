@@ -310,23 +310,21 @@ public int hashCode() {
 /* (non-Javadoc)
  * @see java.lang.Object#equals(java.lang.Object)
  */
-@Override
-public boolean equals(Object obj) {
-  if (this == obj) return true;
-  if (obj == null) return false;
-  if (!(obj instanceof Tf)) return false;
-  Tf other = (Tf) obj;
-  if (id != other.id) return false;
-//  if (identityTf == null) {
-//    if (other.identityTf != null) return false;
-//  } else if (!identityTf.equals(other.identityTf)) return false;
-//  if (identityType != other.identityType) return false;
-  if (not != other.not) return false;
-//  if (refersTo == null) {
-//    if (other.refersTo != null) return false;
-//  } else if (!refersTo.equals(other.refersTo)) return false;
-  return true;
-}
+  @Override
+  public boolean equals(Object obj) {
+	if (this == obj)
+	  return true;
+	if (obj == null)
+	  return false;
+	if (!(obj instanceof Tf))
+	  return false;
+	Tf other = (Tf) obj;
+	if (id != other.id)
+	  return false;
+	if (not != other.not)
+	  return false;
+	return true;
+  }
 
 /**
  * @return the weight

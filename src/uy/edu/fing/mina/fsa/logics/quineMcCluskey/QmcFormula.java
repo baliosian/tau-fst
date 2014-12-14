@@ -130,11 +130,13 @@ public class QmcFormula {
 		originalTermList = new ArrayList<Term>(termList);
 		int numVars = termList.get(0).getNumVars();
 		ArrayList<Term>[][] table = new ArrayList[numVars + 1][numVars + 1];
+		
 		for (int dontKnows = 0; dontKnows <= numVars; dontKnows++) {
 			for (int ones = 0; ones <= numVars; ones++) {
 				table[dontKnows][ones] = new ArrayList<Term>();
 			}
 		}
+		
 		for (int i = 0; i < termList.size(); i++) {
 			int dontCares = termList.get(i).countValues(TfTerm.DontCare.b);
 			int ones = termList.get(i).countValues((byte) 1);
@@ -158,7 +160,6 @@ public class QmcFormula {
 							if (!termList.contains(combined)) {
 								termList.add(combined);
 							}
-
 						}
 					}
 				}

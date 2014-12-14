@@ -10,8 +10,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import uy.edu.fing.mina.fsa.logics.quineMcCluskey.QmcFormula;
 import uy.edu.fing.mina.fsa.logics.quineMcCluskey.Term;
@@ -59,6 +63,8 @@ public class Utils {
     TfI simplifiedTf = disjunctiveFormByMua(tf);
 
     List<Term> termList = toTermList(simplifiedTf);
+    applyKnowledge(termList);
+    
     if (termList.size() > 0) {
       // termList = expandDontCares(termList,0);
       QmcFormula qmcf = new QmcFormula(termList);
@@ -70,6 +76,42 @@ public class Utils {
 
     return simplifiedTf;
 
+  }
+
+  // at this point I know that each term has all possible Tfs in the formula
+  private static void applyKnowledge(List<Term> termList) {
+
+	Set<Term> toremove = new HashSet<Term>();
+	Set<Implication> tosubstitute = new HashSet<Implication>();
+	// A -> -B, A and B are 1 in the term, then the term should be removed
+	// A -> B, A and B are both in the same term, then, B must be set as
+	// dontcare
+	// TODO A -> B, B is alone in a term, then, all occurrences of A in all the terms have to be
+	// substituted by B.
+	for (Implication impl : Knowledge.implications) {
+	  for (Term term : termList) {
+		TfTerm a = null;
+		TfTerm b = null;
+		TfTerm notb = null;
+		for (TfTerm tft : term.varVals) {
+		  if (impl.all.equals(tft.tf) && tft.b == 1) a = tft;
+		  if (impl.are.equals(tft.tf) && tft.b == 1) b = tft;
+		  if (impl.are.equals(tft.tf.not()) && tft.b == 1) notb = tft;
+		}
+		if (a != null && b != null) b.b = TfTerm.DontCare.b;
+		if (a != null && notb != null) toremove.add(term);
+		if (a == null && b != null) tosubstitute.add(impl);
+	  }
+	}
+	termList.removeAll(toremove);
+	for (Term term : termList) {
+	  for (Implication imp : tosubstitute) {
+		for (TfTerm tft : term.varVals) {
+		  if (imp.all.equals(tft.tf) && tft.b == 1) tft.b = TfTerm.DontCare.b;
+		  if (imp.are.equals(tft.tf)) tft.b = 1;
+		}
+	  }
+	}
   }
 
   private static TfI termsListToTf(List<Term> termList) {
@@ -200,9 +242,11 @@ public class Utils {
       boolean skip = false;
       for (int i = 0; i < term.varVals.length; i++) {
         TfTerm tfterm = term.varVals[i];
-        if (tfMapTemp.get(tfterm.tf.getName()).b == TfTerm.DontCare.b) tfMapTemp.put(
-            tfterm.tf.getName(), tfterm);
-        else if (tfMapTemp.get(tfterm.tf.getName()).b != tfterm.b) skip = true;
+        if (tfMapTemp.get(tfterm.tf.getName()).b == TfTerm.DontCare.b) 
+          tfMapTemp.put(tfterm.tf.getName(), tfterm);
+        else if (tfMapTemp.get(tfterm.tf.getName()).b != tfterm.b) 
+          //term and its negation are both in the term list. 
+          skip = true;
       }
       if (!skip) {
         TfTerm[] tftermarray = tfMapTemp.values().toArray(new TfTerm[tfMapTemp.values().size()]);
