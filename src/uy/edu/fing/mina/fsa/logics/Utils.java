@@ -103,7 +103,9 @@ public class Utils {
 		if (a == null && b != null) tosubstitute.add(impl);
 	  }
 	}
+	
 	termList.removeAll(toremove);
+	
 	for (Term term : termList) {
 	  for (Implication imp : tosubstitute) {
 		for (TfTerm tft : term.varVals) {
@@ -112,6 +114,7 @@ public class Utils {
 		}
 	  }
 	}
+
   }
 
   private static TfI termsListToTf(List<Term> termList) {
