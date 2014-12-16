@@ -64,7 +64,7 @@ public class Utils {
 
     List<Term> termList = toTermList(simplifiedTf);
     
-    if (Knowledge.implications != null) applyKnowledge(termList);
+    if (Knowledge.implications != null) termList = applyKnowledge(termList);
     
     if (termList.size() > 0) {
       // termList = expandDontCares(termList,0);
@@ -80,42 +80,161 @@ public class Utils {
   }
 
   // at this point I know that each term has all possible Tfs in the formula
-  private static void applyKnowledge(List<Term> termList) {
+  private static List<Term> applyKnowledge(List<Term> termList) {
 
-	Set<Term> toremove = new HashSet<Term>();
+	
+	Term[] at = (Term[])((ArrayList<Term>) termList).toArray(new Term[termList.size()]);
 	Set<Implication> tosubstitute = new HashSet<Implication>();
-	// A -> -B, A and B are 1 in the term, then the term should be removed
-	// A -> B, A and B are both in the same term, then, B must be set as
-	// dontcare
-	// TODO A -> B, B is alone in a term, then, all occurrences of A in all the terms have to be
-	// substituted by B.
-	for (Implication impl : Knowledge.implications) {
-	  for (Term term : termList) {
-		TfTerm a = null;
-		TfTerm b = null;
-		TfTerm notb = null;
-		for (TfTerm tft : term.varVals) {
-		  if (impl.all.equals(tft.tf) && tft.b == 1) a = tft;
-		  if (impl.are.equals(tft.tf) && tft.b == 1) b = tft;
-		  if (impl.are.equals(tft.tf.not()) && tft.b == 1) notb = tft;
-		}
-		if (a != null && b != null) b.b = TfTerm.DontCare.b;
-		if (a != null && notb != null) toremove.add(term);
-		if (a == null && b != null) tosubstitute.add(impl);
-	  }
-	}
 	
-	termList.removeAll(toremove);
-	
-	for (Term term : termList) {
-	  for (Implication imp : tosubstitute) {
-		for (TfTerm tft : term.varVals) {
-		  if (imp.all.equals(tft.tf) && tft.b == 1) tft.b = TfTerm.DontCare.b;
-		  if (imp.are.equals(tft.tf)) tft.b = 1;
-		}
-	  }
-	}
+	// knowledge is A -> B,
+	// term has A and B 
+	//      A=1, B=1 in a term, then B must be set as dontcare
+	//      A=1, B=0 in a term, then the term should be removed
+	//      A=0, B=1 in a term, know nothing
+	//      A=0, B=0 in a term, know nothing
+	//
+	// 	TODO	A=2, B=1 in a term, then all occurrences of A in all the terms have to be substituted by B.
+	// 	TODO	A=2, B=0 in a term, know nothing
+	// 	TODO	A=1, B=2 in a term, know nothing
+	// 	TODO	A=0, B=2 in a term, know nothing
+	// knowledge is A -> -B,
+	// term has A and B  
+	//      A=1, B=1 in a term, then the term should be removed
+	//      A=1, B=0 in a term, then B must be set as dontcare
+	//      A=0, B=1 in a term, then A must be set as dontcare
+	//      A=0, B=0 in a term, know nothing
+	//
+	// 	TODO	A=2, B=1 in a term, 
+	// 	TODO	A=2, B=0 in a term, 
+	// 	TODO	A=1, B=2 in a term, 
+	// 	TODO	A=0, B=2 in a term, 
+	// knowledge is -A -> B,
+	// term has A and B  
+	//      A=1, B=1 in a term, know nothing
+	//      A=1, B=0 in a term, know nothing
+	//      A=0, B=1 in a term, then B must be set as dontcare
+	//      A=0, B=0 in a term, then the term should be removed
+	//
+	// TODO		A=2, B=1 in a term, 
+	// TODO		A=2, B=0 in a term, 
+	// TODO		A=1, B=2 in a term, 
+	// TODO		A=0, B=2 in a term, 
+	// knowledge is -A -> -B,
+	// term has A and B 
+	//      A=1, B=1 in a term, know nothing
+	//      A=1, B=0 in a term, know nothing
+	//      A=0, B=1 in a term, then the term should be removed
+	//      A=0, B=0 in a term, then B must be set as dontcare
+	//
+	// 	TODO	A=2, B=1 in a term, 
+	// 	TODO	A=2, B=0 in a term, 
+	// 	TODO	A=1, B=2 in a term, 
+	// 	TODO	A=0, B=2 in a term, 
 
+	
+	
+	for (Implication impl : Knowledge.implications) {
+	  // knowledge is A -> B,
+	  if (!impl.all.isNot() && !impl.are.isNot()) {
+		for (int i = 0; i < at.length; i++) {
+		  if (at[i] != null) {
+			TfTerm all = null;
+			TfTerm are = null;
+			for (TfTerm tft : at[i].varVals) {
+			  if (impl.all.equals(tft.tf) && tft.b != TfTerm.DontCare.b)
+				all = tft;
+			  if (impl.are.equals(tft.tf) && tft.b != TfTerm.DontCare.b)
+				are = tft;
+			}
+			if (all != null && are != null) {
+			  if (all.b == 1 && are.b == 1)
+				are.b = TfTerm.DontCare.b;
+			  if (all.b == 1 && are.b == 0)
+				at[i] = null;
+			}
+		  }
+		}
+	  }
+	  if (!impl.all.isNot() && impl.are.isNot()) {
+		for (int i = 0; i < at.length; i++) {
+		  if (at[i] != null) {
+			TfTerm all = null;
+			TfTerm are = null;
+			for (TfTerm tft : at[i].varVals) {
+			  if (impl.all.equals(tft.tf) && tft.b != TfTerm.DontCare.b)
+				all = tft;
+			  if (impl.are.equals(tft.tf.not()) && tft.b != TfTerm.DontCare.b)
+				are = tft;
+			}
+			if (all != null && are != null) {
+			  if (all.b == 1 && are.b == 1)
+				at[i] = null;
+			  if (all.b == 1 && are.b == 0)
+				are.b = TfTerm.DontCare.b;
+			  if (all.b == 0 && are.b == 1)
+				all.b = TfTerm.DontCare.b;
+			}
+		  }
+		}
+	  }
+	  if (impl.all.isNot() && !impl.are.isNot()) {
+		for (int i = 0; i < at.length; i++) {
+		  if (at[i] != null) {
+			TfTerm all = null;
+			TfTerm are = null;
+			for (TfTerm tft : at[i].varVals) {
+			  if (impl.all.equals(tft.tf.not()) && tft.b != TfTerm.DontCare.b)
+				all = tft;
+			  if (impl.are.equals(tft.tf) && tft.b != TfTerm.DontCare.b)
+				are = tft;
+			}
+			if (all != null && are != null) {
+			  if (all.b == 0 && are.b == 1)
+				are.b = TfTerm.DontCare.b;
+			  if (all.b == 0 && are.b == 0)
+				at[i] = null;
+			}
+		  }
+		}
+	  }
+	  if (impl.all.isNot() && impl.are.isNot()) {
+		for (int i = 0; i < at.length; i++) {
+		  if (at[i] != null) {
+			TfTerm all = null;
+			TfTerm are = null;
+			for (TfTerm tft : at[i].varVals) {
+			  if (impl.all.equals(tft.tf.not()) && tft.b != TfTerm.DontCare.b)
+				all = tft;
+			  if (impl.are.equals(tft.tf.not()) && tft.b != TfTerm.DontCare.b)
+				are = tft;
+			}
+			if (all != null && are != null) {
+			  if (all.b == 0 && are.b == 1)
+				at[i] = null;
+			  if (all.b == 0 && are.b == 0)
+				are.b = TfTerm.DontCare.b;
+			}
+		  }
+		}
+	  }
+	}
+		
+	List<Term> outTermList = new ArrayList<Term>();
+	
+	for (int i = 0; i < at.length; i++) {
+	  if (at[i] != null) {
+		for (Implication imp : tosubstitute) {
+		  for (TfTerm tft : at[i].varVals) {
+			if (imp.all.equals(tft.tf) && tft.b == 1)
+			  tft.b = TfTerm.DontCare.b;
+			if (imp.are.equals(tft.tf))
+			  tft.b = 1;
+		  }
+		}
+		outTermList.add(at[i]);
+	  }
+	}
+	return outTermList;
   }
 
   private static TfI termsListToTf(List<Term> termList) {

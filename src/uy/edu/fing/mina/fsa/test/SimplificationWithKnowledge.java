@@ -19,9 +19,7 @@ import uy.edu.fing.mina.fsa.tf.SimpleTf;
 public class SimplificationWithKnowledge {
 
 	/**
-	 * uy.edu.fing.mina.omega.tffst.test 5, is the very example of the
-	 * policy's paper. it works well but A <-> B and B <-> A must be unified
-	 * 
+	 *
 	 * @param args
 	 */
 
@@ -32,9 +30,13 @@ public class SimplificationWithKnowledge {
 		SimpleTf tfc = new SimpleTf("C");
 		SimpleTf tfd = new SimpleTf("D");
 
-	    Knowledge.implications.add(new Implication(tfa, tfb));
+	    Knowledge.implications.add(new Implication(tfa, tfb.not()));
 		
-		System.out.println(
+		System.out.println(tfa.and(tfb));		
+		System.out.println(tfa.andSimple(tfb));		
+
+	    
+	    System.out.println(
 		        tfa.not()			.and(tfb.not()	.and(tfc.not()))
 				.or(tfa.not()			.and(tfb.not()	.and(tfc)))
 				.or(tfa.not()			.and(tfb		.and(tfd)))

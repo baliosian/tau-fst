@@ -188,9 +188,7 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
       SimpleTf stf = new SimpleTf();
       stf.setAcceptNone();
       outTf = stf;
-    }else if (this instanceof SimpleTf && tf instanceof SimpleTf ) {
-      outTf = new CompositeTf(Operator.AND, this, tf);
-    } else {
+    }else {
       outTf = new CompositeTf(Operator.AND, this, tf);
       outTf = Utils.simplify(outTf);
     }

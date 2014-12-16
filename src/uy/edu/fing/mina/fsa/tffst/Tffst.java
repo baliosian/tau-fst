@@ -483,33 +483,35 @@ public class Tffst implements Serializable {
 
 			  if (!at.labelOut.isEpsilon() && !bt.labelIn.isEpsilon()) {
 
-				// ct((p1,π1,π1,q1,1),(p2,π2,π2,q2,1))=((p1,p2),π1∧π2,π1∧π2,(q1,q2),1)
-				if (at.labelOut.get(0).getIdentityType() == 1 && bt.labelOut.get(0).getIdentityType() == 1) {
-				  tOutLabelIn = ((TfI) at.labelOut.get(0).clone()).andSimple((TfI) bt.labelIn.get(0).clone());
-				  tOutLabelOut = (TfI) tOutLabelIn.clone();
-				  tOutLabelOut.setIdentityType(1);
-				  tOutLabelOut.setRefersTo(tOutLabelIn);
-				}
-				// ct((p1,φ,π1,q1,0),(p2,π2,π2,q2,1))=((p1,p2),φ,π1∧π2,(q1,q2),0)
-				if (at.labelOut.get(0).getIdentityType() == 0 && bt.labelOut.get(0).getIdentityType() == 1) {
-				  tOutLabelIn = (TfI) at.labelIn.get(0).clone();
-				  tOutLabelOut = ((TfI) at.labelOut.get(0).clone()).andSimple((TfI) bt.labelIn.get(0).clone());
-				  tOutLabelOut.setIdentityType(0);
-				}
+				if (((TfI) at.labelOut.get(0).clone()).andSimple((TfI) bt.labelIn.get(0).clone()).satisfiable()) {
+				  // ct((p1,π1,π1,q1,1),(p2,π2,π2,q2,1))=((p1,p2),π1∧π2,π1∧π2,(q1,q2),1)
+				  if (at.labelOut.get(0).getIdentityType() == 1 && bt.labelOut.get(0).getIdentityType() == 1) {
+					tOutLabelIn = ((TfI) at.labelOut.get(0).clone()).andSimple((TfI) bt.labelIn.get(0).clone());
+					tOutLabelOut = (TfI) tOutLabelIn.clone();
+					tOutLabelOut.setIdentityType(1);
+					tOutLabelOut.setRefersTo(tOutLabelIn);
+				  }
+				  // ct((p1,φ,π1,q1,0),(p2,π2,π2,q2,1))=((p1,p2),φ,π1∧π2,(q1,q2),0)
+				  if (at.labelOut.get(0).getIdentityType() == 0 && bt.labelOut.get(0).getIdentityType() == 1) {
+					tOutLabelIn = (TfI) at.labelIn.get(0).clone();
+					tOutLabelOut = ((TfI) at.labelOut.get(0).clone()).andSimple((TfI) bt.labelIn.get(0).clone());
+					tOutLabelOut.setIdentityType(0);
+				  }
 
-				// ct((p1,π1,π1,q1,1),(p2,π2,ψ,q2,0))=((p1,p2),π1∧π2,ψ,(q1,q2),0)
-				if (at.labelOut.get(0).getIdentityType() == 1 && bt.labelOut.get(0).getIdentityType() == 0) {
-				  tOutLabelIn = ((TfI) at.labelOut.get(0).clone()).andSimple((TfI) bt.labelIn.get(0).clone());
-				  tOutLabelOut = (TfI) bt.labelIn.get(0).clone();
-				  tOutLabelOut.setIdentityType(0);
-				}
-				// ct((p1,φ,π1,q1,0),(p2,π2,ψ,q2,0))=((p1,p2),φ,ψ,(q1,q2),0) if
-				// satisfiable(π1∧π2)
-				if (at.labelOut.get(0).getIdentityType() == 1 && bt.labelOut.get(0).getIdentityType() == 0
-					&& ((TfI) at.labelOut.get(0).clone()).andSimple((TfI) bt.labelIn.get(0).clone()).satisfiable()) {
-				  tOutLabelIn = (TfI) at.labelIn.get(0).clone();
-				  tOutLabelOut = (TfI) bt.labelOut.get(0).clone();
-				  tOutLabelOut.setIdentityType(0);
+				  // ct((p1,π1,π1,q1,1),(p2,π2,ψ,q2,0))=((p1,p2),π1∧π2,ψ,(q1,q2),0)
+				  if (at.labelOut.get(0).getIdentityType() == 1 && bt.labelOut.get(0).getIdentityType() == 0) {
+					tOutLabelIn = ((TfI) at.labelOut.get(0).clone()).andSimple((TfI) bt.labelIn.get(0).clone());
+					tOutLabelOut = (TfI) bt.labelIn.get(0).clone();
+					tOutLabelOut.setIdentityType(0);
+				  }
+				  // ct((p1,φ,π1,q1,0),(p2,π2,ψ,q2,0))=((p1,p2),φ,ψ,(q1,q2),0)
+				  // if
+				  // satisfiable(π1∧π2)
+				  if (at.labelOut.get(0).getIdentityType() == 0 && bt.labelOut.get(0).getIdentityType() == 0) {
+					tOutLabelIn = (TfI) at.labelIn.get(0).clone();
+					tOutLabelOut = (TfI) bt.labelOut.get(0).clone();
+					tOutLabelOut.setIdentityType(0);
+				  }
 				}
 			  }
 			  // {((p1,p2 ), ,ψ,(p1,q2),0)|p1 ∈ Q1,(p2,,ψ,q2,0) ∈ E2 }
@@ -587,107 +589,6 @@ public class Tffst implements Serializable {
     determinize(initialset);
   }
 
-//  /**
-//   * EPSILON REMOVAL FOR TRANSDUCERS 
-//   * 
-//   * cannot have epsilon loops!!!!! except for
-//   * epsilon/epsilon loops. the method removes epsilon-input labeled arcs. this is actually
-//   * changing the tffst semantics.
-//   * 
-//   * the tffst cannot recognize the empty language
-//   * 
-//   */
-//  public void inLabelEpsilonRemoval() {
-//    int f = 0;
-//    
-//    try {
-//      Set<State> workingStates = new HashSet<State>();
-//      Set<State> visitedStates = new HashSet<State>();
-//      workingStates.add(initial);
-//      State state;
-//      boolean removeState = false;
-//      
-//      //push all output labels of transitions with epsilon input labels forward
-//      while (!workingStates.isEmpty()) {
-//        removeState = true;
-//        state = workingStates.iterator().next();
-//        visitedStates.add(state);
-//
-//        Set<Transition> toRemove = new HashSet<Transition>();
-//        Set<Transition> toAdd = new HashSet<Transition>();
-//
-//        for (Transition t : state.getTransitions()) {
-//          
-//          if (!visitedStates.contains(t.getTo())) workingStates.add(t.getTo());
-//
-//          if (t.labelIn.isEpsilon()) {
-//            toRemove.add(t);
-//            if (!t.getTo().equals(state)) { // ignore in-epsilon loops
-//              if (!t.labelOut.isEpsilon()) {
-//                if (t.getTo().isAccept()) {
-//                  for (Transition arriTransition : state.getArrivingTransitions()) {
-//                    State origin = arriTransition.getFrom();
-//                    if (origin != null) {
-//                      if (!state.equals(origin)) {
-//                        Transition arriTransitionClone = new Transition(arriTransition.labelIn,
-//                            arriTransition.labelOut, t.getTo());
-//                        arriTransitionClone.labelOut.addAll(t.labelOut);
-//                        origin.addTransition(arriTransitionClone);
-//                      } else {
-//                        if (!arriTransition.labelIn.isEpsilon()) {
-//                          State n = new State();
-//                          n.addTransition(new Transition(arriTransition.labelIn,
-//                              arriTransition.labelOut, n));
-//                          for (Transition arriTransition2 : state.getArrivingTransitions()) {
-//                            State origin2 = arriTransition2.getFrom();
-//                            if (!state.equals(origin2)) {
-//                              origin2.addTransition(new Transition(arriTransition2.labelIn,
-//                                  arriTransition.labelOut, n));
-//                            }
-//                          }
-//                          n.addTransition(new Transition(arriTransition.labelIn, t.labelOut, t
-//                              .getTo()));
-//                        }
-//                      }
-//                    }
-//                  }
-//                } else {
-//                  for (Transition tNext : t.getTo().getTransitions()) {
-//                    if (!(tNext.labelIn.isEpsilon() && tNext.getTo().equals(t.getTo()) && tNext
-//                        .getTo().isAccept())) {
-//                      Transition tNextClone = tNext.clone();
-//                      for (int i = 0; i < t.labelOut.size(); i++)
-//                        tNextClone.labelOut.add(i, t.labelOut.get(i));
-//                      toAdd.add(tNextClone);
-//                      removeState = false;
-//                    }
-//                  }
-//                }
-//              } else { // e/e transition
-//                for (Transition t2 : t.getTo().getTransitions()) {
-//                  if (t2.getTo().equals(t.getTo())) toAdd.add(new Transition(t2.labelIn,
-//                      t2.labelOut, state));
-//                  else
-//                    toAdd.add(new Transition(t2.labelIn, t2.labelOut, t2.getTo()));
-//                }
-//              }
-//            }
-//          }
-//        }
-//        
-//        Utils.showDot(this.toDot("" + f++));
-//        
-//        state.removeAllTransitions(toRemove);
-//        state.addAllTransitions(toAdd);
-//        if (removeState) workingStates.remove(state);
-//                
-//      }
-//    } catch (CloneNotSupportedException e) {
-//      e.printStackTrace();
-//    }
-//
-//  }
-  
   /**
    * EPSILON REMOVAL FOR TRANSDUCERS
    * 
@@ -1135,10 +1036,11 @@ public class Tffst implements Serializable {
     StringBuffer b = new StringBuffer("digraph Tffst {\n"); 
     
     b.append("graph [ bgcolor=white,fontname=Arial, fontcolor=black, fontsize=12 ];\n");
-    b.append("node [ fontname=Arial, fontcolor=black, fontsize=11];\n");
-    b.append("edge [ fontname=Helvetica, fontcolor=black, fontsize=10, arrowsize=0.6 ];\n");
+    b.append("node [ fontname=Arial, fontcolor=black, fontsize=10];\n");
+    b.append("edge [ fontname=Helvetica, fontcolor=black, fontsize=10, arrowsize=0.6, color=grey ];\n");
     b.append("rankdir = \"LR\";\n");
     b.append("label = \"").append(label).append("\";\n");
+    
     Iterator<State> i = getStates().iterator();
     while (i.hasNext()) {
       State s = i.next();

@@ -100,6 +100,8 @@ public class Term {
 		return ba.hashCode();
 	}
 
+	
+	
 	boolean implies(Term term) {
 		for (int i = 0; i < varVals.length; i++) {
 			if (this.varVals[i].b != TfTerm.DontCare.b && this.varVals[i].b != term.varVals[i].b) {
@@ -109,7 +111,7 @@ public class Term {
 		return true;
 	}
 
-    public String toString() {
+	public String toString() {
         String result = "{";
         for(int i=0; i<varVals.length; i++) {
             if (varVals[i].b == TfTerm.DontCare.b)
