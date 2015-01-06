@@ -41,7 +41,7 @@ public class Utils {
 	  // String[] cmd = { "dotty", filename };
 	  // Process p = Runtime.getRuntime().exec(cmd);
 
-	  String cmd = "/usr/bin/neato -Tsvg -o " + filename + ".svg " + filename;
+	  String cmd = "/usr/bin/dot -Tsvg -o " + filename + ".svg " + filename;
 	  System.out.println("Calling Dot: " + cmd);
 	  Process p = Runtime.getRuntime().exec(cmd);
 	  p.waitFor();
