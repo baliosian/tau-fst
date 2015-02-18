@@ -252,7 +252,7 @@ public class Transition implements Serializable {
    * @see java.lang.Object#toString()
    */
   public String toString() {
-    return labelIn.toString() + ":" + labelOut.toString();
+    return labelIn.toString() + "/ " + labelOut.toString();
   }
 
   public Double getWeight() {
