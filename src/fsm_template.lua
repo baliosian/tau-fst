@@ -67,6 +67,18 @@ local function dump_window()
 	return s
 end
 
+local function dump_window()
+	local s="=> "
+	for _,e in ipairs(window) do
+		if e.event.message_type=="trap" then
+			s=s .. tostring(e.event.watcher_id) ..","
+		else
+			s=s .. "#,"
+		end
+	end
+	return s
+end
+
 --advances the machine a single step.
 --returns nil if arrives at the end the window, or the event is not recognized
 --otherwise, returns the resulting list from the action
@@ -99,8 +111,13 @@ local function fst_step()
   
 	i_event=i_event+1
 	current_state = transition.new
+<<<<<<< HEAD
 	print ("NEW STATE:", current_state, "#TRANS:", #fsm[current_state],  "#RETS:", #ret_call, "ACCEPT:", is_accept[current_state], "FINAL:", #fsm[current_state]==0)
   return ret_call, is_accept[current_state], #fsm[current_state]==0
+=======
+  
+  return ret_call	or {}, is_accept(current_state), #fsm[current_state]==0
+>>>>>>> master
 end
 
 function step()
@@ -109,29 +126,48 @@ function step()
 	local ret, accept, final = {}, false, false
   
   repeat
+<<<<<<< HEAD
     local ret_step
 		ret_step, accept, final = fst_step()
 		if ret_step then 
 			for _, r in ipairs(ret_step) do ret[#ret+1]=r	end --queue generated actions
 		end
   until accept or i_event>#window
+=======
+		local ret_step, accept, final = fst_step()
+		if ret_step then 
+			for _, r in ipairs(ret_step) do ret[#ret+1]=r	end --queue generated actions
+		end
+  until accept or i_event==#window
+>>>>>>> master
   assert(not (final and not accept))
   
   if accept then
     --purge consumed events from window
+<<<<<<< HEAD
     print("Purge consumed events", #window)
+=======
+>>>>>>> master
     local i=1
     local e = window[i_event]
     repeat
       if happening_events[window[i]] then
         i=i+1
       else
+<<<<<<< HEAD
         table.remove(window, i)
         i_event=i_event-1
       end
     until window[i]==e
     if not happening_events[window[i]] then table.remove(window, i) end
     print("Purge consumed events", #window)
+=======
+        table.remove[window, i]
+        i_event=i_event-1
+      end
+    until window[i]==e
+    if not happening_events[window[i]] then table.remove[window, i] end
+>>>>>>> master
   end
   
 	if #ret>0 then
@@ -144,7 +180,10 @@ function reset()
   current_state=init_state 
   i_event=1 
   happening_events={}
+<<<<<<< HEAD
   print ("FSM: RESET")
+=======
+>>>>>>> master
 end
 
 print ("FSM loaded.")

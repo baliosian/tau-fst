@@ -1332,6 +1332,7 @@ public class Tffst implements Serializable {
           for (Transition t : eop.state.getTransitions()) {
             if (tf.equals(t.labelIn.isEpsilon() ? SimpleTf.Epsilon(): t.labelIn.get(0))) {
               TfString newSE = new TfString();
+
               
               for (TfI tfpairp : eop.getArrivingTFs()) {
                   if (!tfpairp.isEpsilon() && !t.labelIn.isEpsilon()) tfpairp.addWeight(t.labelIn.get(0));
@@ -1347,6 +1348,7 @@ public class Tffst implements Serializable {
 			  }
               
               retPair = new ElementOfP(t.getTo(), newSE);
+
               unionOfTransPelements.add(retPair);
             }
           }

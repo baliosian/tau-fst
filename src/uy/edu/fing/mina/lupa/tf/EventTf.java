@@ -35,6 +35,7 @@ public class EventTf extends SimpleTf {
 	}
 
 	public Set<String> getInitSubsStrings() {
+
 		return init_subs_strings;
 	}
 	

@@ -272,7 +272,9 @@ public class LupaExporter {
 							out_notifs.append("  ").append(init).append(",\n");
 						}
 					}
+
 					Iterator<String> inits_subs = e.getInitSubsStrings().iterator();
+
 					while (inits_subs.hasNext()) {
 						String init = inits_subs.next();
 						if (!init_subs_generated.contains(init)) {
@@ -422,7 +424,9 @@ public class LupaExporter {
 					out = out.concat("\tif left < right then return left else return right end\n");
 				} else if (comp.op == Operator.OR) {
 					out = out.concat("\tif left > right then return left else return right end\n");
+
 				} 
+
 				out = out.concat("end\n");
 			}
 			else if (function.isNot()) {
@@ -445,6 +449,7 @@ public class LupaExporter {
 		
 		return out;
 	}
+
 
   /**
    * Creates a String with actions functions that are CompositeTf or Nots.
@@ -501,6 +506,7 @@ public class LupaExporter {
 
     return out;
   }
+
 	
 
 //	private static String actionsToLupa(Tffst tffst) {
