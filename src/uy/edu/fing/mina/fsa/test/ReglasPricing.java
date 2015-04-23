@@ -394,7 +394,7 @@ public class ReglasPricing {
       testkleene.setDeterministic(false);
       testkleene.determinize();
       
-      Utils.showDot(testkleene.toDot("deterministic",1));
+      Utils.showDot(testkleene.toDot("deterministic"));
       
       
     }

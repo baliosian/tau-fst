@@ -39,9 +39,6 @@ public class TfPair extends SimpleTf {
   public TfPair(TfI tfIn, TfI tfOut) {
     this.tfIn = tfIn;
     this.tfOut = tfOut;
-//    this.setTfSymbol(new TfSymbol(this));
-//	this.getTfSymbol().setSignifier(this.getName());
-    //this.setFormula(this.cl.createSymbol(this.getTfSymbol()));
   }
 
   /* Methods ****************************************************************** */
@@ -129,49 +126,6 @@ public class TfPair extends SimpleTf {
       System.exit(0);
     }
     return 1;
-  }
-
-  public static Set<TfPair> breakTfPairs(TfI tf) {
-    Set<TfPair> out = new HashSet<TfPair>();
-//    tf.deMorgan();
-
-    if (tf instanceof SimpleTf) {
-      if (tf instanceof TfPair) {
-        TfPair tfp = (TfPair) tf;
-        if (tfp.isNot()) {
-          SimpleTf aa = new SimpleTf();
-          aa.setAcceptAll();
-          TfPair tfp1 = new TfPair(tfp.tfIn.not(), aa);
-          TfPair tfp2 = new TfPair(tfp.tfIn, tfp.tfOut.not());
-          out.add(tfp1);
-          out.add(tfp2);
-        } else
-          out.add(tfp);
-        return out;
-      } else {
-        TfPair tfp = new TfPair(tf, SimpleTf.AcceptsAll());
-        out.add(tfp);
-      }
-    } else if (tf instanceof CompositeTf) {
-      CompositeTf ctf = (CompositeTf) tf;
-      if (ctf.getOperator().equals(Operator.OR)) {
-        out.addAll(breakTfPairs(ctf.left));
-        out.addAll(breakTfPairs(ctf.right));
-      } else if (ctf.getOperator().equals(Operator.AND)) {
-
-        Set<TfPair> l = breakTfPairs(ctf.left);
-        Set<TfPair> r = breakTfPairs(ctf.right);
-
-        for (Iterator<TfPair> iter = l.iterator(); iter.hasNext();) {
-          TfPair ltfp = (TfPair) iter.next();
-          for (Iterator<TfPair> iterator = r.iterator(); iterator.hasNext();) {
-            TfPair rtfp = (TfPair) iterator.next();
-            out.add(new TfPair(ltfp.tfIn.and(rtfp.tfIn), ltfp.tfOut.and(rtfp.tfOut)));
-          }
-        }
-      }
-    }
-    return out;
   }
 
   @Override

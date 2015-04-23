@@ -137,9 +137,9 @@ public class TfString implements List<TfI> {// extends Tf implements List {
 	if (isEpsilon()) {
 	  return SimpleTf.EPSILON;
 	} else {
-	  String seString = "";
-	  for (TfI tf : listOfTfs)
-		seString += tf.toString();
+	  String seString = listOfTfs.get(0).toString();
+	  for (int i = 1; i < listOfTfs.size(); i++) 
+		seString += "." + listOfTfs.get(i).toString();
 	  return seString;
 	}
   }

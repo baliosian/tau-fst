@@ -7,8 +7,10 @@
 
 package uy.edu.fing.mina.fsa.tf;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import uy.edu.fing.mina.fsa.logics.Utils;
@@ -36,8 +38,9 @@ public abstract class Tf implements TfI, Cloneable, Comparable {
   private int identityType;
   
   private Set<TfI> weightTf;
-
   
+  /** A map with all the TFs which have a label different than ""*/
+  static public Map<String,TfI> createdTFs = new HashMap<String, TfI>();
   
   public Tf() {
     this(false, "");

@@ -1008,6 +1008,47 @@ public class Tffsr implements Serializable {
     return a;
   }
 
+  
+  /**
+   * Returns a Tffst that relates the language recognized by the tffsr with epsilon.
+   * 
+   * @return a TFFST
+   */
+
+  public Tffst toEpsilon() {
+    Tffst a = new Tffst();
+    HashMap<State, uy.edu.fing.mina.fsa.tffst.State> m = new HashMap<State, uy.edu.fing.mina.fsa.tffst.State>();
+    Set<State> states = getStates();
+
+    for (Iterator<State> iter = states.iterator(); iter.hasNext();) {
+      State s = iter.next();
+      m.put(s, new uy.edu.fing.mina.fsa.tffst.State());
+    }
+
+    for (Iterator<State> iter = states.iterator(); iter.hasNext();) {
+      State s = iter.next();
+      uy.edu.fing.mina.fsa.tffst.State p = m.get(s);
+
+      p.setAccept(s.isAccept());
+      if (s == initial) a.setInitialState(p);
+
+      p.setTransitions(new HashSet<uy.edu.fing.mina.fsa.tffst.Transition>());
+
+      for (Iterator<Transition> iterator = s.getTransitions().iterator(); iterator.hasNext();) {
+        Transition t = iterator.next();
+        uy.edu.fing.mina.fsa.tffst.State to = m.get(t.getTo());
+        Set<uy.edu.fing.mina.fsa.tffst.Transition> trans = p.getTransitions();
+        uy.edu.fing.mina.fsa.tffst.Transition id = new uy.edu.fing.mina.fsa.tffst.Transition(
+            t.label.get(0), SimpleTf.Epsilon(), to); //FIXME label must be simple
+        trans.add(id);
+      }
+    }
+    a.setDeterministic(deterministic);
+    a.setInfo(info);
+    return a;
+  }
+
+  
   /**
    * Returns a Tffst with the original tffsr as range and * as domain
    * 
@@ -1350,7 +1391,8 @@ public class Tffsr implements Serializable {
 	
 	// the crash state
 	State s = new State();
-    s.addOutTran(new Transition(new TfString(SimpleTf.AcceptsAll()), s));
+//    s.addOutTran(new Transition(new TfString(SimpleTf.AcceptsAll()), s));
+    s.addEpsilon(this.initial);
     
 	Iterator<State> i = simple.getStates().iterator();
     while (i.hasNext()) {
@@ -1422,6 +1464,8 @@ public class Tffsr implements Serializable {
 		  State newTo = new State();
 		  m.put(t.getTo(), newTo);
 		  newTo.accept = t.getTo().accept;
+		  if (t.getTo() == initial)
+			  simpleTffst.initial = t.getTo();
 		}
 
 		Transition lastTran = new Transition(last, new TfString(t.label), m.get(t.getTo()));

@@ -25,31 +25,25 @@ import uy.edu.fing.mina.fsa.tffst.Transition;
 public class Utils {
 
   public static void showDot(String dot) {
-
 	String filename = "/tmp/tffst" + (new Random((new Date()).getTime())).nextInt(1000) + ".dot";
 	showDot(dot, filename);
   }
 
   public static void showDot(String dot, String filename) {
+	showDot(dot, filename, "png");  
+  }
+  
+  public static void showDot(String dot, String filename, String format) {
 
 	writeDot(dot, filename);
 
 	try {
-
-	  // System.out.println("Calling Dotty...");
-	  // String[] cmd = { "scripts/launchDotty.sh", filename };
-	  // String[] cmd = { "dotty", filename };
-	  // Process p = Runtime.getRuntime().exec(cmd);
-
-	  String cmd = "/usr/bin/dot -Tpng -o " + filename + ".png " + filename;
+	  String cmd = "/usr/bin/dot -T" + format + " -o " + filename + "." + format + " " + filename;
 	  System.out.println("Calling Dot: " + cmd);
 	  Process p = Runtime.getRuntime().exec(cmd);
 	  p.waitFor();
 	  System.out.println("return: " + p.exitValue());
-	  p = Runtime.getRuntime().exec("eog " + filename + ".png ");
-	  // p.waitFor();
-	  // System.out.println("return: "+ p.exitValue());
-
+	  p = Runtime.getRuntime().exec("eog " + filename + "." + format + " ");
 	} catch (IOException | InterruptedException e) {
 	  System.out.println("exception happened - here's what I know: ");
 	  e.printStackTrace();

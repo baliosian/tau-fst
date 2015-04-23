@@ -105,6 +105,8 @@ public class SimpleTf extends Tf {
 
     public void setName(String label) {
         name = label;
+        if (Tf.createdTFs.containsKey(this.name)) Tf.createdTFs.remove(this.name);
+        Tf.createdTFs.put(label, this);
     }
 
     /**

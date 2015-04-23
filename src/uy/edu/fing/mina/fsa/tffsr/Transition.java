@@ -15,6 +15,7 @@ package uy.edu.fing.mina.fsa.tffsr;
 
 import java.io.Serializable;
 
+import uy.edu.fing.mina.fsa.tf.TfI;
 import uy.edu.fing.mina.fsa.tf.TfString;
 
 
@@ -74,8 +75,7 @@ public class Transition implements Serializable {
   /**
    * Constructs new transition.
    * 
-   * @param labelIn
-   * @param labelOut
+   * @param label
    * @param to
    *          destination state
    */
@@ -84,6 +84,19 @@ public class Transition implements Serializable {
     this(null, label, to);
   }
 
+  /**
+   * Constructs new transition.
+   * 
+   * @param label
+   * @param to
+   *          destination state
+   */
+	
+  public Transition(TfI label, State to) {
+    this(null, new TfString(label), to);
+  }
+
+  
   /**
    * Constructs new transition.
    * 

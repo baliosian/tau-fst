@@ -34,6 +34,22 @@ public class State implements Serializable, Comparable<State> {
 
   private int number;
 
+  private String label;
+  
+  /**
+   * @return the label
+   */
+  public String getLabel() {
+    return label;
+  }
+
+  /**
+   * @param label the label to set
+   */
+  public void setLabel(String label) {
+    this.label = label;
+  }
+
   /**
    * @uml.property name="transitions"
    */
@@ -45,6 +61,7 @@ public class State implements Serializable, Comparable<State> {
   public State() {
     resetTransitions();
     number = next_number++;
+    label  = Integer.toString(number);
   }
 
   /**
@@ -83,9 +100,9 @@ public class State implements Serializable, Comparable<State> {
    * 
    */
   public String toString() {
-    if (accept) return "((" + number + "))";
+    if (accept) return "((" + label + "))";
     else
-      return "(" + number + ")";
+      return "(" + label + ")";
   }
 
   /*
@@ -103,14 +120,12 @@ public class State implements Serializable, Comparable<State> {
     return s;
   }
 
-  void addEpsilon(State to) {
+  public void addEpsilon(State to) {
     
 	if (to.accept) accept = true;
     
-    Iterator<Transition> i = to.getTransitionsIterator();
-    while (i.hasNext()) {
-      Transition t = (Transition) i.next();
-      transitions.add(t);
+    for(Transition t : to.getTransitions() ) {
+      this.addOutTran(new Transition(t.labelIn, t.labelOut, t.getTo()));
     }
   }
 
@@ -120,6 +135,7 @@ public class State implements Serializable, Comparable<State> {
 
   public void setNumber(int n) {
     number = n;
+    setLabel(Integer.toString(number));
   }
 
   /**
