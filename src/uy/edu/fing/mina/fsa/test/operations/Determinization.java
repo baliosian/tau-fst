@@ -41,28 +41,28 @@ public class Determinization {
       s4.setAccept(true);
 
       SimpleTf tf1 = new SimpleTf();
-      tf1.setName("A");
+      tf1.setName("A:0.1");
 
       SimpleTf tf2 = new SimpleTf();
-      tf2.setName("C");
+      tf2.setName("C:0.2");
 
       SimpleTf tf3 = new SimpleTf();
-      tf3.setName("D");
+      tf3.setName("D:0.3");
 
       SimpleTf tf4 = new SimpleTf();
-      tf4.setName("E");
+      tf4.setName("E:0.4");
 
       SimpleTf tf5 = new SimpleTf();
-      tf5.setName("F");
+      tf5.setName("F:0.5");
 
       SimpleTf tf6 = new SimpleTf();
-      tf6.setName("G");
+      tf6.setName("G:0.6");
 
       SimpleTf tf7 = new SimpleTf();
-      tf7.setName("I");
+      tf7.setName("I:0.7");
 
       SimpleTf tf8 = new SimpleTf();
-      tf8.setName("J");
+      tf8.setName("J:0.8");
 
       Transition trans1 = new Transition(tf1, tf2, s1);
       Transition trans2 = new Transition(tf1, tf3, s2);
@@ -78,12 +78,12 @@ public class Determinization {
       s3.addOutTran(trans5);
       s4.addOutTran(trans6);
 
-      Utils.showDot(tffst1.toDot("START"));
+      Utils.showDot(tffst1.toDot("", "LR"), "/home/javier/Downloads/predet" );
 
       tffst1.setDeterministic(false);
       tffst1.determinize(); 
 
-      Utils.showDot(tffst1.toDot("FIN"));
+      Utils.showDot(tffst1.toDot("", "LR"), "/home/javier/Downloads/posdet");
 
       
    }
